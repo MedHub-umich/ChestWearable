@@ -1,5 +1,5 @@
 #include "messageService.h"
-#include "respirationDevice.h"
+#include "RespirationDevice.h"
 
 // ************** Summary ************** //
 // The RespirationModule object owns everything that has 
@@ -12,29 +12,23 @@
 // signal processing, and set up sensor hardware. 
 // This "class" calls on the respirationDevice "class"
 // to interact with respiration hardware.
-void respirationInit(RespirationMonitorStruct * this/*pins, initial task rate?, etc*/);
-
-RespirationDeviceStruct * respirationDevicePtr;
+void RespirationInit(RespirationMonitorStruct * this/*pins, initial task rate?, etc*/);
 
 // ************** Tasks ************** //
 
 // task that reads from sensor
-// periodic
-void respirationReadTask(void *);
+void RespirationModuleReadTask(void *);
 
-// task that accumulates and sends data to BLE
-// periodic
-void respirationSendTask(void *);
+// task that processes signals
+void RespirationModuleDSPTask(void *);
 
-// task that does on-device alerts
-// periodic? event driven?
-void respirationIncomingMessageTask(void *);
+// task that recieves messages from other modules
+void RespirationModuleIncomingMessageTask(void *);
 
-// task that acts on commands from medHub
-// event driven
-void respirationOutgoingMessageTask(void *);
+// task sends messages to other modules (e.g send sensor readings to communication/BLE module)
+void RespirationModuleOutgoingMessageTask(void *);
 
-struct RespirationMonitorStruct
+struct RespirationModuleStruct
 {
     RespirationDeviceStruct * RespirationDevicePtr;
 
