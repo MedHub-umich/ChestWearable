@@ -32,4 +32,4 @@ struct RespirationModuleStruct
 {
     RespirationDeviceStruct * RespirationDevicePtr;
 
-}
+};
