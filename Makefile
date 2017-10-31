@@ -29,14 +29,10 @@ SRC_FILES += \
   $(SDK_ROOT)/components/libraries/experimental_log/src/nrf_log_frontend.c \
   $(SDK_ROOT)/components/libraries/experimental_log/src/nrf_log_str_formatter.c \
   $(SDK_ROOT)/components/libraries/button/app_button.c \
-  $(SDK_ROOT)/components/libraries/util/app_error.c \
-  $(SDK_ROOT)/components/libraries/util/app_error_weak.c \
   $(SDK_ROOT)/components/libraries/timer/app_timer_freertos.c \
-  $(SDK_ROOT)/components/libraries/util/app_util_platform.c \
   $(SDK_ROOT)/components/libraries/crc16/crc16.c \
   $(SDK_ROOT)/components/libraries/fds/fds.c \
   $(SDK_ROOT)/components/libraries/hardfault/hardfault_implementation.c \
-  $(SDK_ROOT)/components/libraries/util/nrf_assert.c \
   $(SDK_ROOT)/components/libraries/atomic_fifo/nrf_atfifo.c \
   $(SDK_ROOT)/components/libraries/balloc/nrf_balloc.c \
   $(SDK_ROOT)/external/fprintf/nrf_fprintf.c \
@@ -44,8 +40,6 @@ SRC_FILES += \
   $(SDK_ROOT)/components/libraries/fstorage/nrf_fstorage.c \
   $(SDK_ROOT)/components/libraries/fstorage/nrf_fstorage_sd.c \
   $(SDK_ROOT)/components/libraries/experimental_memobj/nrf_memobj.c \
-  $(SDK_ROOT)/components/libraries/experimental_section_vars/nrf_section_iter.c \
-  $(SDK_ROOT)/components/libraries/strerror/nrf_strerror.c \
   $(SDK_ROOT)/components/libraries/util/sdk_mapped_flags.c \
   $(SDK_ROOT)/components/libraries/sensorsim/sensorsim.c \
   $(SDK_ROOT)/external/freertos/source/croutine.c \
@@ -58,7 +52,6 @@ SRC_FILES += \
   $(SDK_ROOT)/external/freertos/source/queue.c \
   $(SDK_ROOT)/external/freertos/source/tasks.c \
   $(SDK_ROOT)/external/freertos/source/timers.c \
-  $(SDK_ROOT)/components/boards/boards.c \
   $(SDK_ROOT)/components/drivers_nrf/clock/nrf_drv_clock.c \
   $(SDK_ROOT)/components/drivers_nrf/common/nrf_drv_common.c \
   $(SDK_ROOT)/components/drivers_nrf/gpiote/nrf_drv_gpiote.c \
@@ -87,14 +80,11 @@ SRC_FILES += \
   $(SDK_ROOT)/components/ble/peer_manager/security_dispatcher.c \
   $(SDK_ROOT)/components/ble/peer_manager/security_manager.c \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
-  $(SDK_ROOT)/components/toolchain/system_nrf52.c \
   $(SDK_ROOT)/components/ble/ble_services/ble_bas/ble_bas.c \
   $(SDK_ROOT)/components/ble/ble_services/ble_dis/ble_dis.c \
   $(SDK_ROOT)/components/ble/ble_services/ble_hrs/ble_hrs.c \
-  $(SDK_ROOT)/components/softdevice/common/nrf_sdh.c \
   $(SDK_ROOT)/components/softdevice/common/nrf_sdh_ble.c \
   $(SDK_ROOT)/components/softdevice/common/nrf_sdh_freertos.c \
-  $(SDK_ROOT)/components/softdevice/common/nrf_sdh_soc.c \
 
 # Include folders common to all targets
 INC_FOLDERS += \
@@ -124,7 +114,6 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/ble/ble_services/ble_ancs_c \
   $(SDK_ROOT)/components/ble/ble_services/ble_ias_c \
   $(SDK_ROOT)/components/libraries/pwm \
-  $(SDK_ROOT)/components/softdevice/s132/headers/nrf52 \
   $(SDK_ROOT)/components/libraries/usbd/class/cdc/acm \
   $(SDK_ROOT)/components/libraries/usbd/class/hid/generic \
   $(SDK_ROOT)/components/libraries/usbd/class/msc \
@@ -134,10 +123,7 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/fstorage \
   $(SDK_ROOT)/components/drivers_nrf/i2s \
   $(SDK_ROOT)/components/libraries/gpiote \
-  $(SDK_ROOT)/components/libraries/experimental_log/src \
   $(SDK_ROOT)/components/drivers_nrf/gpiote \
-  $(SDK_ROOT)/components/boards \
-  $(SDK_ROOT)/components/libraries/experimental_memobj \
   $(SDK_ROOT)/components/drivers_nrf/common \
   $(SDK_ROOT)/components/ble/ble_advertising \
   $(SDK_ROOT)/components/ble/ble_services/ble_bas_c \
@@ -145,7 +131,6 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/queue \
   $(SDK_ROOT)/external/freertos/portable/GCC/nrf52 \
   $(SDK_ROOT)/components/ble/ble_dtm \
-  $(SDK_ROOT)/components/toolchain/cmsis/include \
   $(SDK_ROOT)/components/ble/ble_services/ble_rscs_c \
   $(SDK_ROOT)/components/drivers_nrf/uart \
   $(SDK_ROOT)/components/ble/common \
@@ -154,17 +139,13 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/bsp \
   $(SDK_ROOT)/external/freertos/config \
   $(SDK_ROOT)/components/ble/ble_services/ble_bas \
-  $(SDK_ROOT)/components/libraries/experimental_section_vars \
-  $(SDK_ROOT)/components/softdevice/s132/headers \
   $(SDK_ROOT)/components/ble/ble_services/ble_ans_c \
   $(SDK_ROOT)/components/libraries/slip \
   $(SDK_ROOT)/components/libraries/mem_manager \
   $(SDK_ROOT)/external/segger_rtt \
   $(SDK_ROOT)/components/libraries/usbd/class/cdc \
-  $(SDK_ROOT)/components/drivers_nrf/hal \
   $(SDK_ROOT)/components/ble/ble_services/ble_nus_c \
   $(SDK_ROOT)/components/drivers_nrf/rtc \
-  $(SDK_ROOT)/components/softdevice/common \
   $(SDK_ROOT)/components/ble/ble_services/ble_ias \
   $(SDK_ROOT)/components/libraries/usbd/class/hid/mouse \
   $(SDK_ROOT)/components/libraries/ecc \
@@ -175,17 +156,13 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/atomic \
   $(SDK_ROOT)/components \
   $(SDK_ROOT)/components/libraries/scheduler \
-  $(SDK_ROOT)/components/libraries/experimental_log \
   $(SDK_ROOT)/components/ble/ble_services/ble_hts \
-  $(SDK_ROOT)/components/drivers_nrf/delay \
   $(SDK_ROOT)/components/libraries/crc16 \
   $(SDK_ROOT)/components/drivers_nrf/timer \
-  $(SDK_ROOT)/components/libraries/util \
   $(SDK_ROOT)/external/freertos/portable/CMSIS/nrf52 \
   $(SDK_ROOT)/components/drivers_nrf/pwm \
   $(SDK_ROOT)/components/libraries/csense_drv \
   $(SDK_ROOT)/components/libraries/csense \
-  $(SDK_ROOT)/components/libraries/balloc \
   $(SDK_ROOT)/components/libraries/low_power_pwm \
   $(SDK_ROOT)/components/libraries/hardfault \
   $(SDK_ROOT)/components/ble/ble_services/ble_cscs \
@@ -198,14 +175,12 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/rng \
   $(SDK_ROOT)/components/drivers_nrf/power \
   $(SDK_ROOT)/components/libraries/usbd/config \
-  $(SDK_ROOT)/components/toolchain \
   $(SDK_ROOT)/components/libraries/led_softblink \
   $(SDK_ROOT)/components/drivers_nrf/qdec \
   $(SDK_ROOT)/components/ble/ble_services/ble_cts_c \
   $(SDK_ROOT)/components/drivers_nrf/spi_master \
   $(SDK_ROOT)/components/ble/ble_services/ble_nus \
   $(SDK_ROOT)/components/ble/ble_services/ble_hids \
-  $(SDK_ROOT)/components/libraries/strerror \
   $(SDK_ROOT)/components/drivers_nrf/pdm \
   $(SDK_ROOT)/components/libraries/crc32 \
   $(SDK_ROOT)/external/freertos/source/include \
@@ -215,7 +190,6 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/drivers_nrf/swi \
   $(SDK_ROOT)/components/ble/ble_services/ble_tps \
   $(SDK_ROOT)/components/ble/ble_services/ble_dis \
-  $(SDK_ROOT)/components/device \
   $(SDK_ROOT)/components/ble/nrf_ble_gatt \
   $(SDK_ROOT)/components/ble/nrf_ble_qwr \
   $(SDK_ROOT)/components/libraries/button \
@@ -224,7 +198,6 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/libraries/atomic_fifo \
   $(SDK_ROOT)/components/ble/ble_services/ble_lbs_c \
   $(SDK_ROOT)/components/ble/ble_racp \
-  $(SDK_ROOT)/components/toolchain/gcc \
   $(SDK_ROOT)/components/libraries/fds \
   $(SDK_ROOT)/components/libraries/twi \
   $(SDK_ROOT)/components/drivers_nrf/clock \
