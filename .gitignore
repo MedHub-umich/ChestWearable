@@ -1,4 +1,6 @@
 # Prerequisites
+build/
+Makefile.posix
 *.d
 
 # Object files

@@ -1,47 +1,49 @@
-PROJECT_NAME     := blinky_pca10040
+PROJECT_NAME     := blood_pressure
 TARGETS          := nrf52832_xxaa
-OUTPUT_DIRECTORY := _build
+OUTPUT_DIRECTORY := build
 
-SDK_ROOT := ../nordic_bootstrap/SDK
-SOURCE_DIR := ./source
-INCLUDES_DIR := ./include
+SDK_ROOT := sdk
+PROJ_DIR := .
 
 $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
-  LINKER_SCRIPT  := blinky_gcc_nrf52.ld
-
-$(OUTPUT_DIRECTORY)/main.c.out: \
-  LINKER_SCRIPT  := blinky_gcc_nrf52.ld
+  LINKER_SCRIPT  := linker/blinky_gcc_nrf52.ld
 
 # Source files common to all targets
 SRC_FILES += \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
-  $(SOURCE_DIR)/main.c \
+  $(PROJ_DIR)/lib/main.c \
   $(SDK_ROOT)/components/boards/boards.c \
   $(SDK_ROOT)/components/libraries/util/app_error.c \
   $(SDK_ROOT)/components/libraries/util/app_error_weak.c \
   $(SDK_ROOT)/components/libraries/util/app_util_platform.c \
+  $(SDK_ROOT)/components/libraries/util/nrf_assert.c \
+  $(SDK_ROOT)/components/libraries/experimental_section_vars/nrf_section_iter.c \
   $(SDK_ROOT)/components/libraries/strerror/nrf_strerror.c \
+  $(SDK_ROOT)/components/softdevice/common/nrf_sdh.c \
+  $(SDK_ROOT)/components/softdevice/common/nrf_sdh_soc.c \
 
 # Include folders common to all targets
 INC_FOLDERS += \
   $(SDK_ROOT)/components \
   $(SDK_ROOT)/components/libraries/experimental_memobj \
   $(SDK_ROOT)/components/libraries/experimental_section_vars \
-  $(SDK_ROOT)/components/toolchain \
+  $(SDK_ROOT)/components/softdevice/s132/headers \
   $(SDK_ROOT)/components/libraries/util \
   $(SDK_ROOT)/components/libraries/balloc \
   $(SDK_ROOT)/components/libraries/experimental_log \
+  $(SDK_ROOT)/components/toolchain/cmsis/include \
   $(SDK_ROOT)/components/libraries/experimental_log/src \
-  $(INCLUDE_DIR) \
+  $(PROJ_DIR)/include \
   $(SDK_ROOT)/components/toolchain/gcc \
   $(SDK_ROOT)/components/libraries/bsp \
-  $(SDK_ROOT)/components/drivers_nrf/nrf_soc_nosd \
-  ./config \
+  $(SDK_ROOT)/config \
+  $(SDK_ROOT)/components/toolchain \
   $(SDK_ROOT)/components/device \
+  $(SDK_ROOT)/components/softdevice/common \
   $(SDK_ROOT)/components/boards \
   $(SDK_ROOT)/components/drivers_nrf/delay \
-  $(SDK_ROOT)/components/toolchain/cmsis/include \
+  $(SDK_ROOT)/components/softdevice/s132/headers/nrf52 \
   $(SDK_ROOT)/components/drivers_nrf/hal \
   $(SDK_ROOT)/components/libraries/strerror \
 
@@ -61,6 +63,9 @@ CFLAGS += -DCONFIG_GPIO_AS_PINRESET
 CFLAGS += -DNRF52
 CFLAGS += -DNRF52832_XXAA
 CFLAGS += -DNRF52_PAN_74
+CFLAGS += -DNRF_SD_BLE_API_VERSION=5
+CFLAGS += -DS132
+CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
 CFLAGS +=  -Wall -Werror
@@ -83,6 +88,9 @@ ASMFLAGS += -DCONFIG_GPIO_AS_PINRESET
 ASMFLAGS += -DNRF52
 ASMFLAGS += -DNRF52832_XXAA
 ASMFLAGS += -DNRF52_PAN_74
+ASMFLAGS += -DNRF_SD_BLE_API_VERSION=5
+ASMFLAGS += -DS132
+ASMFLAGS += -DSOFTDEVICE_PRESENT
 
 # Linker flags
 LDFLAGS += $(OPT)
@@ -103,7 +111,7 @@ LIB_FILES += -lc -lnosys -lm
 .PHONY: default help
 
 # Default target - first one defined
-default: main.c
+default: nrf52832_xxaa
 
 # Print all targets that can be built
 help:
@@ -116,12 +124,18 @@ include $(TEMPLATE_PATH)/Makefile.common
 
 $(foreach target, $(TARGETS), $(call define_target, $(target)))
 
-.PHONY: flash erase
+.PHONY: flash flash_softdevice erase
 
 # Flash the program
 flash: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
 	@echo Flashing: $<
 	nrfjprog -f nrf52 --program $< --sectorerase
+	nrfjprog -f nrf52 --reset
+
+# Flash softdevice
+flash_softdevice:
+	@echo Flashing: s132_nrf52_5.0.0_softdevice.hex
+	nrfjprog -f nrf52 --program $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_5.0.0_softdevice.hex --sectorerase
 	nrfjprog -f nrf52 --reset
 
 erase:
