@@ -39,9 +39,18 @@ Using Segger RTT:
 5. Ensure that the proper libraries are included 
 6. In sdk/config/sdk_config.h make sure that NRF_LOG_BACKEND_RTT_ENABLED 1 is there
 
+# Migrating to FreeRTOS
+This is only necessary if you have a repository (such as blood pressure) that was not using FreeRTOS and now you want to use it. 
+1. Take a look a the Makefile and copy all include and source files into your makefile path. There are no duplicates compared to BloodPressure, but any added libraries since the fork from BloodPressure will need to be re-added
+2. Copy the CFLAGS to be the ones in the Makefile. SPECIFICALLY we are looking to remove the BSP flags, add the FreeRTOS flag, and add the heap and stack size flags
+3. Do the same for step 2 for the ASM flags, for the same reasons
+4. (optional) Copy the freertos linker from this linker folder to your linker folder and change the makefile at the top to use this linker. I don't think this is necessary, but did so just in case I missed something.
+5. Run make and confirm it works
 
+**Note:** I recommend marking the files you added to the Makefile that was not in the original BloodPressure. Then, copy in the Makefile and add those respective files. If you do this, you must add the linker file in and change the project name.
 
-
+**TROUBLESHOOTING:** 
+* If you find compile errors for "BSP"-esque things, make sure that the BSP flags are removed from ASMFLAGS and CFLAGS
 
 
 
