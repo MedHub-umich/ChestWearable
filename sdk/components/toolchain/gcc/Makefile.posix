@@ -1,0 +1,4 @@
+GNU_INSTALL_ROOT := ../nordic_bootstrap/gcc-arm-none-eabi/bin/
+ GNU_VERSION := 6.3.1
+GNU_PREFIX := arm-none-eabi
+TARGETS := main.c

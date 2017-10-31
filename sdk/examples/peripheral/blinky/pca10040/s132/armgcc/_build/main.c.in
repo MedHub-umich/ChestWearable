@@ -1,0 +1,1 @@
+_build/main.c/gcc_startup_nrf52.S.o _build/main.c/system_nrf52.c.o _build/main.c/main.c.o _build/main.c/boards.c.o _build/main.c/app_error.c.o _build/main.c/app_error_weak.c.o _build/main.c/app_util_platform.c.o _build/main.c/nrf_assert.c.o _build/main.c/nrf_section_iter.c.o _build/main.c/nrf_strerror.c.o _build/main.c/nrf_sdh.c.o _build/main.c/nrf_sdh_soc.c.o  -lc -lnosys -lm
