@@ -1018,6 +1018,14 @@ static void clock_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void blinky_test(void *pvParameter) {
+    const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
+    while(true) {
+        bsp_board_led_invert(0);
+        vTaskDelay(xDelay)
+    }
+}
+
 
 /**@brief Function for application main entry.
  */
@@ -1061,6 +1069,13 @@ int main(void)
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
+    xTaskCreate(blinky_test,
+                "BLINKY",
+                256,
+                NULL,
+                2,
+                NULL
+            );
 
     // Start FreeRTOS scheduler.
     vTaskStartScheduler();
