@@ -52,23 +52,50 @@
 #include <stdint.h>
 #include "nrf_delay.h"
 #include "boards.h"
+//#include "nrf.h"
+#include "nrf_gpio.h"
+
+// USE PINS FAR FROM RADIO PINS
+#define GPIO_ECG    16
+#define GPIO_TEMP   27
+#define GPIO_LED1    7
+#define GPIO_LED2   11
+#define GPIO_SPKR   15
+
 
 /**
  * @brief Function for application main entry.
  */
 int main(void)
 {
+
+    nrf_gpio_cfg_output(GPIO_ECG);
+    nrf_gpio_pin_clear(GPIO_ECG);
+    nrf_gpio_cfg_output(GPIO_TEMP);
+    nrf_gpio_pin_clear(GPIO_TEMP);
+    nrf_gpio_cfg_output(GPIO_LED1);
+    nrf_gpio_pin_clear(GPIO_LED1);
+    nrf_gpio_cfg_output(GPIO_LED2);
+    nrf_gpio_pin_clear(GPIO_LED2);
+    //nrf_gpio_cfg_output(GPIO_SPKR);
+    //nrf_gpio_pin_clear(GPIO_SPKR);
+
     /* Configure board. */
     bsp_board_leds_init();
 
     /* Toggle LEDs. */
     while (true)
     {
-        for (int i = 0; i < LEDS_NUMBER; i++)
-        {
-            bsp_board_led_invert(i);
-            nrf_delay_ms(1000);
-        }
+        nrf_gpio_pin_toggle(GPIO_ECG);
+        nrf_gpio_pin_toggle(GPIO_TEMP);
+        nrf_gpio_pin_toggle(GPIO_LED1);
+        nrf_gpio_pin_toggle(GPIO_LED2);
+        //nrf_gpio_pin_toggle(GPIO_SPKR);
+        // for (int i = 0; i < LEDS_NUMBER; i++)
+        // {
+        //     bsp_board_led_invert(i);
+        // }
+        nrf_delay_ms(3000);
     }
 }
 
