@@ -51,17 +51,18 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "nrf_delay.h"
-#include "boards.h"
-//#include "nrf.h"
+//#include "boards.h"
 #include "nrf_gpio.h"
 
-// USE PINS FAR FROM RADIO PINS
+// USE PINS FAR FROM RADIO PINS - NOTE
 #define GPIO_ECG    16
 #define GPIO_TEMP   27
 #define GPIO_LED1    7
 #define GPIO_LED2   11
 #define GPIO_SPKR   15
 
+// configures all gpio pins in this application
+void main_config_gpio(void);
 
 /**
  * @brief Function for application main entry.
@@ -69,19 +70,8 @@
 int main(void)
 {
 
-    nrf_gpio_cfg_output(GPIO_ECG);
-    nrf_gpio_pin_clear(GPIO_ECG);
-    nrf_gpio_cfg_output(GPIO_TEMP);
-    nrf_gpio_pin_clear(GPIO_TEMP);
-    nrf_gpio_cfg_output(GPIO_LED1);
-    nrf_gpio_pin_clear(GPIO_LED1);
-    nrf_gpio_cfg_output(GPIO_LED2);
-    nrf_gpio_pin_clear(GPIO_LED2);
-    //nrf_gpio_cfg_output(GPIO_SPKR);
-    //nrf_gpio_pin_clear(GPIO_SPKR);
-
-    /* Configure board. */
-    bsp_board_leds_init();
+    /* Configure LEDs. */
+    main_config_gpio();
 
     /* Toggle LEDs. */
     while (true)
@@ -97,6 +87,46 @@ int main(void)
         // }
         nrf_delay_ms(3000);
     }
+}
+
+void main_config_gpio(void)
+{
+    //nrf_gpio_cfg_output(GPIO_ECG);
+    //nrf_gpio_pin_clear(GPIO_ECG);
+    nrf_gpio_cfg(
+        GPIO_ECG,
+        GPIO_PIN_CNF_DIR_Output,
+        NRF_GPIO_PIN_INPUT_DISCONNECT,
+        NRF_GPIO_PIN_NOPULL,
+        GPIO_PIN_CNF_DRIVE_S0H1,
+        NRF_GPIO_PIN_NOSENSE
+    );
+    nrf_gpio_pin_clear(GPIO_ECG);
+    nrf_gpio_cfg_output(GPIO_TEMP);
+    nrf_gpio_pin_clear(GPIO_TEMP);
+    nrf_gpio_cfg(
+        GPIO_LED1,
+        GPIO_PIN_CNF_DIR_Output,
+        NRF_GPIO_PIN_INPUT_DISCONNECT,
+        NRF_GPIO_PIN_NOPULL,
+        GPIO_PIN_CNF_DRIVE_S0H1,
+        NRF_GPIO_PIN_NOSENSE
+    );
+    nrf_gpio_pin_clear(GPIO_LED1);
+    nrf_gpio_cfg(
+        GPIO_LED2,
+        GPIO_PIN_CNF_DIR_Output,
+        NRF_GPIO_PIN_INPUT_DISCONNECT,
+        NRF_GPIO_PIN_NOPULL,
+        GPIO_PIN_CNF_DRIVE_S0H1,
+        NRF_GPIO_PIN_NOSENSE
+    );
+    nrf_gpio_pin_clear(GPIO_LED2);
+    //nrf_gpio_cfg_output(GPIO_SPKR);
+    //nrf_gpio_pin_clear(GPIO_SPKR);
+
+    // configure LEDs on board. bsp functions may be bad for us
+    // bsp_board_leds_init();
 }
 
 /**
