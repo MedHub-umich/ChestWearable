@@ -78,6 +78,8 @@
 #include "nrf_drv_clock.h"
 #include "nrf_ble_gatt.h"
 
+#include "portmacro_cmsis.h"
+
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
@@ -1019,10 +1021,11 @@ static void clock_init(void)
 }
 
 static void blinky_test(void *pvParameter) {
-    const TickType_t xDelay = 500 / portTICK_PERIOD_MS;
+    const TickType_t xDelay = 1000.0 / portTICK_PERIOD_MS;
     while(true) {
         bsp_board_led_invert(0);
-        vTaskDelay(xDelay)
+        bsp_board_led_invert(1);
+        vTaskDelay(xDelay);
     }
 }
 
@@ -1068,7 +1071,7 @@ int main(void)
 
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
-    nrf_sdh_freertos_init(advertising_start, &erase_bonds);
+    // nrf_sdh_freertos_init(advertising_start, &erase_bonds);
     xTaskCreate(blinky_test,
                 "BLINKY",
                 256,
