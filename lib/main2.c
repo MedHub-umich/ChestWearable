@@ -51,7 +51,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "nrf_delay.h"
-//#include "boards.h"
+#include "boards.h"
 #include "nrf_gpio.h"
 
 // USE PINS FAR FROM RADIO PINS - NOTE
@@ -76,16 +76,17 @@ int main(void)
     /* Toggle LEDs. */
     while (true)
     {
-        nrf_gpio_pin_toggle(GPIO_ECG);
+        //nrf_gpio_pin_toggle(GPIO_ECG);
         nrf_gpio_pin_toggle(GPIO_TEMP);
         nrf_gpio_pin_toggle(GPIO_LED1);
         nrf_gpio_pin_toggle(GPIO_LED2);
         //nrf_gpio_pin_toggle(GPIO_SPKR);
-        // for (int i = 0; i < LEDS_NUMBER; i++)
-        // {
-        //     bsp_board_led_invert(i);
-        // }
-        nrf_delay_ms(3000);
+        for (int i = 0; i < LEDS_NUMBER; i++)
+        {
+             bsp_board_led_invert(i);
+        }
+
+        nrf_delay_ms(500);
     }
 }
 
@@ -126,7 +127,7 @@ void main_config_gpio(void)
     //nrf_gpio_pin_clear(GPIO_SPKR);
 
     // configure LEDs on board. bsp functions may be bad for us
-    // bsp_board_leds_init();
+    bsp_board_leds_init();
 }
 
 /**
