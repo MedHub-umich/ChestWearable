@@ -715,6 +715,7 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
         case BLE_GAP_EVT_CONNECTED:
             NRF_LOG_INFO("Connected");
             err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
+            bsp_indication_set(1);
             APP_ERROR_CHECK(err_code);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
@@ -1020,14 +1021,14 @@ static void clock_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-// static void blinky_test(void *pvParameter) {
-//     const TickType_t xDelay = 1000.0 / portTICK_PERIOD_MS;
-//     while(true) {
-//         bsp_board_led_invert(0);
-//         bsp_board_led_invert(1);
-//         vTaskDelay(xDelay);
-//     }
-// }
+static void blinky_test(void *pvParameter) {
+    const TickType_t xDelay = 1000.0 / portTICK_PERIOD_MS;
+    while(true) {
+        // bsp_board_led_invert(0);
+        bsp_board_led_invert(1);
+        vTaskDelay(xDelay);
+    }
+}
 
 
 /**@brief Function for application main entry.
@@ -1072,13 +1073,13 @@ int main(void)
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
-    // xTaskCreate(blinky_test,
-    //             "BLINKY",
-    //             256,
-    //             NULL,
-    //             2,
-    //             NULL
-    //         );
+    xTaskCreate(blinky_test,
+                "BLINKY",
+                256,
+                NULL,
+                3,
+                NULL
+            );
 
     // Start FreeRTOS scheduler.
     vTaskStartScheduler();
