@@ -296,6 +296,7 @@ uint32_t ser_sd_transport_cmd_write(const uint8_t *                p_buffer,
                                     uint16_t                       length,
                                     ser_sd_transport_rsp_handler_t cmd_rsp_decode_callback)
 {
+    NRF_LOG_INFO("At ser_sd_transport_cmd");
     uint32_t err_code = NRF_SUCCESS;
 
     m_rsp_wait        = true;

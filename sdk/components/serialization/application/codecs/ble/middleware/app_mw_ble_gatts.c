@@ -136,6 +136,7 @@ static uint32_t gatts_hvx_rsp_dec(const uint8_t * p_buffer, uint16_t length)
 #endif
 uint32_t _sd_ble_gatts_hvx(uint16_t conn_handle, ble_gatts_hvx_params_t const * const p_hvx_params)
 {
+    NRF_LOG_INFO("In the gatts hvx");
     uint8_t * p_buffer;
     uint32_t  buffer_length = 0;
 

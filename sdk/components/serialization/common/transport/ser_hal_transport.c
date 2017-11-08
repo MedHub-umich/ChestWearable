@@ -413,6 +413,7 @@ uint32_t ser_hal_transport_tx_pkt_alloc(uint8_t * * pp_memory, uint16_t * p_num_
 
 uint32_t ser_hal_transport_tx_pkt_send(const uint8_t * p_buffer, uint16_t num_of_bytes)
 {
+    NRF_LOG_INFO("STARTING ser_hal_transport");
     uint32_t err_code = NRF_SUCCESS;
 
     /* The buffer provided to this function must be allocated through ser_hal_transport_tx_alloc()
@@ -435,6 +436,7 @@ uint32_t ser_hal_transport_tx_pkt_send(const uint8_t * p_buffer, uint16_t num_of
     }
     else if (HAL_TRANSP_TX_STATE_TX_ALLOCATED == m_tx_state)
     {
+        NRF_LOG_INFO("THERE!");
         ser_phy_interrupts_disable();
         err_code = ser_phy_tx_pkt_send(p_buffer, num_of_bytes);
 
@@ -453,6 +455,7 @@ uint32_t ser_hal_transport_tx_pkt_send(const uint8_t * p_buffer, uint16_t num_of
     }
     else
     {
+        NRF_LOG_INFO("HERE!!!");
         err_code = NRF_ERROR_INVALID_STATE;
     }
 

@@ -85,7 +85,7 @@
 #include "nrf_log_default_backends.h"
 
 
-#define DEVICE_NAME                         "FUCK_KISHORE"                            /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                         "OTHERBLE"                            /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME                   "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
 
 #define APP_BLE_OBSERVER_PRIO               1                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
@@ -334,45 +334,62 @@ static void battery_level_meas_timeout_handler(TimerHandle_t xTimer)
  */
 static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
 {
-    // static uint32_t cnt = 0;
+    static uint32_t cnt = 0;
     ret_code_t      err_code;
-    // uint16_t        heart_rate;
+    uint16_t        heart_rate;
+    static uint16_t i = 0;    
 
     UNUSED_PARAMETER(xTimer);
     NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
-    if (m_hrs.conn_handle != BLE_CONN_HANDLE_INVALID) {
-        NRF_LOG_INFO("Sending shit");
-        uint8_t                test[1];
-        uint16_t               len;
-        uint16_t               hvx_len;
-        ble_gatts_hvx_params_t hvx_params;
-        static uint8_t i = 0;
+    // if (m_hrs.conn_handle != BLE_CONN_HANDLE_INVALID) {
+    //     NRF_LOG_INFO("Sending shit");
+    //     uint8_t                test[1];
+    //     uint16_t               len;
+    //     uint16_t               hvx_len;
+    //     ble_gatts_hvx_params_t hvx_params;
 
-        len = hvx_len = sizeof(test);
+    //     len = hvx_len = sizeof(test);
         
-        memset(&hvx_params, 0, sizeof(hvx_params));
-        test[0] = i;
-        hvx_params.handle = m_hrs.hrm_handles.value_handle;
-        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-        hvx_params.offset = 0;
-        hvx_params.p_len  = &hvx_len;
-        hvx_params.p_data = test;
-        ++i;
+    //     memset(&hvx_params, 0, sizeof(hvx_params));
+    //     test[0] = i;
+    //     hvx_params.handle = m_hrs.hrm_handles.value_handle;
+    //     hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+    //     hvx_params.offset = 0;
+    //     hvx_params.p_len  = &hvx_len;
+    //     hvx_params.p_data = test;
+    //     ++i;
 
-        // if (err_code == NRF_ERROR_INVALID_STATE){
-        //     NRF_LOG_ERROR("Send entering bad");
-        // }
-        err_code = sd_ble_gatts_hvx(m_hrs.conn_handle, &hvx_params);
-        if ((err_code == NRF_SUCCESS) && (hvx_len != len))
-        {
-            err_code = NRF_ERROR_DATA_SIZE;
-        } else if (err_code == NRF_ERROR_INVALID_STATE){
-            NRF_LOG_ERROR("Send unsuccessful");
-        }
-    } else {
-        err_code = NRF_ERROR_INVALID_STATE;
-    }
+    //     // if (err_code == NRF_ERROR_INVALID_STATE){
+    //     //     NRF_LOG_ERROR("Send entering bad");
+    //     // }
+    //     err_code = sd_ble_gatts_hvx(m_hrs.conn_handle, &hvx_params);
+    //     if ((err_code == NRF_SUCCESS) && (hvx_len != len))
+    //     {
+    //         err_code = NRF_ERROR_DATA_SIZE;
+    //     } else if (err_code == NRF_ERROR_INVALID_STATE){
+    //         NRF_LOG_ERROR("Send unsuccessful");
+    //     }
+    // } else {
+    //     err_code = NRF_ERROR_INVALID_STATE;
+    // }
 
+    // if ((err_code != NRF_SUCCESS) &&
+    // (err_code != NRF_ERROR_INVALID_STATE) &&
+    // (err_code != NRF_ERROR_RESOURCES) &&
+    // (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+    // )
+    // {
+    //     NRF_LOG_ERROR("FUCK");
+    //     APP_ERROR_HANDLER(err_code);
+    // } else if (err_code == NRF_ERROR_INVALID_STATE) {
+    //     NRF_LOG_INFO("Did not send, currently in invalid state");
+    // }
+    
+
+    // heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
+    heart_rate = i++;
+    cnt++;
+    err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
     if ((err_code != NRF_SUCCESS) &&
     (err_code != NRF_ERROR_INVALID_STATE) &&
     (err_code != NRF_ERROR_RESOURCES) &&
@@ -383,26 +400,16 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
         APP_ERROR_HANDLER(err_code);
     } else if (err_code == NRF_ERROR_INVALID_STATE) {
         NRF_LOG_INFO("Did not send, currently in invalid state");
+    } else if (err_code == NRF_SUCCESS) {
+        NRF_LOG_INFO("SUCCESS!");
+    } else {
+        NRF_LOG_INFO("Unknown state handled: %d", err_code);
     }
-    
-
-    // heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-
-    // cnt++;
-    // err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
-    // if ((err_code != NRF_SUCCESS) &&
-    //     (err_code != NRF_ERROR_INVALID_STATE) &&
-    //     (err_code != NRF_ERROR_RESOURCES) &&
-    //     (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-    //    )
-    // {
-    //     APP_ERROR_HANDLER(err_code);
-    // }
 
     // Disable RR Interval recording every third heart rate measurement.
     // NOTE: An application will normally not do this. It is done here just for testing generation
     // of messages without RR Interval measurements.
-    // m_rr_interval_enabled = ((cnt % 3) != 0);
+    m_rr_interval_enabled = ((cnt % 3) != 0);
 
     // bsp_board_led_invert(1);
 }
@@ -531,6 +538,9 @@ static void gatt_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void event_test(ble_hrs_t * p_hrs, ble_hrs_evt_t * p_evt) {
+    NRF_LOG_INFO("I am called! and %d", p_evt->evt_type == BLE_HRS_EVT_NOTIFICATION_ENABLED);
+}
 
 /**@brief Function for initializing services that will be used by the application.
  *
@@ -549,17 +559,17 @@ static void services_init(void)
 
     memset(&hrs_init, 0, sizeof(hrs_init));
 
-    hrs_init.evt_handler                 = NULL;
+    hrs_init.evt_handler                 = &event_test;
     hrs_init.is_sensor_contact_supported = true;
     hrs_init.p_body_sensor_location      = &body_sensor_location;
 
     // Here the sec level for the Heart Rate Service can be changed/increased.
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_hrm_attr_md.cccd_write_perm);
     BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_hrm_attr_md.write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_hrm_attr_md.write_perm);
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_bsl_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&hrs_init.hrs_bsl_attr_md.write_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&hrs_init.hrs_bsl_attr_md.write_perm);
 
     err_code = ble_hrs_init(&m_hrs, &hrs_init);
     APP_ERROR_CHECK(err_code);

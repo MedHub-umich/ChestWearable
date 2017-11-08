@@ -47,6 +47,7 @@
 #include <string.h>
 #include "ble_l2cap.h"
 #include "ble_srv_common.h"
+#include "nrf_log.h"
 
 
 #define OPCODE_LENGTH 1                                                              /**< Length of opcode inside Heart Rate Measurement packet. */
@@ -93,19 +94,24 @@ static void on_disconnect(ble_hrs_t * p_hrs, ble_evt_t const * p_ble_evt)
  */
 static void on_hrm_cccd_write(ble_hrs_t * p_hrs, ble_gatts_evt_write_t const * p_evt_write)
 {
+    NRF_LOG_INFO("HERE LIES MONSTERS");
     if (p_evt_write->len == 2)
     {
+        NRF_LOG_INFO("DOPE?");
         // CCCD written, update notification state
         if (p_hrs->evt_handler != NULL)
         {
+            NRF_LOG_INFO("There was an event");
             ble_hrs_evt_t evt;
 
             if (ble_srv_is_notification_enabled(p_evt_write->data))
             {
+                NRF_LOG_INFO("DOPE!");
                 evt.evt_type = BLE_HRS_EVT_NOTIFICATION_ENABLED;
             }
             else
             {
+                NRF_LOG_INFO("Not DOPE");
                 evt.evt_type = BLE_HRS_EVT_NOTIFICATION_DISABLED;
             }
 
@@ -123,9 +129,11 @@ static void on_hrm_cccd_write(ble_hrs_t * p_hrs, ble_gatts_evt_write_t const * p
 static void on_write(ble_hrs_t * p_hrs, ble_evt_t const * p_ble_evt)
 {
     ble_gatts_evt_write_t const * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-
+    NRF_LOG_INFO("cccd_handle= %d", p_evt_write->handle == p_hrs->hrm_handles.cccd_handle);
+    
     if (p_evt_write->handle == p_hrs->hrm_handles.cccd_handle)
     {
+        NRF_LOG_INFO("Setting cccd");
         on_hrm_cccd_write(p_hrs, p_evt_write);
     }
 }
@@ -133,6 +141,8 @@ static void on_write(ble_hrs_t * p_hrs, ble_evt_t const * p_ble_evt)
 
 void ble_hrs_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context)
 {
+    NRF_LOG_INFO("IN cccd_write");
+    
     ble_hrs_t * p_hrs = (ble_hrs_t *) p_context;
 
     switch (p_ble_evt->header.evt_id)
@@ -238,7 +248,8 @@ static uint32_t heart_rate_measurement_char_add(ble_hrs_t            * p_hrs,
     memset(&cccd_md, 0, sizeof(cccd_md));
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-    cccd_md.write_perm = p_hrs_init->hrs_hrm_attr_md.cccd_write_perm;
+    // cccd_md.write_perm = p_hrs_init->hrs_hrm_attr_md.cccd_write_perm;
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
     cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
 
     memset(&char_md, 0, sizeof(char_md));
@@ -376,10 +387,12 @@ uint32_t ble_hrs_init(ble_hrs_t * p_hrs, const ble_hrs_init_t * p_hrs_init)
 uint32_t ble_hrs_heart_rate_measurement_send(ble_hrs_t * p_hrs, uint16_t heart_rate)
 {
     uint32_t err_code;
+    NRF_LOG_INFO("At ble_hrs_hr_measurement with %d", p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID);
 
     // Send value if connected and notifying
     if (p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID)
     {
+        NRF_LOG_INFO("Valid conn handle, sending %d", p_hrs->conn_handle);
         uint8_t                encoded_hrm[MAX_HRM_LEN];
         uint16_t               len;
         uint16_t               hvx_len;

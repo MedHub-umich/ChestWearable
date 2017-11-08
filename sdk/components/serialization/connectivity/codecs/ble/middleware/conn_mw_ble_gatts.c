@@ -273,6 +273,7 @@ uint32_t conn_mw_ble_gatts_hvx(uint8_t const * const p_rx_buf,
                                uint8_t * const       p_tx_buf,
                                uint32_t * const      p_tx_buf_len)
 {
+    NRF_LOG_INFO("in Conn mw ble_gatts");
     SER_ASSERT_NOT_NULL(p_rx_buf);
     SER_ASSERT_NOT_NULL(p_tx_buf);
     SER_ASSERT_NOT_NULL(p_tx_buf_len);
