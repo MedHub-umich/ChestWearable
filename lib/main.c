@@ -1,51 +1,5 @@
-/**
- * Copyright (c) 2014 - 2017, Nordic Semiconductor ASA
- * 
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- * 
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 
- * 2. Redistributions in binary form, except as embedded into a Nordic
- *    Semiconductor ASA integrated circuit in a product or a software update for
- *    such product, must reproduce the above copyright notice, this list of
- *    conditions and the following disclaimer in the documentation and/or other
- *    materials provided with the distribution.
- * 
- * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- * 
- * 4. This software, with or without modification, must only be used with a
- *    Nordic Semiconductor ASA integrated circuit.
- * 
- * 5. Any software provided in binary form under this license must not be reverse
- *    engineered, decompiled, modified and/or disassembled.
- * 
- * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
- * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- */
-// Board/nrf6310/ble/ble_app_hrs_rtx/main.c
-/**
- *
- * @brief Heart Rate Service Sample Application with RTX main file.
- *
- * This file contains the source code for a sample application using RTX and the
- * Heart Rate service (and also Battery and Device Information services).
- * This application uses the @ref srvlib_conn_params module.
- */
+// Main.c
+
 // C stdlib
 #include <stdint.h>
 #include <string.h>
@@ -138,11 +92,6 @@ static nrf_saadc_value_t * data_buffer;
 
 #define APP_ADV_INTERVAL                    300                                     /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS          180                                     /**< The advertising time-out in units of seconds. */
-
-//#define BATTERY_LEVEL_MEAS_INTERVAL         2000                                    /**< Battery level measurement interval (ms). */
-//#define MIN_BATTERY_LEVEL                   81                                      /**< Minimum simulated battery level. */
-//#define MAX_BATTERY_LEVEL                   100                                     /**< Maximum simulated battery level. */
-//#define BATTERY_LEVEL_INCREMENT             1                                       /**< Increment between each simulated battery level measurement. */
 
 #define HEART_RATE_MEAS_INTERVAL            1000                                    /**< Heart rate measurement interval (ms). */
 #define MIN_HEART_RATE                      140                                     /**< Minimum heart rate as returned by the simulated measurement function. */
@@ -333,43 +282,6 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 }
 
 
-/**@brief Function for performing battery measurement and updating the Battery Level characteristic
- *        in Battery Service.
- */
-// static void battery_level_update(void)
-// {
-//     ret_code_t err_code;
-//     uint8_t  battery_level;
-
-//     battery_level = (uint8_t)sensorsim_measure(&m_battery_sim_state, &m_battery_sim_cfg);
-
-//     err_code = ble_bas_battery_level_update(&m_bas, battery_level);
-//     if ((err_code != NRF_SUCCESS) &&
-//         (err_code != NRF_ERROR_INVALID_STATE) &&
-//         (err_code != NRF_ERROR_RESOURCES) &&
-//         (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-//        )
-//     {
-//         APP_ERROR_HANDLER(err_code);
-//     }
-// }
-
-
-/**@brief Function for handling the Battery measurement timer time-out.
- *
- * @details This function will be called each time the battery level measurement timer expires.
- *
- * @param[in] xTimer Handler to the timer that called this function.
- *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
- */
-// static void battery_level_meas_timeout_handler(TimerHandle_t xTimer)
-// {
-//     NRF_LOG_INFO("BLev");
-//     UNUSED_PARAMETER(xTimer);
-//     battery_level_update();
-// }
-
-
 /**@brief Function for handling the Heart rate measurement timer time-out.
  *
  * @details This function will be called each time the heart rate measurement timer expires.
@@ -513,12 +425,6 @@ static void timers_init(void)
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
 
-    // Create timers.
-    // m_battery_timer = xTimerCreate("BATT",
-    //                                BATTERY_LEVEL_MEAS_INTERVAL,
-    //                                pdTRUE,
-    //                                NULL,
-    //                                battery_level_meas_timeout_handler);
     m_heart_rate_timer = xTimerCreate("HRT",
                                       HEART_RATE_MEAS_INTERVAL,
                                       pdTRUE,
@@ -656,13 +562,6 @@ static void services_init(void)
 /**@brief Function for initializing the sensor simulators. */
 static void sensor_simulator_init(void)
 {
-    // m_battery_sim_cfg.min          = MIN_BATTERY_LEVEL;
-    // m_battery_sim_cfg.max          = MAX_BATTERY_LEVEL;
-    // m_battery_sim_cfg.incr         = BATTERY_LEVEL_INCREMENT;
-    // m_battery_sim_cfg.start_at_max = true;
-
-    // sensorsim_init(&m_battery_sim_state, &m_battery_sim_cfg);
-
     m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
     m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
     m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
@@ -684,11 +583,6 @@ static void sensor_simulator_init(void)
  */
 static void application_timers_start(void)
 {
-    // Start application timers.
-    // if (pdPASS != xTimerStart(m_battery_timer, OSTIMER_WAIT_FOR_QUEUE))
-    // {
-    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    // }
     if (pdPASS != xTimerStart(m_heart_rate_timer, OSTIMER_WAIT_FOR_QUEUE))
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
@@ -1126,16 +1020,6 @@ static void clock_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-// static void blinky_test(void *pvParameter) {
-//     const TickType_t xDelay = 1000.0 / portTICK_PERIOD_MS;
-//     while(true) {
-//         // bsp_board_led_invert(0);
-//         // bsp_board_led_invert(1);
-//         vTaskDelay(xDelay);
-//     }
-// }
-
-
 /**@brief Function for application main entry.
  */
 int main(void)
@@ -1175,8 +1059,6 @@ int main(void)
     NRF_LOG_INFO("past tom stuff");
     NRF_LOG_FLUSH();
     saadc_sampling_event_enable();
-    nrf_gpio_cfg_output(27);
-    nrf_gpio_pin_clear(27);
 
 
     timers_init();
@@ -1196,10 +1078,28 @@ int main(void)
     vSemaphoreCreateBinary( semNrfLogFlush );
     //UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
 
-    if (pdPASS != xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskFlushBufferHandle))
+    BaseType_t retVal = xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskFlushBufferHandle);
+    if (retVal == pdPASS)
     {
-        NRF_LOG_INFO("NOT ENOUGH MEMORY ***************************");
+        NRF_LOG_INFO("PASSED ********************************");
     }
+    else if(retVal == pdFAIL)
+    {
+        NRF_LOG_INFO("FAILED XxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxx");
+    }
+    else if (retVal == errQUEUE_EMPTY)
+    {
+        NRF_LOG_INFO("errQUEUE_EMPTY 00000000000000000000000");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("MEMORY MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+    }
+    else
+    {
+        NRF_LOG_INFO("??????????????????????????????????");
+    }
+
 
 
     // Start FreeRTOS scheduler.
@@ -1277,7 +1177,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 
         m_adc_evt_counter++;
 
-        NRF_LOG_INFO("callback");
+        //NRF_LOG_INFO("callback");
 
         // Signal the data processing task
         xSemaphoreGive( semNrfLogFlush );
@@ -1339,8 +1239,11 @@ static void taskFlushBuffer (void * pvParameter)
 {
     uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
-            NRF_LOG_INFO("STARTING FLUSH TASK");
-            NRF_LOG_FLUSH();
+    
+    NRF_LOG_INFO("STARTING FLUSH TASK");
+
+    nrf_gpio_cfg_output(27);
+    nrf_gpio_pin_clear(27);
 
     while (true)
     {
@@ -1363,7 +1266,6 @@ static void taskFlushBuffer (void * pvParameter)
 
         // Send Log
         NRF_LOG_INFO("FLUSHING");
-        //NRF_LOG_FLUSH();
         nrf_gpio_pin_write(27, 0);
     }
 }
