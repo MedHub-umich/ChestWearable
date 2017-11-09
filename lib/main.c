@@ -108,7 +108,7 @@ SemaphoreHandle_t semNrfLogFlush;
 static void taskFlushBuffer(void * pvParameter);
 
 // SAADC
-#define SAMPLES_IN_BUFFER 50
+#define SAMPLES_IN_BUFFER 5
 #define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
 #define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
 #define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
@@ -1195,7 +1195,12 @@ int main(void)
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
     vSemaphoreCreateBinary( semNrfLogFlush );
     //UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
-    UNUSED_VARIABLE(xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE + 1000, NULL, 3, &taskFlushBufferHandle));
+
+    if (pdPASS != xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskFlushBufferHandle))
+    {
+        NRF_LOG_INFO("NOT ENOUGH MEMORY ***************************");
+    }
+
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Starting");
