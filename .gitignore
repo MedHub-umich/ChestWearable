@@ -1,6 +1,6 @@
 # Prerequisites
 build/
-Makefile.posix
+sdk/components/toolchain/gcc/Makefile.posix
 *.d
 
 # Object files
