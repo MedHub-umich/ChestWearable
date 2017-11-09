@@ -175,7 +175,7 @@ function. */
 routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL
 INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER
 PRIORITY THAN THIS! (higher priorities are lower numeric values. */
-#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY _PRIO_APP_HIGH
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 1//_PRIO_APP_HIGH
 
 
 /* Interrupt priorities used by the kernel port layer itself.  These are generic

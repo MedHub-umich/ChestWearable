@@ -1175,7 +1175,8 @@ int main(void)
     NRF_LOG_INFO("past tom stuff");
     NRF_LOG_FLUSH();
     saadc_sampling_event_enable();
-
+    nrf_gpio_cfg_output(27);
+    nrf_gpio_pin_clear(27);
 
 
     timers_init();
@@ -1341,6 +1342,8 @@ static void taskFlushBuffer (void * pvParameter)
         // Wait for Signal
         xSemaphoreTake( semNrfLogFlush, portMAX_DELAY );
 
+        nrf_gpio_pin_write(27, 1);
+
         // Blink Blue LED
         //bsp_board_led_invert(BSP_BOARD_LED_1);
 
@@ -1356,6 +1359,7 @@ static void taskFlushBuffer (void * pvParameter)
         // Send Log
         NRF_LOG_INFO("FLUSHING");
         //NRF_LOG_FLUSH();
+        nrf_gpio_pin_write(27, 0);
     }
 }
 
