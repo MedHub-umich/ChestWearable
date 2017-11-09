@@ -149,6 +149,8 @@ static nrf_saadc_value_t * data_buffer;
 #define MAX_HEART_RATE                      300                                     /**< Maximum heart rate as returned by the simulated measurement function. */
 #define HEART_RATE_INCREMENT                10                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
 
+#define ADC_CALLER_INTERVAL                 1000
+
 #define RR_INTERVAL_INTERVAL                300                                     /**< RR interval interval (ms). */
 #define MIN_RR_INTERVAL                     100                                     /**< Minimum RR interval as returned by the simulated measurement function. */
 #define MAX_RR_INTERVAL                     500                                     /**< Maximum RR interval as returned by the simulated measurement function. */
@@ -388,53 +390,10 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
 
     UNUSED_PARAMETER(xTimer);
     NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
-    // if (m_hrs.conn_handle != BLE_CONN_HANDLE_INVALID) {
-    //     NRF_LOG_INFO("Sending shit");
-    //     uint8_t                test[1];
-    //     uint16_t               len;
-    //     uint16_t               hvx_len;
-    //     ble_gatts_hvx_params_t hvx_params;
-
-    //     len = hvx_len = sizeof(test);
-        
-    //     memset(&hvx_params, 0, sizeof(hvx_params));
-    //     test[0] = i;
-    //     hvx_params.handle = m_hrs.hrm_handles.value_handle;
-    //     hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-    //     hvx_params.offset = 0;
-    //     hvx_params.p_len  = &hvx_len;
-    //     hvx_params.p_data = test;
-    //     ++i;
-
-    //     // if (err_code == NRF_ERROR_INVALID_STATE){
-    //     //     NRF_LOG_ERROR("Send entering bad");
-    //     // }
-    //     err_code = sd_ble_gatts_hvx(m_hrs.conn_handle, &hvx_params);
-    //     if ((err_code == NRF_SUCCESS) && (hvx_len != len))
-    //     {
-    //         err_code = NRF_ERROR_DATA_SIZE;
-    //     } else if (err_code == NRF_ERROR_INVALID_STATE){
-    //         NRF_LOG_ERROR("Send unsuccessful");
-    //     }
-    // } else {
-    //     err_code = NRF_ERROR_INVALID_STATE;
-    // }
-
-    // if ((err_code != NRF_SUCCESS) &&
-    // (err_code != NRF_ERROR_INVALID_STATE) &&
-    // (err_code != NRF_ERROR_RESOURCES) &&
-    // (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-    // )
-    // {
-    //     NRF_LOG_ERROR("FUCK");
-    //     APP_ERROR_HANDLER(err_code);
-    // } else if (err_code == NRF_ERROR_INVALID_STATE) {
-    //     NRF_LOG_INFO("Did not send, currently in invalid state");
-    // }
-    
 
     // heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-    heart_rate = i++; /* CHANGE ME TO YOUR VALUE */
+    heart_rate = ADC_RESULT_IN_MILLI_VOLTS(data_buffer[i]); /* CHANGE ME TO YOUR VALUE */
+    NRF_LOG_INFO("%d", heart_rate);    
     cnt++;
     err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
     if ((err_code != NRF_SUCCESS) &&
@@ -693,6 +652,10 @@ static void application_timers_start(void)
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
     }
+    // if (pdPASS != xTimerStart(m_adc_caller, OSTIMER_WAIT_FOR_QUEUE))
+    // {
+    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
+    // }
     // if (pdPASS != xTimerStart(m_rr_interval_timer, OSTIMER_WAIT_FOR_QUEUE))
     // {
     //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
