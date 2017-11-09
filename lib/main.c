@@ -55,14 +55,14 @@
 #define TASK_DELAY        400           /**< Task delay. Delays a LED0 task for 200 ms */
 
 //TaskHandle_t  taskToggleLedHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
-TaskHandle_t  taskFlushBufferHandle;
-SemaphoreHandle_t semNrfLogFlush;
+TaskHandle_t  taskSendBleHandle;
+SemaphoreHandle_t semSendBle;
 
 //static void taskToggleLed(void * pvParameter);
-static void taskFlushBuffer(void * pvParameter);
+static void taskSendBle(void * pvParameter);
 
 // SAADC
-#define SAMPLES_IN_BUFFER 5
+#define SAMPLES_IN_BUFFER 200
 #define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
 #define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
 #define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
@@ -274,7 +274,7 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
  * @param[in] xTimer Handler to the timer that called this function.
  *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
  */
-static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
+static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
 {
     NRF_LOG_INFO("HEART");
     static uint32_t cnt = 0;
@@ -282,7 +282,7 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
     uint16_t        heart_rate;
     static uint16_t i = 0;    
 
-    UNUSED_PARAMETER(xTimer);
+    //UNUSED_PARAMETER(xTimer);
     NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
 
     heart_rate = i++; /* CHANGE ME TO YOUR VALUE */
@@ -450,10 +450,10 @@ static void services_init(void)
  */
 static void application_timers_start(void)
 {
-    if (pdPASS != xTimerStart(m_heart_rate_timer, OSTIMER_WAIT_FOR_QUEUE))
-    {
-        APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    }
+    // if (pdPASS != xTimerStart(m_heart_rate_timer, OSTIMER_WAIT_FOR_QUEUE))
+    // {
+    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
+    // }
     // if (pdPASS != xTimerStart(m_sensor_contact_timer, OSTIMER_WAIT_FOR_QUEUE))
     // {
     //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
@@ -911,18 +911,9 @@ int main(void)
     // Configure and initialize the BLE stack.
     ble_stack_init();
 
-    NRF_LOG_INFO("Past ble_stack_init");
-    NRF_LOG_FLUSH();
-
-    // Initialize modules.
-
-    //bsp_board_leds_init();
     saadc_init();
     saadc_sampling_event_init();
-    NRF_LOG_INFO("past tom stuff");
-    NRF_LOG_FLUSH();
     saadc_sampling_event_enable();
-
 
     timers_init();
     buttons_leds_init(&erase_bonds);
@@ -937,17 +928,17 @@ int main(void)
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
-    vSemaphoreCreateBinary( semNrfLogFlush );
+    vSemaphoreCreateBinary( semSendBle );
     //UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
 
-    BaseType_t retVal = xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskFlushBufferHandle);
+    BaseType_t retVal = xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle);
     if (retVal == pdPASS)
     {
         NRF_LOG_INFO("PASSED ********************************");
     }
     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
     {
-        NRF_LOG_INFO("MEMORY MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
+        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
     }
     else
     {
@@ -1030,7 +1021,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         m_adc_evt_counter++;
 
         // Signal the data processing task
-        xSemaphoreGive( semNrfLogFlush );
+        xSemaphoreGive( semSendBle );
     }
 }
 
@@ -1085,7 +1076,7 @@ void timer_handler(nrf_timer_event_t event_type, void * p_context)
  * Deferred interrupt.
  *
  */
-static void taskFlushBuffer (void * pvParameter)
+static void taskSendBle (void * pvParameter)
 {
     uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
@@ -1098,7 +1089,7 @@ static void taskFlushBuffer (void * pvParameter)
     while (true)
     {
         // Wait for Signal
-        xSemaphoreTake( semNrfLogFlush, portMAX_DELAY );
+        xSemaphoreTake( semSendBle, portMAX_DELAY );
 
         nrf_gpio_pin_write(27, 1);
 
@@ -1110,6 +1101,8 @@ static void taskFlushBuffer (void * pvParameter)
             //NRF_LOG_INFO("%d", millivolts);
 
         }
+
+        heart_rate_meas_timeout_handler();
 
         // Send Log
         //NRF_LOG_INFO("FLUSHING");
