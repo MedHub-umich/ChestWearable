@@ -51,6 +51,7 @@ This is only necessary if you have a repository (such as blood pressure) that wa
 
 **TROUBLESHOOTING:** 
 * If you find compile errors for "BSP"-esque things, make sure that the BSP flags are removed from ASMFLAGS and CFLAGS
+* If you are getting "invalid state", make sure that the hub the device is connected to sent a prompt to allow notification!
 
 
 
