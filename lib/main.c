@@ -138,7 +138,7 @@ static ble_uuid_t m_adv_uuids[] =                                   /**< Univers
     {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
 };
 
-static TimerHandle_t m_heart_rate_timer;                            /**< Definition of heart rate timer. */
+//static TimerHandle_t m_heart_rate_timer;                            /**< Definition of heart rate timer. */
 static TimerHandle_t m_sensor_contact_timer;                        /**< Definition of sensor contact detected timer. */
 
 static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
@@ -268,8 +268,7 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 
 /**@brief Function for handling the Heart rate measurement timer time-out.
  *
- * @details This function will be called each time the heart rate measurement timer expires.
- *          It will exclude RR Interval data from every third measurement.
+ * @details This function will be called IN THE FREERTOS THREAD 
  *
  * @param[in] xTimer Handler to the timer that called this function.
  *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
@@ -280,12 +279,10 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
     static uint32_t cnt = 0;
     ret_code_t      err_code;
     uint16_t        heart_rate;
-    static uint16_t i = 0;    
 
-    //UNUSED_PARAMETER(xTimer);
     NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
 
-    heart_rate = i++; /* CHANGE ME TO YOUR VALUE */
+    heart_rate = data_buffer[0]; // DATA BUFFER <<<<<<<<<<<<<<<<<<<<
     cnt++;
     err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
     if ((err_code != NRF_SUCCESS) &&
@@ -334,11 +331,11 @@ static void timers_init(void)
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
 
-    m_heart_rate_timer = xTimerCreate("HRT",
-                                      HEART_RATE_MEAS_INTERVAL,
-                                      pdTRUE,
-                                      NULL,
-                                      heart_rate_meas_timeout_handler);
+    // m_heart_rate_timer = xTimerCreate("HRT",
+    //                                   HEART_RATE_MEAS_INTERVAL,
+    //                                   pdTRUE,
+    //                                   NULL,
+    //                                   heart_rate_meas_timeout_handler);
 
     m_sensor_contact_timer = xTimerCreate("SCT",
                                           SENSOR_CONTACT_DETECTED_INTERVAL,
@@ -348,9 +345,9 @@ static void timers_init(void)
 
     /* Error checking */
     if ( /*(NULL == m_battery_timer)
-         || */(NULL == m_heart_rate_timer)
+         || *//*(NULL == m_heart_rate_timer)*/
          /*|| (NULL == m_rr_interval_timer)*/
-         || (NULL == m_sensor_contact_timer) )
+         /*||*/ (NULL == m_sensor_contact_timer) )
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
     }
