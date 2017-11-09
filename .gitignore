@@ -1,6 +1,13 @@
+# stuff for toms computer
+*.DS_Store
+*.sublime-project
+*.sublime-workspace
+.tags
+.tags_sorted_by_file
+
 # Prerequisites
 build/
-sdk/components/toolchain/arm/gcc/Makefile.posix
+./sdk/components/toolchain/arm/gcc/Makefile.posix
 *.d
 
 # Object files
