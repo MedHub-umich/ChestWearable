@@ -98,11 +98,6 @@ static nrf_saadc_value_t * data_buffer;
 #define MAX_HEART_RATE                      300                                     /**< Maximum heart rate as returned by the simulated measurement function. */
 #define HEART_RATE_INCREMENT                10                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
 
-#define RR_INTERVAL_INTERVAL                300                                     /**< RR interval interval (ms). */
-#define MIN_RR_INTERVAL                     100                                     /**< Minimum RR interval as returned by the simulated measurement function. */
-#define MAX_RR_INTERVAL                     500                                     /**< Maximum RR interval as returned by the simulated measurement function. */
-#define RR_INTERVAL_INCREMENT               1                                       /**< Value by which the RR interval is incremented/decremented for each call to the simulated measurement function. */
-
 #define SENSOR_CONTACT_DETECTED_INTERVAL    5000                                    /**< Sensor Contact Detected toggle interval (ms). */
 
 #define MIN_CONN_INTERVAL                   MSEC_TO_UNITS(400, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (0.4 seconds). */
@@ -130,31 +125,20 @@ static nrf_saadc_value_t * data_buffer;
 #define APP_FEATURE_NOT_SUPPORTED           BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2    /**< Reply when unsupported features are requested. */
 
 
-BLE_BAS_DEF(m_bas);                                                 /**< Battery service instance. */
+//BLE_BAS_DEF(m_bas);                                                 /**< Battery service instance. */
 BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
 NRF_BLE_GATT_DEF(m_gatt);                                           /**< GATT module instance. */
 BLE_ADVERTISING_DEF(m_advertising);                                 /**< Advertising module instance. */
 
 static uint16_t m_conn_handle         = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
-static bool     m_rr_interval_enabled = true;                       /**< Flag for enabling and disabling the registration of new RR interval measurements (the purpose of disabling this is just to test sending HRM without RR interval data. */
-
-//static sensorsim_cfg_t   m_battery_sim_cfg;                         /**< Battery Level sensor simulator configuration. */
-//static sensorsim_state_t m_battery_sim_state;                       /**< Battery Level sensor simulator state. */
-static sensorsim_cfg_t   m_heart_rate_sim_cfg;                      /**< Heart Rate sensor simulator configuration. */
-static sensorsim_state_t m_heart_rate_sim_state;                    /**< Heart Rate sensor simulator state. */
-static sensorsim_cfg_t   m_rr_interval_sim_cfg;                     /**< RR Interval sensor simulator configuration. */
-static sensorsim_state_t m_rr_interval_sim_state;                   /**< RR Interval sensor simulator state. */
 
 static ble_uuid_t m_adv_uuids[] =                                   /**< Universally unique service identifiers. */
 {
     {BLE_UUID_HEART_RATE_SERVICE, BLE_UUID_TYPE_BLE},
-    //{BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE},
     {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
 };
 
-//static TimerHandle_t m_battery_timer;                               /**< Definition of battery timer. */
 static TimerHandle_t m_heart_rate_timer;                            /**< Definition of heart rate timer. */
-static TimerHandle_t m_rr_interval_timer;                           /**< Definition of RR interval timer. */
 static TimerHandle_t m_sensor_contact_timer;                        /**< Definition of sensor contact detected timer. */
 
 static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
@@ -300,52 +284,7 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
 
     UNUSED_PARAMETER(xTimer);
     NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
-    // if (m_hrs.conn_handle != BLE_CONN_HANDLE_INVALID) {
-    //     NRF_LOG_INFO("Sending shit");
-    //     uint8_t                test[1];
-    //     uint16_t               len;
-    //     uint16_t               hvx_len;
-    //     ble_gatts_hvx_params_t hvx_params;
 
-    //     len = hvx_len = sizeof(test);
-        
-    //     memset(&hvx_params, 0, sizeof(hvx_params));
-    //     test[0] = i;
-    //     hvx_params.handle = m_hrs.hrm_handles.value_handle;
-    //     hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-    //     hvx_params.offset = 0;
-    //     hvx_params.p_len  = &hvx_len;
-    //     hvx_params.p_data = test;
-    //     ++i;
-
-    //     // if (err_code == NRF_ERROR_INVALID_STATE){
-    //     //     NRF_LOG_ERROR("Send entering bad");
-    //     // }
-    //     err_code = sd_ble_gatts_hvx(m_hrs.conn_handle, &hvx_params);
-    //     if ((err_code == NRF_SUCCESS) && (hvx_len != len))
-    //     {
-    //         err_code = NRF_ERROR_DATA_SIZE;
-    //     } else if (err_code == NRF_ERROR_INVALID_STATE){
-    //         NRF_LOG_ERROR("Send unsuccessful");
-    //     }
-    // } else {
-    //     err_code = NRF_ERROR_INVALID_STATE;
-    // }
-
-    // if ((err_code != NRF_SUCCESS) &&
-    // (err_code != NRF_ERROR_INVALID_STATE) &&
-    // (err_code != NRF_ERROR_RESOURCES) &&
-    // (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-    // )
-    // {
-    //     NRF_LOG_ERROR("FUCK");
-    //     APP_ERROR_HANDLER(err_code);
-    // } else if (err_code == NRF_ERROR_INVALID_STATE) {
-    //     NRF_LOG_INFO("Did not send, currently in invalid state");
-    // }
-    
-
-    // heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
     heart_rate = i++; /* CHANGE ME TO YOUR VALUE */
     cnt++;
     err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
@@ -363,36 +302,6 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
         NRF_LOG_INFO("Send was successful!");
     } else {
         NRF_LOG_INFO("Unknown state handled: %d", err_code);
-    }
-
-    // Disable RR Interval recording every third heart rate measurement.
-    // NOTE: An application will normally not do this. It is done here just for testing generation
-    // of messages without RR Interval measurements.
-    m_rr_interval_enabled = ((cnt % 3) != 0);
-
-    // bsp_board_led_invert(1);
-}
-
-
-/**@brief Function for handling the RR interval timer time-out.
- *
- * @details This function will be called each time the RR interval timer expires.
- *
- * @param[in] xTimer Handler to the timer that called this function.
- *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
- */
-static void rr_interval_timeout_handler(TimerHandle_t xTimer)
-{
-    NRF_LOG_INFO("RR");
-    UNUSED_PARAMETER(xTimer);
-
-    if (m_rr_interval_enabled)
-    {
-        uint16_t rr_interval;
-
-        rr_interval = (uint16_t)sensorsim_measure(&m_rr_interval_sim_state,
-                                                  &m_rr_interval_sim_cfg);
-        ble_hrs_rr_interval_add(&m_hrs, rr_interval);
     }
 }
 
@@ -430,11 +339,7 @@ static void timers_init(void)
                                       pdTRUE,
                                       NULL,
                                       heart_rate_meas_timeout_handler);
-    m_rr_interval_timer = xTimerCreate("RRT",
-                                       RR_INTERVAL_INTERVAL,
-                                       pdTRUE,
-                                       NULL,
-                                       rr_interval_timeout_handler);
+
     m_sensor_contact_timer = xTimerCreate("SCT",
                                           SENSOR_CONTACT_DETECTED_INTERVAL,
                                           pdTRUE,
@@ -444,7 +349,7 @@ static void timers_init(void)
     /* Error checking */
     if ( /*(NULL == m_battery_timer)
          || */(NULL == m_heart_rate_timer)
-         || (NULL == m_rr_interval_timer)
+         /*|| (NULL == m_rr_interval_timer)*/
          || (NULL == m_sensor_contact_timer) )
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
@@ -504,7 +409,6 @@ static void services_init(void)
 {
     ret_code_t     err_code;
     ble_hrs_init_t hrs_init;
-    ble_bas_init_t bas_init;
     ble_dis_init_t dis_init;
     uint8_t        body_sensor_location;
 
@@ -528,24 +432,6 @@ static void services_init(void)
     err_code = ble_hrs_init(&m_hrs, &hrs_init);
     APP_ERROR_CHECK(err_code);
 
-    // Initialize Battery Service.
-    memset(&bas_init, 0, sizeof(bas_init));
-
-    // Here the sec level for the Battery Service can be changed/increased.
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.cccd_write_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_char_attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&bas_init.battery_level_char_attr_md.write_perm);
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
-
-    bas_init.evt_handler          = NULL;
-    bas_init.support_notification = true;
-    bas_init.p_report_ref         = NULL;
-    bas_init.initial_batt_level   = 100;
-
-    err_code = ble_bas_init(&m_bas, &bas_init);
-    APP_ERROR_CHECK(err_code);
-
     // Initialize Device Information Service.
     memset(&dis_init, 0, sizeof(dis_init));
 
@@ -559,25 +445,6 @@ static void services_init(void)
 }
 
 
-/**@brief Function for initializing the sensor simulators. */
-static void sensor_simulator_init(void)
-{
-    m_heart_rate_sim_cfg.min          = MIN_HEART_RATE;
-    m_heart_rate_sim_cfg.max          = MAX_HEART_RATE;
-    m_heart_rate_sim_cfg.incr         = HEART_RATE_INCREMENT;
-    m_heart_rate_sim_cfg.start_at_max = false;
-
-    sensorsim_init(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-
-    m_rr_interval_sim_cfg.min          = MIN_RR_INTERVAL;
-    m_rr_interval_sim_cfg.max          = MAX_RR_INTERVAL;
-    m_rr_interval_sim_cfg.incr         = RR_INTERVAL_INCREMENT;
-    m_rr_interval_sim_cfg.start_at_max = false;
-
-    sensorsim_init(&m_rr_interval_sim_state, &m_rr_interval_sim_cfg);
-}
-
-
 /**@brief   Function for starting application timers.
  * @details Timers are run after the scheduler has started.
  */
@@ -587,10 +454,6 @@ static void application_timers_start(void)
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
     }
-    // if (pdPASS != xTimerStart(m_rr_interval_timer, OSTIMER_WAIT_FOR_QUEUE))
-    // {
-    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    // }
     // if (pdPASS != xTimerStart(m_sensor_contact_timer, OSTIMER_WAIT_FOR_QUEUE))
     // {
     //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
@@ -1067,7 +930,6 @@ int main(void)
     gatt_init();
     advertising_init();
     services_init();
-    sensor_simulator_init();
     conn_params_init();
     peer_manager_init();
     application_timers_start();
@@ -1083,24 +945,14 @@ int main(void)
     {
         NRF_LOG_INFO("PASSED ********************************");
     }
-    else if(retVal == pdFAIL)
-    {
-        NRF_LOG_INFO("FAILED XxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxx");
-    }
-    else if (retVal == errQUEUE_EMPTY)
-    {
-        NRF_LOG_INFO("errQUEUE_EMPTY 00000000000000000000000");
-    }
     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
     {
         NRF_LOG_INFO("MEMORY MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM");
     }
     else
     {
-        NRF_LOG_INFO("??????????????????????????????????");
+        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
-
-
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Starting");
@@ -1177,8 +1029,6 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 
         m_adc_evt_counter++;
 
-        //NRF_LOG_INFO("callback");
-
         // Signal the data processing task
         xSemaphoreGive( semNrfLogFlush );
     }
@@ -1252,10 +1102,6 @@ static void taskFlushBuffer (void * pvParameter)
 
         nrf_gpio_pin_write(27, 1);
 
-        // Blink Blue LED
-        //bsp_board_led_invert(BSP_BOARD_LED_1);
-
-        //NRF_LOG_INFO("ADC event number: %d", (int)m_adc_evt_counter);
         int i;
         for (i = 0; i < SAMPLES_IN_BUFFER; i++)
         {
@@ -1269,5 +1115,3 @@ static void taskFlushBuffer (void * pvParameter)
         nrf_gpio_pin_write(27, 0);
     }
 }
-
-
