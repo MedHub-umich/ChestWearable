@@ -387,7 +387,7 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
     
 
     // heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
-    heart_rate = i++;
+    heart_rate = i++; /* CHANGE ME TO YOUR VALUE */
     cnt++;
     err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
     if ((err_code != NRF_SUCCESS) &&
@@ -396,12 +396,12 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
     (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
     )
     {
-        NRF_LOG_ERROR("FUCK");
+        NRF_LOG_ERROR("ERROR IN SENDING");
         APP_ERROR_HANDLER(err_code);
     } else if (err_code == NRF_ERROR_INVALID_STATE) {
         NRF_LOG_INFO("Did not send, currently in invalid state");
     } else if (err_code == NRF_SUCCESS) {
-        NRF_LOG_INFO("SUCCESS!");
+        NRF_LOG_INFO("Send was successful!");
     } else {
         NRF_LOG_INFO("Unknown state handled: %d", err_code);
     }

@@ -94,24 +94,19 @@ static void on_disconnect(ble_hrs_t * p_hrs, ble_evt_t const * p_ble_evt)
  */
 static void on_hrm_cccd_write(ble_hrs_t * p_hrs, ble_gatts_evt_write_t const * p_evt_write)
 {
-    NRF_LOG_INFO("HERE LIES MONSTERS");
     if (p_evt_write->len == 2)
     {
-        NRF_LOG_INFO("DOPE?");
         // CCCD written, update notification state
         if (p_hrs->evt_handler != NULL)
         {
-            NRF_LOG_INFO("There was an event");
             ble_hrs_evt_t evt;
 
             if (ble_srv_is_notification_enabled(p_evt_write->data))
             {
-                NRF_LOG_INFO("DOPE!");
                 evt.evt_type = BLE_HRS_EVT_NOTIFICATION_ENABLED;
             }
             else
             {
-                NRF_LOG_INFO("Not DOPE");
                 evt.evt_type = BLE_HRS_EVT_NOTIFICATION_DISABLED;
             }
 
@@ -129,11 +124,9 @@ static void on_hrm_cccd_write(ble_hrs_t * p_hrs, ble_gatts_evt_write_t const * p
 static void on_write(ble_hrs_t * p_hrs, ble_evt_t const * p_ble_evt)
 {
     ble_gatts_evt_write_t const * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-    NRF_LOG_INFO("cccd_handle= %d", p_evt_write->handle == p_hrs->hrm_handles.cccd_handle);
     
     if (p_evt_write->handle == p_hrs->hrm_handles.cccd_handle)
     {
-        NRF_LOG_INFO("Setting cccd");
         on_hrm_cccd_write(p_hrs, p_evt_write);
     }
 }
@@ -141,7 +134,6 @@ static void on_write(ble_hrs_t * p_hrs, ble_evt_t const * p_ble_evt)
 
 void ble_hrs_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context)
 {
-    NRF_LOG_INFO("IN cccd_write");
     
     ble_hrs_t * p_hrs = (ble_hrs_t *) p_context;
 
@@ -387,19 +379,20 @@ uint32_t ble_hrs_init(ble_hrs_t * p_hrs, const ble_hrs_init_t * p_hrs_init)
 uint32_t ble_hrs_heart_rate_measurement_send(ble_hrs_t * p_hrs, uint16_t heart_rate)
 {
     uint32_t err_code;
-    NRF_LOG_INFO("At ble_hrs_hr_measurement with %d", p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID);
 
     // Send value if connected and notifying
     if (p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID)
     {
-        NRF_LOG_INFO("Valid conn handle, sending %d", p_hrs->conn_handle);
         uint8_t                encoded_hrm[MAX_HRM_LEN];
         uint16_t               len;
         uint16_t               hvx_len;
         ble_gatts_hvx_params_t hvx_params;
 
-        len     = hrm_encode(p_hrs, heart_rate, encoded_hrm);
+        // len     = hrm_encode(p_hrs, heart_rate, encoded_hrm);
+        len = sizeof(uint16_t);
         hvx_len = len;
+        encoded_hrm[1] = heart_rate & 0xFF;
+        encoded_hrm[0] = heart_rate >> 8;
 
         memset(&hvx_params, 0, sizeof(hvx_params));
 
