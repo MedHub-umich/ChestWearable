@@ -46,12 +46,15 @@
  * Heart Rate service (and also Battery and Device Information services).
  * This application uses the @ref srvlib_conn_params module.
  */
-
+// C stdlib
 #include <stdint.h>
 #include <string.h>
+#include <stdint.h>
 #include "nordic_common.h"
 #include "nrf.h"
 #include "app_error.h"
+#include "sdk_errors.h"
+
 #include "ble.h"
 #include "ble_hci.h"
 #include "ble_srv_common.h"
@@ -76,6 +79,10 @@
 #include "fds.h"
 #include "ble_conn_state.h"
 #include "nrf_drv_clock.h"
+#include "nrf_drv_common.h"
+#include "nrf_delay.h"
+#include "boards.h"
+#include "bsp.h"
 #include "nrf_ble_gatt.h"
 
 #include "portmacro_cmsis.h"
@@ -83,7 +90,44 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
+// SAADC
+#include "nrf_drv_saadc.h"
+#include "nrf_drv_ppi.h"
+#include "nrf_drv_timer.h"
 
+// SAADC ********************************************************
+// FreeRTOS
+#define TASK_DELAY        400           /**< Task delay. Delays a LED0 task for 200 ms */
+
+TaskHandle_t  taskToggleLedHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
+TaskHandle_t  taskFlushBufferHandle;
+SemaphoreHandle_t semNrfLogFlush;
+
+static void taskToggleLed(void * pvParameter);
+static void taskFlushBuffer(void * pvParameter);
+
+// SAADC
+#define SAMPLES_IN_BUFFER 50
+#define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
+#define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
+#define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
+#define ADC_RESULT_IN_MILLI_VOLTS(ADC_VALUE)\
+        ((((ADC_VALUE) * ADC_REF_VOLTAGE_IN_MILLIVOLTS) / ADC_RES_10BIT) * ADC_PRE_SCALING_COMPENSATION)
+
+volatile uint8_t state = 1;
+static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(0);
+static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
+static nrf_ppi_channel_t     m_ppi_channel;
+static uint32_t              m_adc_evt_counter;
+
+void saadc_init(void);
+void saadc_sampling_event_init(void);
+void saadc_sampling_event_enable(void);
+void saadc_callback(nrf_drv_saadc_evt_t const * p_event);
+void timer_handler(nrf_timer_event_t event_type, void * p_context);
+
+static nrf_saadc_value_t * data_buffer;
+// END SAADC ****************************************************
 
 #define DEVICE_NAME                         "OTHERBLE"                            /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME                   "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -1092,6 +1136,7 @@ static void clock_init(void)
  */
 int main(void)
 {
+
     bool erase_bonds;
 
     clock_init();
@@ -1115,7 +1160,20 @@ int main(void)
     // Configure and initialize the BLE stack.
     ble_stack_init();
 
+    NRF_LOG_INFO("Past ble_stack_init");
+    NRF_LOG_FLUSH();
+
     // Initialize modules.
+
+    //bsp_board_leds_init();
+    saadc_init();
+    saadc_sampling_event_init();
+    NRF_LOG_INFO("past tom stuff");
+    NRF_LOG_FLUSH();
+    saadc_sampling_event_enable();
+
+
+
     timers_init();
     buttons_leds_init(&erase_bonds);
     gap_params_init();
@@ -1130,13 +1188,9 @@ int main(void)
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
-    // xTaskCreate(blinky_test,
-    //             "BLINKY",
-    //             256,
-    //             NULL,
-    //             1,
-    //             NULL
-    //         );
+    vSemaphoreCreateBinary( semNrfLogFlush );
+    UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
+    UNUSED_VARIABLE(xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskFlushBufferHandle));
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Starting");
@@ -1145,6 +1199,146 @@ int main(void)
     while (true)
     {
         APP_ERROR_HANDLER(NRF_ERROR_FORBIDDEN);
+    }
+}
+
+void saadc_sampling_event_init(void)
+{
+    ret_code_t err_code;
+
+    err_code = nrf_drv_ppi_init();
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer_cfg.bit_width = NRF_TIMER_BIT_WIDTH_32;
+    err_code = nrf_drv_timer_init(&m_timer, &timer_cfg, timer_handler);
+    APP_ERROR_CHECK(err_code);
+
+    /* setup m_timer for compare event every 100ms */
+    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, 5); // TOM
+    nrf_drv_timer_extended_compare(&m_timer,
+                                   NRF_TIMER_CC_CHANNEL0,
+                                   ticks,
+                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
+                                   false);
+    nrf_drv_timer_enable(&m_timer);
+
+    uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&m_timer,
+                                                                                NRF_TIMER_CC_CHANNEL0);
+    uint32_t saadc_sample_task_addr   = nrf_drv_saadc_sample_task_get();
+
+    /* setup ppi channel so that timer compare event is triggering sample task in SAADC */
+    err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,
+                                          timer_compare_event_addr,
+                                          saadc_sample_task_addr);
+    APP_ERROR_CHECK(err_code);
+}
+
+
+void saadc_sampling_event_enable(void)
+{
+    ret_code_t err_code = nrf_drv_ppi_channel_enable(m_ppi_channel);
+
+    APP_ERROR_CHECK(err_code);
+}
+
+
+void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
+{
+    if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
+    {
+        ret_code_t err_code;
+
+        err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_IN_BUFFER);
+        APP_ERROR_CHECK(err_code);
+
+        data_buffer = p_event->data.done.p_buffer;
+
+        m_adc_evt_counter++;
+
+        // Signal the data processing task
+        xSemaphoreGive( semNrfLogFlush );
+    }
+}
+
+
+void saadc_init(void)
+{
+    ret_code_t err_code;
+    nrf_saadc_channel_config_t channel_config =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1);
+
+    err_code = nrf_drv_saadc_init(NULL, saadc_callback);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = nrf_drv_saadc_channel_init(0, &channel_config);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_IN_BUFFER);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
+    APP_ERROR_CHECK(err_code);
+}
+
+
+void timer_handler(nrf_timer_event_t event_type, void * p_context)
+{
+    NRF_LOG_INFO("\n\n\n\nTIMER HANDLER RAN (IT SHOULD NOT)\n\n\n\n");
+}
+
+
+/**@taskToggleLed
+ *
+ * Blinks an LED
+ *
+ */
+static void taskToggleLed (void * pvParameter)
+{
+    UNUSED_PARAMETER(pvParameter);
+    while (true)
+    {
+        // Blink Red LED
+        //bsp_board_led_invert(BSP_BOARD_LED_0);
+
+        // Delay (messy period)
+        vTaskDelay(TASK_DELAY);
+    }
+}
+
+/**@taskToggleLed
+ *
+ * Flushes the log buffer to send messages to segger RTT.
+ * Deferred interrupt.
+ *
+ */
+static void taskFlushBuffer (void * pvParameter)
+{
+    uint16_t millivolts = 0;
+    UNUSED_PARAMETER(pvParameter);
+    while (true)
+    {
+        // Wait for Signal
+        xSemaphoreTake( semNrfLogFlush, 32760 );
+
+        // Blink Blue LED
+        //bsp_board_led_invert(BSP_BOARD_LED_1);
+
+        //NRF_LOG_INFO("ADC event number: %d", (int)m_adc_evt_counter);
+        int i;
+        for (i = 0; i < SAMPLES_IN_BUFFER; i++)
+        {
+            millivolts = ADC_RESULT_IN_MILLI_VOLTS(data_buffer[i]);//ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
+            NRF_LOG_INFO("%d", millivolts);
+
+        }
+
+        // Send Log
+        NRF_LOG_INFO("FLUSHING");
+        NRF_LOG_FLUSH();
     }
 }
 
