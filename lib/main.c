@@ -84,6 +84,7 @@
 #include "boards.h"
 #include "bsp.h"
 #include "nrf_ble_gatt.h"
+#include "nrf_gpio.h"
 
 #include "portmacro_cmsis.h"
 
@@ -99,11 +100,11 @@
 // FreeRTOS
 #define TASK_DELAY        400           /**< Task delay. Delays a LED0 task for 200 ms */
 
-TaskHandle_t  taskToggleLedHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
+//TaskHandle_t  taskToggleLedHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
 TaskHandle_t  taskFlushBufferHandle;
 SemaphoreHandle_t semNrfLogFlush;
 
-static void taskToggleLed(void * pvParameter);
+//static void taskToggleLed(void * pvParameter);
 static void taskFlushBuffer(void * pvParameter);
 
 // SAADC
@@ -115,7 +116,7 @@ static void taskFlushBuffer(void * pvParameter);
         ((((ADC_VALUE) * ADC_REF_VOLTAGE_IN_MILLIVOLTS) / ADC_RES_10BIT) * ADC_PRE_SCALING_COMPENSATION)
 
 volatile uint8_t state = 1;
-static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(0);
+static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
 static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
 static nrf_ppi_channel_t     m_ppi_channel;
 static uint32_t              m_adc_evt_counter;
@@ -363,6 +364,7 @@ static void battery_level_update(void)
  */
 static void battery_level_meas_timeout_handler(TimerHandle_t xTimer)
 {
+    NRF_LOG_INFO("BLev");
     UNUSED_PARAMETER(xTimer);
     battery_level_update();
 }
@@ -378,6 +380,7 @@ static void battery_level_meas_timeout_handler(TimerHandle_t xTimer)
  */
 static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
 {
+    NRF_LOG_INFO("HEART");
     static uint32_t cnt = 0;
     ret_code_t      err_code;
     uint16_t        heart_rate;
@@ -468,6 +471,7 @@ static void heart_rate_meas_timeout_handler(TimerHandle_t xTimer)
  */
 static void rr_interval_timeout_handler(TimerHandle_t xTimer)
 {
+    NRF_LOG_INFO("RR");
     UNUSED_PARAMETER(xTimer);
 
     if (m_rr_interval_enabled)
@@ -681,22 +685,22 @@ static void sensor_simulator_init(void)
 static void application_timers_start(void)
 {
     // Start application timers.
-    if (pdPASS != xTimerStart(m_battery_timer, OSTIMER_WAIT_FOR_QUEUE))
-    {
-        APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    }
+    // if (pdPASS != xTimerStart(m_battery_timer, OSTIMER_WAIT_FOR_QUEUE))
+    // {
+    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
+    // }
     if (pdPASS != xTimerStart(m_heart_rate_timer, OSTIMER_WAIT_FOR_QUEUE))
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
     }
-    if (pdPASS != xTimerStart(m_rr_interval_timer, OSTIMER_WAIT_FOR_QUEUE))
-    {
-        APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    }
-    if (pdPASS != xTimerStart(m_sensor_contact_timer, OSTIMER_WAIT_FOR_QUEUE))
-    {
-        APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    }
+    // if (pdPASS != xTimerStart(m_rr_interval_timer, OSTIMER_WAIT_FOR_QUEUE))
+    // {
+    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
+    // }
+    // if (pdPASS != xTimerStart(m_sensor_contact_timer, OSTIMER_WAIT_FOR_QUEUE))
+    // {
+    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
+    // }
 }
 
 
@@ -1189,8 +1193,8 @@ int main(void)
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
     vSemaphoreCreateBinary( semNrfLogFlush );
-    UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
-    UNUSED_VARIABLE(xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskFlushBufferHandle));
+    //UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
+    UNUSED_VARIABLE(xTaskCreate(taskFlushBuffer, "LED0", configMINIMAL_STACK_SIZE + 1000, NULL, 3, &taskFlushBufferHandle));
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Starting");
@@ -1208,11 +1212,15 @@ void saadc_sampling_event_init(void)
 
     err_code = nrf_drv_ppi_init();
     APP_ERROR_CHECK(err_code);
+    NRF_LOG_INFO("Starting1");
+    NRF_LOG_FLUSH();
 
     nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
     timer_cfg.bit_width = NRF_TIMER_BIT_WIDTH_32;
     err_code = nrf_drv_timer_init(&m_timer, &timer_cfg, timer_handler);
     APP_ERROR_CHECK(err_code);
+    NRF_LOG_INFO("Starting2");
+    NRF_LOG_FLUSH();
 
     /* setup m_timer for compare event every 100ms */
     uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, 5); // TOM
@@ -1230,11 +1238,15 @@ void saadc_sampling_event_init(void)
     /* setup ppi channel so that timer compare event is triggering sample task in SAADC */
     err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
     APP_ERROR_CHECK(err_code);
+    NRF_LOG_INFO("Starting3");
+    NRF_LOG_FLUSH();
 
     err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,
                                           timer_compare_event_addr,
                                           saadc_sample_task_addr);
     APP_ERROR_CHECK(err_code);
+    NRF_LOG_INFO("Starting4");
+    NRF_LOG_FLUSH();
 }
 
 
@@ -1258,6 +1270,8 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         data_buffer = p_event->data.done.p_buffer;
 
         m_adc_evt_counter++;
+
+        NRF_LOG_INFO("callback");
 
         // Signal the data processing task
         xSemaphoreGive( semNrfLogFlush );
@@ -1296,18 +1310,18 @@ void timer_handler(nrf_timer_event_t event_type, void * p_context)
  * Blinks an LED
  *
  */
-static void taskToggleLed (void * pvParameter)
-{
-    UNUSED_PARAMETER(pvParameter);
-    while (true)
-    {
-        // Blink Red LED
-        //bsp_board_led_invert(BSP_BOARD_LED_0);
+// static void taskToggleLed (void * pvParameter)
+// {
+//     UNUSED_PARAMETER(pvParameter);
+//     while (true)
+//     {
+//         // Blink Red LED
+//         //bsp_board_led_invert(BSP_BOARD_LED_0);
 
-        // Delay (messy period)
-        vTaskDelay(TASK_DELAY);
-    }
-}
+//         // Delay (messy period)
+//         vTaskDelay(TASK_DELAY);
+//     }
+// }
 
 /**@taskToggleLed
  *
@@ -1319,10 +1333,13 @@ static void taskFlushBuffer (void * pvParameter)
 {
     uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
+            NRF_LOG_INFO("STARTING FLUSH TASK");
+            NRF_LOG_FLUSH();
+
     while (true)
     {
         // Wait for Signal
-        xSemaphoreTake( semNrfLogFlush, 32760 );
+        xSemaphoreTake( semNrfLogFlush, portMAX_DELAY );
 
         // Blink Blue LED
         //bsp_board_led_invert(BSP_BOARD_LED_1);
@@ -1338,7 +1355,7 @@ static void taskFlushBuffer (void * pvParameter)
 
         // Send Log
         NRF_LOG_INFO("FLUSHING");
-        NRF_LOG_FLUSH();
+        //NRF_LOG_FLUSH();
     }
 }
 
