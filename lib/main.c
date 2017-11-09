@@ -1106,12 +1106,13 @@ static void taskFlushBuffer (void * pvParameter)
         for (i = 0; i < SAMPLES_IN_BUFFER; i++)
         {
             millivolts = ADC_RESULT_IN_MILLI_VOLTS(data_buffer[i]);//ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
-            NRF_LOG_INFO("%d", millivolts);
+            UNUSED_VARIABLE(millivolts);
+            //NRF_LOG_INFO("%d", millivolts);
 
         }
 
         // Send Log
-        NRF_LOG_INFO("FLUSHING");
+        //NRF_LOG_INFO("FLUSHING");
         nrf_gpio_pin_write(27, 0);
     }
 }
