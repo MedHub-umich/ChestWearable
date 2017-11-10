@@ -51,6 +51,7 @@
 #include "nrf_drv_timer.h"
 
 #include "tempInterface.h"
+#include "blinkyInterface.h"
 
 // SAADC ********************************************************
 // FreeRTOS
@@ -922,6 +923,7 @@ int main(void)
     application_timers_start();
 
     UNUSED_VARIABLE(tempInit());
+    UNUSED_VARIABLE(blinkyInit());
 
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
@@ -1051,8 +1053,6 @@ void timer_handler(nrf_timer_event_t event_type, void * p_context)
 }
 
 
-
-
 /**@taskToggleLed
  *
  * Flushes the log buffer to send messages to segger RTT.
@@ -1061,10 +1061,10 @@ void timer_handler(nrf_timer_event_t event_type, void * p_context)
  */
 static void taskSendBle (void * pvParameter)
 {
-    uint16_t millivolts = 0;
+    //uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
     
-    NRF_LOG_INFO("STARTING FLUSH TASK");
+    NRF_LOG_INFO("STARTING taskSendBle");
 
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
@@ -1076,19 +1076,17 @@ static void taskSendBle (void * pvParameter)
 
         nrf_gpio_pin_write(27, 1);
 
-        int i;
-        for (i = 0; i < SAMPLES_IN_BUFFER; i++)
-        {
-            millivolts = ADC_RESULT_IN_MILLI_VOLTS(data_buffer[i]);//ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
-            UNUSED_VARIABLE(millivolts);
-            //NRF_LOG_INFO("%d", millivolts);
+        // int i;
+        // for (i = 0; i < SAMPLES_IN_BUFFER; i++)
+        // {
+        //     millivolts = ADC_RESULT_IN_MILLI_VOLTS(data_buffer[i]);//ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
+        //     UNUSED_VARIABLE(millivolts);
+        //     //NRF_LOG_INFO("%d", millivolts);
+        // }
 
-        }
-
+        // call this function to SEND DATA OVER BLE
         heart_rate_meas_timeout_handler();
 
-        // Send Log
-        //NRF_LOG_INFO("FLUSHING");
         nrf_gpio_pin_write(27, 0);
     }
 }
