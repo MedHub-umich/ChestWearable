@@ -70,14 +70,8 @@ struct tempObject_t * tempObject_ptr;
 #define MAX_HEART_RATE                      300                                     /**< Maximum heart rate as returned by the simulated measurement function. */
 #define HEART_RATE_INCREMENT                10                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
 
-#define SENSOR_CONTACT_DETECTED_INTERVAL    5000                                    /**< Sensor Contact Detected toggle interval (ms). */
-
 #define OSTIMER_WAIT_FOR_QUEUE              2                                       /**< Number of ticks to wait for the timer queue to be ready */
 
-
-
-//static TimerHandle_t m_heart_rate_timer;                            /**< Definition of heart rate timer. */
-static TimerHandle_t m_sensor_contact_timer;                        /**< Definition of sensor contact detected timer. */
 
 static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
 
@@ -120,73 +114,6 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
 }
 
 
-/**@brief Function for handling the Sensor Contact Detected timer time-out.
- *
- * @details This function will be called each time the Sensor Contact Detected timer expires.
- *
- * @param[in] xTimer Handler to the timer that called this function.
- *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
- */
-// static void sensor_contact_detected_timeout_handler(TimerHandle_t xTimer)
-// {
-//     static bool sensor_contact_detected = false;
-
-//     UNUSED_PARAMETER(xTimer);
-
-//     sensor_contact_detected = !sensor_contact_detected;
-//     ble_hrs_sensor_contact_detected_update(&m_hrs, sensor_contact_detected);
-// }
-
-
-/**@brief Function for the Timer initialization.
- *
- * @details Initializes the timer module. This creates and starts application timers.
- */
-static void timers_init(void)
-{
-    // Initialize timer module.
-    ret_code_t err_code = app_timer_init();
-    APP_ERROR_CHECK(err_code);
-
-    // m_heart_rate_timer = xTimerCreate("HRT",
-    //                                   HEART_RATE_MEAS_INTERVAL,
-    //                                   pdTRUE,
-    //                                   NULL,
-    //                                   heart_rate_meas_timeout_handler);
-
-    // m_sensor_contact_timer = xTimerCreate("SCT",
-    //                                       SENSOR_CONTACT_DETECTED_INTERVAL,
-    //                                       pdTRUE,
-    //                                       NULL,
-    //                                       sensor_contact_detected_timeout_handler);
-
-    /* Error checking */
-    if ( /*(NULL == m_battery_timer)
-         || *//*(NULL == m_heart_rate_timer)*/
-         /*|| (NULL == m_rr_interval_timer)*/
-         /*||*/ (NULL == m_sensor_contact_timer) )
-    {
-        APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    }
-}
-
-
-
-
-/**@brief   Function for starting application timers.
- * @details Timers are run after the scheduler has started.
- */
-static void application_timers_start(void)
-{
-    // if (pdPASS != xTimerStart(m_heart_rate_timer, OSTIMER_WAIT_FOR_QUEUE))
-    // {
-    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    // }
-    // if (pdPASS != xTimerStart(m_sensor_contact_timer, OSTIMER_WAIT_FOR_QUEUE))
-    // {
-    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    // }
-}
 
 #if NRF_LOG_ENABLED
 /**@brief Thread for handling the logger.
@@ -277,10 +204,7 @@ int main(void)
     clock_init();
     log_init();
     bleInit();
-    timers_init();
     buttons_leds_init(&erase_bonds);
-    application_timers_start();
-
 
 
     // Create a FreeRTOS task for the BLE stack.

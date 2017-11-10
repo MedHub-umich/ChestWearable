@@ -25,8 +25,8 @@
 #include "ble_conn_state.h"
 #include "fds.h"
 
-#define DEVICE_NAME                         "OTHERBLE"                            /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME                   "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
+#define DEVICE_NAME                         "TYLERSBLE"                            /**< Name of device. Will be included in the advertising data. */
+#define MANUFACTURER_NAME                   "MedHub"                   /**< Manufacturer. Will be passed to Device Information Service. */
 
 #define APP_BLE_OBSERVER_PRIO               1                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG                1                                       /**< A tag identifying the SoftDevice BLE configuration. */
