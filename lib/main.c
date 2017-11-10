@@ -958,18 +958,10 @@ static void taskSendBle (void * pvParameter)
         // Wait for Signal
         xSemaphoreTake( tempGetDataSemaphore(tempObject_ptr), portMAX_DELAY );
 
-        NRF_LOG_INFO("Checkpoint: taskSendBle got semaphore");
-        NRF_LOG_FLUSH();
-
         nrf_gpio_pin_write(27, 1);
 
-        // int i;
-        // for (i = 0; i < SAMPLES_IN_BUFFER; i++)
-        // {
-        //     millivolts = ADC_RESULT_IN_MILLI_VOLTS(data_buffer[i]);//ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
-        //     UNUSED_VARIABLE(millivolts);
-        //     //NRF_LOG_INFO("%d", millivolts);
-        // }
+        NRF_LOG_INFO("Checkpoint: taskSendBle got semaphore");
+        NRF_LOG_FLUSH();
 
         // call this function to SEND DATA OVER BLE
         heart_rate_meas_timeout_handler();
