@@ -45,11 +45,11 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
-// SAADC
-#include "nrf_drv_saadc.h"
-#include "nrf_drv_ppi.h"
-#include "nrf_drv_timer.h"
 
+#include "nrf_drv_saadc.h"
+#include "nrf_timer.h"
+
+// Interfaces
 #include "tempInterface.h"
 #include "blinkyInterface.h"
 
@@ -57,31 +57,11 @@
 // FreeRTOS
 
 TaskHandle_t  taskSendBleHandle;
-SemaphoreHandle_t semSendBle;
-
 static void taskSendBle(void * pvParameter);
 
-// SAADC
-#define SAMPLES_IN_BUFFER 200
-#define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
-#define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
-#define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
-#define ADC_RESULT_IN_MILLI_VOLTS(ADC_VALUE)\
-        ((((ADC_VALUE) * ADC_REF_VOLTAGE_IN_MILLIVOLTS) / ADC_RES_10BIT) * ADC_PRE_SCALING_COMPENSATION)
 
-volatile uint8_t state = 1;
-static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
-static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
-static nrf_ppi_channel_t     m_ppi_channel;
-static uint32_t              m_adc_evt_counter;
+struct tempObject_t * tempObject_ptr;
 
-void saadc_init(void);
-void saadc_sampling_event_init(void);
-void saadc_sampling_event_enable(void);
-void saadc_callback(nrf_drv_saadc_evt_t const * p_event);
-void timer_handler(nrf_timer_event_t event_type, void * p_context);
-
-static nrf_saadc_value_t * data_buffer;
 // END SAADC ****************************************************
 
 #define DEVICE_NAME                         "OTHERBLE"                            /**< Name of device. Will be included in the advertising data. */
@@ -282,7 +262,7 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
 
     NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
 
-    heart_rate = data_buffer[0]; // DATA BUFFER <<<<<<<<<<<<<<<<<<<<
+    heart_rate = tempGetDataBuffer()[0]; // DATA BUFFER <<<<<<<<<<<<<<<<<<<<
     cnt++;
     err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
     if ((err_code != NRF_SUCCESS) &&
@@ -292,6 +272,8 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
     )
     {
         NRF_LOG_ERROR("ERROR IN SENDING");
+        NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler");
+        NRF_LOG_FLUSH();
         APP_ERROR_HANDLER(err_code);
     } else if (err_code == NRF_ERROR_INVALID_STATE) {
         NRF_LOG_INFO("Did not send, currently in invalid state");
@@ -902,15 +884,14 @@ int main(void)
     }
 #endif
 
+    NRF_LOG_INFO("********** STARTING MAIN *****************");
+    NRF_LOG_FLUSH();
+
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
     // Configure and initialize the BLE stack.
     ble_stack_init();
-
-    saadc_init();
-    saadc_sampling_event_init();
-    saadc_sampling_event_enable();
 
     timers_init();
     buttons_leds_init(&erase_bonds);
@@ -922,18 +903,16 @@ int main(void)
     peer_manager_init();
     application_timers_start();
 
-    UNUSED_VARIABLE(tempInit());
-    UNUSED_VARIABLE(blinkyInit());
+
 
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
-    vSemaphoreCreateBinary( semSendBle );
 
     BaseType_t retVal = xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle);
     if (retVal == pdPASS)
     {
-        NRF_LOG_INFO("PASSED ********************************");
+        NRF_LOG_INFO("Checkpoint: created taskSendBle");
     }
     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
     {
@@ -944,8 +923,11 @@ int main(void)
         NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
 
+    UNUSED_VARIABLE(tempInit(tempObject_ptr));
+    UNUSED_VARIABLE(blinkyInit());
+
     // Start FreeRTOS scheduler.
-    NRF_LOG_INFO("Starting");
+    NRF_LOG_INFO("Checkpoint: right before scheduler starts");
     NRF_LOG_FLUSH();
 
     vTaskStartScheduler();
@@ -954,102 +936,6 @@ int main(void)
     {
         APP_ERROR_HANDLER(NRF_ERROR_FORBIDDEN);
     }
-}
-
-void saadc_sampling_event_init(void)
-{
-    ret_code_t err_code;
-
-    err_code = nrf_drv_ppi_init();
-    APP_ERROR_CHECK(err_code);
-    NRF_LOG_INFO("Starting1");
-    NRF_LOG_FLUSH();
-
-    nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer_cfg.bit_width = NRF_TIMER_BIT_WIDTH_32;
-    err_code = nrf_drv_timer_init(&m_timer, &timer_cfg, timer_handler);
-    APP_ERROR_CHECK(err_code);
-    NRF_LOG_INFO("Starting2");
-    NRF_LOG_FLUSH();
-
-    /* setup m_timer for compare event every 100ms */
-    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, 5); // TOM
-    nrf_drv_timer_extended_compare(&m_timer,
-                                   NRF_TIMER_CC_CHANNEL0,
-                                   ticks,
-                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
-                                   false);
-    nrf_drv_timer_enable(&m_timer);
-
-    uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&m_timer,
-                                                                                NRF_TIMER_CC_CHANNEL0);
-    uint32_t saadc_sample_task_addr   = nrf_drv_saadc_sample_task_get();
-
-    /* setup ppi channel so that timer compare event is triggering sample task in SAADC */
-    err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
-    APP_ERROR_CHECK(err_code);
-    NRF_LOG_INFO("Starting3");
-    NRF_LOG_FLUSH();
-
-    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,
-                                          timer_compare_event_addr,
-                                          saadc_sample_task_addr);
-    APP_ERROR_CHECK(err_code);
-    NRF_LOG_INFO("Starting4");
-    NRF_LOG_FLUSH();
-}
-
-
-void saadc_sampling_event_enable(void)
-{
-    ret_code_t err_code = nrf_drv_ppi_channel_enable(m_ppi_channel);
-
-    APP_ERROR_CHECK(err_code);
-}
-
-
-void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
-{
-    if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
-    {
-        ret_code_t err_code;
-
-        err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_IN_BUFFER);
-        APP_ERROR_CHECK(err_code);
-
-        data_buffer = p_event->data.done.p_buffer;
-
-        m_adc_evt_counter++;
-
-        // Signal the data processing task
-        xSemaphoreGive( semSendBle );
-    }
-}
-
-
-void saadc_init(void)
-{
-    ret_code_t err_code;
-    nrf_saadc_channel_config_t channel_config =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1);
-
-    err_code = nrf_drv_saadc_init(NULL, saadc_callback);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_saadc_channel_init(0, &channel_config);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_IN_BUFFER);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
-    APP_ERROR_CHECK(err_code);
-}
-
-
-void timer_handler(nrf_timer_event_t event_type, void * p_context)
-{
-    NRF_LOG_INFO("\n\n\n\nTIMER HANDLER RAN (IT SHOULD NOT)\n\n\n\n");
 }
 
 
@@ -1063,8 +949,6 @@ static void taskSendBle (void * pvParameter)
 {
     //uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
-    
-    NRF_LOG_INFO("STARTING taskSendBle");
 
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
@@ -1072,7 +956,10 @@ static void taskSendBle (void * pvParameter)
     while (true)
     {
         // Wait for Signal
-        xSemaphoreTake( semSendBle, portMAX_DELAY );
+        xSemaphoreTake( tempGetDataSemaphore(tempObject_ptr), portMAX_DELAY );
+
+        NRF_LOG_INFO("Checkpoint: taskSendBle got semaphore");
+        NRF_LOG_FLUSH();
 
         nrf_gpio_pin_write(27, 1);
 
@@ -1088,5 +975,7 @@ static void taskSendBle (void * pvParameter)
         heart_rate_meas_timeout_handler();
 
         nrf_gpio_pin_write(27, 0);
+
+        //vTaskDelay(1000);
     }
 }
