@@ -72,7 +72,6 @@ struct tempObject_t * tempObject_ptr;
 
 #define OSTIMER_WAIT_FOR_QUEUE              2                                       /**< Number of ticks to wait for the timer queue to be ready */
 
-
 static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
 
 /**@brief Function for handling the Heart rate measurement timer time-out.
@@ -101,7 +100,7 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
     )
     {
         NRF_LOG_ERROR("ERROR IN SENDING");
-        NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler");
+        NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler %d", err_code);
         NRF_LOG_FLUSH();
         APP_ERROR_HANDLER(err_code);
     } else if (err_code == NRF_ERROR_INVALID_STATE) {
