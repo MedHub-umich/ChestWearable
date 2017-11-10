@@ -71,15 +71,6 @@ struct tempObject_t * tempObject_ptr;
 
 #define SENSOR_CONTACT_DETECTED_INTERVAL    5000                                    /**< Sensor Contact Detected toggle interval (ms). */
 
-
-
-#define FIRST_CONN_PARAMS_UPDATE_DELAY      5000                                    /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
-#define NEXT_CONN_PARAMS_UPDATE_DELAY       30000                                   /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
-#define MAX_CONN_PARAMS_UPDATE_COUNT        3                                       /**< Number of attempts before giving up the connection parameter negotiation. */
-
-                                   /**< Maximum encryption key size. */
-
-
 #define OSTIMER_WAIT_FOR_QUEUE              2                                       /**< Number of ticks to wait for the timer queue to be ready */
 
 
@@ -135,15 +126,15 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
  * @param[in] xTimer Handler to the timer that called this function.
  *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
  */
-static void sensor_contact_detected_timeout_handler(TimerHandle_t xTimer)
-{
-    static bool sensor_contact_detected = false;
+// static void sensor_contact_detected_timeout_handler(TimerHandle_t xTimer)
+// {
+//     static bool sensor_contact_detected = false;
 
-    UNUSED_PARAMETER(xTimer);
+//     UNUSED_PARAMETER(xTimer);
 
-    sensor_contact_detected = !sensor_contact_detected;
-    ble_hrs_sensor_contact_detected_update(&m_hrs, sensor_contact_detected);
-}
+//     sensor_contact_detected = !sensor_contact_detected;
+//     ble_hrs_sensor_contact_detected_update(&m_hrs, sensor_contact_detected);
+// }
 
 
 /**@brief Function for the Timer initialization.
@@ -162,11 +153,11 @@ static void timers_init(void)
     //                                   NULL,
     //                                   heart_rate_meas_timeout_handler);
 
-    m_sensor_contact_timer = xTimerCreate("SCT",
-                                          SENSOR_CONTACT_DETECTED_INTERVAL,
-                                          pdTRUE,
-                                          NULL,
-                                          sensor_contact_detected_timeout_handler);
+    // m_sensor_contact_timer = xTimerCreate("SCT",
+    //                                       SENSOR_CONTACT_DETECTED_INTERVAL,
+    //                                       pdTRUE,
+    //                                       NULL,
+    //                                       sensor_contact_detected_timeout_handler);
 
     /* Error checking */
     if ( /*(NULL == m_battery_timer)

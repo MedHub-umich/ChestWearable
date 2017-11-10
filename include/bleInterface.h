@@ -1,7 +1,7 @@
 // tempInterface.h
 
-#ifndef BLE_INTERFACE_H
-#define BLE_INTERFACE_H
+#ifndef SOFT_DEVICE_INTERFACE_H
+#define SOFT_DEVICE_INTERFACE_H
 
 #include "ble.h"
 #include "ble_hci.h"
@@ -67,7 +67,6 @@ NRF_BLE_GATT_DEF(m_gatt);                                           /**< GATT mo
 BLE_ADVERTISING_DEF(m_advertising);                                 /**< Advertising module instance. */
 
 // Public functions
-int bleInit(); // Initialize BLE
 void peer_manager_init(void);
 void advertising_start(void * p_erase_bonds); // "Start" BLE (by starting to advertise)
 void gap_params_init(void);
@@ -83,4 +82,4 @@ void conn_params_init(void);
 void conn_params_error_handler(uint32_t nrf_error);
 void on_conn_params_evt(ble_conn_params_evt_t * p_evt);
 
-#endif //BLE_INTERFACE_H
+#endif //SOFT_DEVICE_INTERFACE_H
