@@ -8,6 +8,7 @@
 # Prerequisites
 build/
 sdk/components/toolchain/arm/gcc/Makefile.posix
+sdk/components/toolchain/gcc/Makefile.posix
 *.d
 
 # Object files
