@@ -89,6 +89,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/drivers_nrf/timer/nrf_drv_timer.c \
   $(SDK_ROOT)/components/drivers_nrf/ppi/nrf_drv_ppi.c   \
   $(SDK_ROOT)/components/drivers_nrf/hal/nrf_saadc.c \
+  $(PROJ_DIR)/lib/tempInterface.c
 
 
 # Include folders common to all targets

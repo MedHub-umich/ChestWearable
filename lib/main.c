@@ -50,15 +50,14 @@
 #include "nrf_drv_ppi.h"
 #include "nrf_drv_timer.h"
 
+#include "tempInterface.h"
+
 // SAADC ********************************************************
 // FreeRTOS
-#define TASK_DELAY        400           /**< Task delay. Delays a LED0 task for 200 ms */
 
-//TaskHandle_t  taskToggleLedHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
 TaskHandle_t  taskSendBleHandle;
 SemaphoreHandle_t semSendBle;
 
-//static void taskToggleLed(void * pvParameter);
 static void taskSendBle(void * pvParameter);
 
 // SAADC
@@ -922,11 +921,12 @@ int main(void)
     peer_manager_init();
     application_timers_start();
 
+    UNUSED_VARIABLE(tempInit());
+
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(advertising_start, &erase_bonds);
     vSemaphoreCreateBinary( semSendBle );
-    //UNUSED_VARIABLE(xTaskCreate(taskToggleLed, "LED0", configMINIMAL_STACK_SIZE + 200, NULL, 2, &taskToggleLedHandle));
 
     BaseType_t retVal = xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle);
     if (retVal == pdPASS)
@@ -944,6 +944,8 @@ int main(void)
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Starting");
+    NRF_LOG_FLUSH();
+
     vTaskStartScheduler();
 
     while (true)
@@ -1049,23 +1051,7 @@ void timer_handler(nrf_timer_event_t event_type, void * p_context)
 }
 
 
-/**@taskToggleLed
- *
- * Blinks an LED
- *
- */
-// static void taskToggleLed (void * pvParameter)
-// {
-//     UNUSED_PARAMETER(pvParameter);
-//     while (true)
-//     {
-//         // Blink Red LED
-//         //bsp_board_led_invert(BSP_BOARD_LED_0);
 
-//         // Delay (messy period)
-//         vTaskDelay(TASK_DELAY);
-//     }
-// }
 
 /**@taskToggleLed
  *
