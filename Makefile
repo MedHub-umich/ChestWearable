@@ -11,9 +11,10 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 # Source files common to all targets
 SRC_FILES += \
   $(PROJ_DIR)/lib/main.c \
-  $(PROJ_DIR)/lib/bleInterface.c \
+  $(PROJ_DIR)/lib/sdInterface.c \
   $(PROJ_DIR)/lib/tempInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
+  $(PROJ_DIR)/lib/bleInterface.c \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
   $(SDK_ROOT)/components/boards/boards.c \
