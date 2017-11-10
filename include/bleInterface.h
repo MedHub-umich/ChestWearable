@@ -2,6 +2,7 @@
 #include "sdInterface.h"
 
 void bleInit();
+void bleBegin(void * p_erase_bonds);
 
 
 // Private

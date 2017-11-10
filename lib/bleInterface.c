@@ -10,6 +10,10 @@ void bleInit() {
     peer_manager_init();    
 }
 
+void bleBegin(void * p_erase_bonds) {
+    advertising_start(p_erase_bonds);
+}
+
 /**@brief Function for initializing services that will be used by the application.
  *
  * @details Initialize the Heart Rate, Battery and Device Information services.
