@@ -12,6 +12,7 @@
 #include "nrf_drv_saadc.h"
 #include "nrf_drv_ppi.h"
 #include "nrf_drv_timer.h"
+#include "MHnotification.h"
 
 // *************** Internal State ****************************** //
 static struct tempObject_t * this = 0;
@@ -98,7 +99,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
 
 
-        xSemaphoreGive( this->semaphoreHandle );
+        MHSendNotification(TEMPERATURE_NOTIFICATION);
 
 
         NRF_LOG_INFO("Gave semaphore");
@@ -159,11 +160,6 @@ void taskToggleLed (void * pvParameter)
     }
 }
 
-SemaphoreHandle_t tempGetDataSemaphore()
-{
-    return this->semaphoreHandle;
-}
-
 nrf_saadc_value_t * tempGetDataBuffer()
 {
     return dataBuffer;
@@ -172,9 +168,6 @@ nrf_saadc_value_t * tempGetDataBuffer()
 int tempInit(struct tempObject_t * inTempObject_ptr)
 {
     this = &tempObject;
-
-    // MUST FULLY INITIALIZE this BEFORE STARTING TIMERS AND STUFF
-    vSemaphoreCreateBinary( this->semaphoreHandle );
 
     // initialize ADC if not already initialized
     // Actually currently not checking

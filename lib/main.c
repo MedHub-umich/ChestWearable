@@ -52,6 +52,7 @@
 // Interfaces
 #include "tempInterface.h"
 #include "blinkyInterface.h"
+#include "MHnotification.h"
 
 // SAADC ********************************************************
 // FreeRTOS
@@ -902,6 +903,7 @@ int main(void)
     conn_params_init();
     peer_manager_init();
     application_timers_start();
+    MHInitNotification();
 
 
 
@@ -956,7 +958,7 @@ static void taskSendBle (void * pvParameter)
     while (true)
     {
         // Wait for Signal
-        xSemaphoreTake( tempGetDataSemaphore(tempObject_ptr), portMAX_DELAY );
+        MHWaitForNotification(TEMPERATURE_NOTIFICATION);
 
         nrf_gpio_pin_write(27, 1);
 

@@ -11,15 +11,11 @@
 
 
 
-struct tempObject_t
-{
-    SemaphoreHandle_t semaphoreHandle;
-};
+struct tempObject_t {};
 
 // Public
 int tempInit(struct tempObject_t*);
 nrf_saadc_value_t * tempGetDataBuffer();
-SemaphoreHandle_t tempGetDataSemaphore();
 
 // Private
 void saadc_init(void);
