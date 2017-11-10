@@ -196,13 +196,13 @@ static void clock_init(void)
  */
 int main(void)
 {
+    log_init();
     NRF_LOG_INFO("********** STARTING MAIN *****************");
     NRF_LOG_FLUSH();
 
     bool erase_bonds;
 
     clock_init();
-    log_init();
     bleInit();
     buttons_leds_init(&erase_bonds);
 
