@@ -52,7 +52,8 @@
 // Interfaces
 #include "tempInterface.h"
 #include "blinkyInterface.h"
-#include "MHnotification.h"
+#include "notification.h"
+#include "pendingMessages.h"
 
 // SAADC ********************************************************
 // FreeRTOS
@@ -60,7 +61,13 @@
 TaskHandle_t  taskSendBleHandle;
 static void taskSendBle(void * pvParameter);
 
+TaskHandle_t testTaskHandle;
+static void testTask(void* pvParameter);
 
+TaskHandle_t testTask2Handle;
+static void testTask2(void* pvParameter);
+
+pendingMessages_t globalQ;
 struct tempObject_t * tempObject_ptr;
 
 // END SAADC ****************************************************
@@ -247,45 +254,6 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 }
 
 
-/**@brief Function for handling the Heart rate measurement timer time-out.
- *
- * @details This function will be called IN THE FREERTOS THREAD 
- *
- * @param[in] xTimer Handler to the timer that called this function.
- *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
- */
-static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
-{
-    NRF_LOG_INFO("HEART");
-    static uint32_t cnt = 0;
-    ret_code_t      err_code;
-    uint16_t        heart_rate;
-
-    NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
-
-    heart_rate = tempGetDataBuffer()[0]; // DATA BUFFER <<<<<<<<<<<<<<<<<<<<
-    cnt++;
-    err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
-    if ((err_code != NRF_SUCCESS) &&
-    (err_code != NRF_ERROR_INVALID_STATE) &&
-    (err_code != NRF_ERROR_RESOURCES) &&
-    (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-    )
-    {
-        NRF_LOG_ERROR("ERROR IN SENDING");
-        NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler");
-        NRF_LOG_FLUSH();
-        APP_ERROR_HANDLER(err_code);
-    } else if (err_code == NRF_ERROR_INVALID_STATE) {
-        NRF_LOG_INFO("Did not send, currently in invalid state");
-    } else if (err_code == NRF_SUCCESS) {
-        NRF_LOG_INFO("Send was successful!");
-    } else {
-        NRF_LOG_INFO("Unknown state handled: %d", err_code);
-    }
-}
-
-
 /**@brief Function for handling the Sensor Contact Detected timer time-out.
  *
  * @details This function will be called each time the Sensor Contact Detected timer expires.
@@ -313,12 +281,6 @@ static void timers_init(void)
     // Initialize timer module.
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
-
-    // m_heart_rate_timer = xTimerCreate("HRT",
-    //                                   HEART_RATE_MEAS_INTERVAL,
-    //                                   pdTRUE,
-    //                                   NULL,
-    //                                   heart_rate_meas_timeout_handler);
 
     m_sensor_contact_timer = xTimerCreate("SCT",
                                           SENSOR_CONTACT_DETECTED_INTERVAL,
@@ -430,14 +392,7 @@ static void services_init(void)
  */
 static void application_timers_start(void)
 {
-    // if (pdPASS != xTimerStart(m_heart_rate_timer, OSTIMER_WAIT_FOR_QUEUE))
-    // {
-    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    // }
-    // if (pdPASS != xTimerStart(m_sensor_contact_timer, OSTIMER_WAIT_FOR_QUEUE))
-    // {
-    //     APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
-    // }
+
 }
 
 
@@ -903,7 +858,8 @@ int main(void)
     conn_params_init();
     peer_manager_init();
     application_timers_start();
-    MHInitNotification();
+    initNotification();
+    pendingMessagesCreate(&globalQ);
 
 
 
@@ -925,8 +881,38 @@ int main(void)
         NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
 
-    UNUSED_VARIABLE(tempInit(tempObject_ptr));
-    UNUSED_VARIABLE(blinkyInit());
+    BaseType_t retVal2 = xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle);
+    if (retVal2 == pdPASS)
+    {
+        NRF_LOG_INFO("Checkpoint: created taskSendBle");
+    }
+    else if (retVal2 == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    }
+
+    retVal2 = xTaskCreate(testTask2, "TestTask2", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTask2Handle);
+    if (retVal2 == pdPASS)
+    {
+        NRF_LOG_INFO("Checkpoint: created taskSendBle");
+    }
+    else if (retVal2 == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    }
+
+
+
+    //UNUSED_VARIABLE(tempInit(tempObject_ptr));
+    //UNUSED_VARIABLE(blinkyInit());
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Checkpoint: right before scheduler starts");
@@ -955,21 +941,65 @@ static void taskSendBle (void * pvParameter)
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
 
+    ret_code_t err_code;
+    uint16_t heart_rate;
+
     while (true)
     {
         // Wait for Signal
-        MHWaitForNotification(TEMPERATURE_NOTIFICATION);
+        char reqData[WAIT_MESSAGE_SIZE];
+        pendingMessagesWaitAndPop(reqData, &globalQ);
 
         nrf_gpio_pin_write(27, 1);
 
-        NRF_LOG_INFO("Checkpoint: taskSendBle got semaphore");
-        NRF_LOG_FLUSH();
-
         // call this function to SEND DATA OVER BLE
-        heart_rate_meas_timeout_handler();
+
+        NRF_LOG_INFO("HEART");
+        NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
+
+        memcpy(&heart_rate, reqData, sizeof(reqData));
+        err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
+        if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != NRF_ERROR_RESOURCES) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+        )
+        {
+            NRF_LOG_ERROR("ERROR IN SENDING");
+            NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler");
+            NRF_LOG_FLUSH();
+            APP_ERROR_HANDLER(err_code);
+        } else if (err_code == NRF_ERROR_INVALID_STATE) {
+            NRF_LOG_INFO("Did not send, currently in invalid state");
+        } else if (err_code == NRF_SUCCESS) {
+            NRF_LOG_INFO("Send was successful!");
+        } else {
+            NRF_LOG_INFO("Unknown state handled: %d", err_code);
+        }
 
         nrf_gpio_pin_write(27, 0);
 
         //vTaskDelay(1000);
+    }
+}
+
+
+static void testTask(void* pvParameter) {
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    char userData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+    for (;;) {
+        pendingMessagesPush(sizeof(userData), userData, &globalQ);
+        bsp_board_led_invert(BSP_BOARD_LED_1);
+        vTaskDelayUntil(&xLastWakeTime, 40);
+    }
+}
+
+static void testTask2(void* pvParameter) {
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    char userData[4] = {0x11, 0x22, 0x33, 0x44};
+    for (;;) {
+        pendingMessagesPush(sizeof(userData), userData, &globalQ);
+        bsp_board_led_invert(BSP_BOARD_LED_1);
+        vTaskDelayUntil(&xLastWakeTime, 40);
     }
 }

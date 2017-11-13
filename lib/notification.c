@@ -1,15 +1,15 @@
-#include "MHNotification.h"
+#include "notification.h"
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "portmacro_cmsis.h"
 
 
 
-void MHWaitForNotification(int notificationHandle) {
+void waitForNotification(int notificationHandle) {
 	xSemaphoreTake( semphMap[notificationHandle], portMAX_DELAY );
 }
 
-void MHInitNotification() {
+void initNotification() {
 	int i;
 	for (i = 0; i < NUM_NOTIFICATIONS; ++i) {
 		vSemaphoreCreateBinary(semphMap[i]);
@@ -17,11 +17,11 @@ void MHInitNotification() {
 }
 
 
-void MHSendNotification(int notificationHandle) {
+void sendNotification(int notificationHandle) {
 	xSemaphoreGive(semphMap[notificationHandle]);
 }
 
-void MHSendNotificationFromISR(int notificationHandle, BaseType_t* xHigherPriortyTaskWoken) {
+void sendNotificationFromISR(int notificationHandle, BaseType_t* xHigherPriortyTaskWoken) {
 	xSemaphoreGiveFromISR(semphMap[notificationHandle], xHigherPriortyTaskWoken);
 }
 

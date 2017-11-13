@@ -12,8 +12,9 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 SRC_FILES += \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
-  $(PROJ_DIR)/lib/MHnotification.c \
+  $(PROJ_DIR)/lib/notification.c \
   $(PROJ_DIR)/lib/main.c \
+  $(PROJ_DIR)/lib/pendingMessages.c \
   $(SDK_ROOT)/components/boards/boards.c \
   $(SDK_ROOT)/components/libraries/util/app_error.c \
   $(SDK_ROOT)/components/libraries/util/app_error_weak.c \

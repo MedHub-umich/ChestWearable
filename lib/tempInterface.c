@@ -12,7 +12,7 @@
 #include "nrf_drv_saadc.h"
 #include "nrf_drv_ppi.h"
 #include "nrf_drv_timer.h"
-#include "MHnotification.h"
+#include "notification.h"
 
 // *************** Internal State ****************************** //
 static struct tempObject_t * this = 0;
@@ -99,7 +99,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
 
 
-        MHSendNotification(TEMPERATURE_NOTIFICATION);
+        sendNotification(TEMPERATURE_NOTIFICATION);
 
 
         NRF_LOG_INFO("Gave semaphore");
