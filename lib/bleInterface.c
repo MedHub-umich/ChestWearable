@@ -19,7 +19,7 @@ void bleBegin(void * p_erase_bonds) {
     advertising_start(p_erase_bonds);
 }
 
-int sendData(ble_hrs_t* p_hrs, void* data, size_t length) {
+int sendData(ble_hrs_t* p_hrs, uint8_t* data, size_t length) {
     uint32_t err_code;
 
 
