@@ -76,49 +76,6 @@ struct tempObject_t * tempObject_ptr;
 
 static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
 
-/**@brief Function for handling the Heart rate measurement timer time-out.
- *
- * @details This function will be called IN THE FREERTOS THREAD 
- *
- * @param[in] xTimer Handler to the timer that called this function.
- *                   You may get identifier given to the function xTimerCreate using pvTimerGetTimerID.
- */
-static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
-{
-    NRF_LOG_INFO("HEART");
-    static uint32_t cnt = 0;
-    ret_code_t      err_code;
-    uint16_t        heart_rate;
-
-    NRF_LOG_INFO("Current connection type is: %d", m_hrs.conn_handle);
-
-    heart_rate = tempGetDataBuffer()[0]; // DATA BUFFER <<<<<<<<<<<<<<<<<<<<
-    cnt++;
-    // err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
-    err_code = sendData(&m_hrs, (uint8_t*)&heart_rate, sizeof(heart_rate));
-    if ((err_code != NRF_SUCCESS) &&
-    (err_code != NRF_ERROR_INVALID_STATE) &&
-    (err_code != NRF_ERROR_RESOURCES) &&
-    (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-    )
-    {
-        NRF_LOG_ERROR("ERROR IN SENDING");
-        NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler %d", err_code);
-        NRF_LOG_FLUSH();
-        APP_ERROR_HANDLER(err_code);
-    } else if (err_code == NRF_ERROR_INVALID_STATE) {
-        NRF_LOG_INFO("Did not send, currently in invalid state");
-    } else if (err_code == NRF_SUCCESS) {
-        NRF_LOG_INFO("Send was successful!");
-    } else if (err_code == NRF_ERROR_RESOURCES) {
-        NRF_LOG_ERROR("Data too large!");
-    } else {
-        NRF_LOG_INFO("Unknown state handled: %d", err_code);
-    }
-}
-
-
-
 #if NRF_LOG_ENABLED
 /**@brief Thread for handling the logger.
  *
@@ -273,8 +230,26 @@ static void taskSendBle (void * pvParameter)
         NRF_LOG_FLUSH();
 
         // call this function to SEND DATA OVER BLE
-        heart_rate_meas_timeout_handler();
-
+        ret_code_t err_code = sendData(&m_hrs, (uint8_t*) tempGetDataBuffer(), sizeof(uint16_t));
+        if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != NRF_ERROR_RESOURCES) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+        )
+        {
+            NRF_LOG_ERROR("ERROR IN SENDING");
+            NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler %d", err_code);
+            NRF_LOG_FLUSH();
+            APP_ERROR_HANDLER(err_code);
+        } else if (err_code == NRF_ERROR_INVALID_STATE) {
+            NRF_LOG_INFO("Did not send, currently in invalid state");
+        } else if (err_code == NRF_SUCCESS) {
+            NRF_LOG_INFO("Send was successful!");
+        } else if (err_code == NRF_ERROR_RESOURCES) {
+            NRF_LOG_ERROR("Data too large!");
+        } else {
+            NRF_LOG_INFO("Unknown state handled: %d", err_code);
+        }
         nrf_gpio_pin_write(27, 0);
 
         //vTaskDelay(1000);
