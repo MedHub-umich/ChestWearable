@@ -1,5 +1,7 @@
 #include "bleInterface.h"
-
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
 
 #define OPCODE_LENGTH 1                                                              /**< Length of opcode inside Heart Rate Measurement packet. */
 #define HANDLE_LENGTH 2 
@@ -58,6 +60,28 @@ int sendData(ble_hrs_t* p_hrs, uint8_t* data, size_t length) {
     }
 
     return err_code;
+}
+
+void debugErrorMessage(ret_code_t err_code) {
+    if ((err_code != NRF_SUCCESS) &&
+    (err_code != NRF_ERROR_INVALID_STATE) &&
+    (err_code != NRF_ERROR_RESOURCES) &&
+    (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+    )
+    {
+        NRF_LOG_ERROR("ERROR IN SENDING");
+        NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler %d", err_code);
+        NRF_LOG_FLUSH();
+        APP_ERROR_HANDLER(err_code);
+    } else if (err_code == NRF_ERROR_INVALID_STATE) {
+        NRF_LOG_INFO("Did not send, currently in invalid state");
+    } else if (err_code == NRF_SUCCESS) {
+        NRF_LOG_INFO("Send was successful!");
+    } else if (err_code == NRF_ERROR_RESOURCES) {
+        NRF_LOG_ERROR("Data too large!");
+    } else {
+        NRF_LOG_INFO("Unknown state handled: %d", err_code);
+    }
 }
 
 /**@brief Function for initializing services that will be used by the application.

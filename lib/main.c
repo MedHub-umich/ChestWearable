@@ -218,6 +218,7 @@ static void taskSendBle (void * pvParameter)
 
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
+    ret_code_t err_code;
 
     while (true)
     {
@@ -229,27 +230,12 @@ static void taskSendBle (void * pvParameter)
         NRF_LOG_INFO("Checkpoint: taskSendBle got semaphore");
         NRF_LOG_FLUSH();
 
+        nrf_saadc_value_t* data_to_send = tempGetDataBuffer();
+
         // call this function to SEND DATA OVER BLE
-        ret_code_t err_code = sendData(&m_hrs, (uint8_t*) tempGetDataBuffer(), sizeof(uint16_t));
-        if ((err_code != NRF_SUCCESS) &&
-        (err_code != NRF_ERROR_INVALID_STATE) &&
-        (err_code != NRF_ERROR_RESOURCES) &&
-        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-        )
-        {
-            NRF_LOG_ERROR("ERROR IN SENDING");
-            NRF_LOG_INFO("ERROR heart_rate_meas_timeout_handler %d", err_code);
-            NRF_LOG_FLUSH();
-            APP_ERROR_HANDLER(err_code);
-        } else if (err_code == NRF_ERROR_INVALID_STATE) {
-            NRF_LOG_INFO("Did not send, currently in invalid state");
-        } else if (err_code == NRF_SUCCESS) {
-            NRF_LOG_INFO("Send was successful!");
-        } else if (err_code == NRF_ERROR_RESOURCES) {
-            NRF_LOG_ERROR("Data too large!");
-        } else {
-            NRF_LOG_INFO("Unknown state handled: %d", err_code);
-        }
+        err_code = sendData(&m_hrs, (uint8_t*)data_to_send, sizeof(uint16_t));
+        debugErrorMessage(err_code);
+        
         nrf_gpio_pin_write(27, 0);
 
         //vTaskDelay(1000);

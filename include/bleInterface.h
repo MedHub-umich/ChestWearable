@@ -6,6 +6,7 @@
 void bleInit(ble_hrs_t* m_hrs);
 void bleBegin(void * p_erase_bonds);
 int sendData(ble_hrs_t* m_hrs, uint8_t* data, size_t length);
+void debugErrorMessage(ret_code_t err_code);
 
 
 // Private
