@@ -110,6 +110,8 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
         NRF_LOG_INFO("Did not send, currently in invalid state");
     } else if (err_code == NRF_SUCCESS) {
         NRF_LOG_INFO("Send was successful!");
+    } else if (err_code == NRF_ERROR_RESOURCES) {
+        NRF_LOG_ERROR("Data too large!");
     } else {
         NRF_LOG_INFO("Unknown state handled: %d", err_code);
     }
