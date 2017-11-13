@@ -12,7 +12,8 @@ void waitForNotification(int notificationHandle) {
 void initNotification() {
 	int i;
 	for (i = 0; i < NUM_NOTIFICATIONS; ++i) {
-		vSemaphoreCreateBinary(semphMap[i]);
+		semphMap[i] = xSemaphoreCreateCounting(10000, 0);
+		//vSemaphoreCreateBinary(semphMap[i]);
 	}
 }
 

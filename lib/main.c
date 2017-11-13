@@ -990,7 +990,7 @@ static void testTask(void* pvParameter) {
     for (;;) {
         pendingMessagesPush(sizeof(userData), userData, &globalQ);
         bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 40);
+        vTaskDelayUntil(&xLastWakeTime, 30);
     }
 }
 
@@ -1000,6 +1000,6 @@ static void testTask2(void* pvParameter) {
     for (;;) {
         pendingMessagesPush(sizeof(userData), userData, &globalQ);
         bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 40);
+        vTaskDelayUntil(&xLastWakeTime, 30);
     }
 }
