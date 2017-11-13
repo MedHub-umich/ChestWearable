@@ -60,6 +60,8 @@
 TaskHandle_t  taskSendBleHandle;
 static void taskSendBle(void * pvParameter);
 
+BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
+
 
 struct tempObject_t * tempObject_ptr;
 
@@ -92,7 +94,8 @@ static void heart_rate_meas_timeout_handler(/*TimerHandle_t xTimer*/)
 
     heart_rate = tempGetDataBuffer()[0]; // DATA BUFFER <<<<<<<<<<<<<<<<<<<<
     cnt++;
-    err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
+    // err_code = ble_hrs_heart_rate_measurement_send(&m_hrs, heart_rate);
+    err_code = sendData(&m_hrs, &heart_rate, sizeof(heart_rate));
     if ((err_code != NRF_SUCCESS) &&
     (err_code != NRF_ERROR_INVALID_STATE) &&
     (err_code != NRF_ERROR_RESOURCES) &&
@@ -202,7 +205,7 @@ int main(void)
     bool erase_bonds;
 
     clock_init();
-    bleInit();
+    bleInit(&m_hrs);
     buttons_leds_init(&erase_bonds);
 
 

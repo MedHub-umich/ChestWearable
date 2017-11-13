@@ -3,11 +3,12 @@
 #define BLE_INTERFACE_H
 #include "sdInterface.h"
 
-void bleInit();
+void bleInit(ble_hrs_t* m_hrs);
 void bleBegin(void * p_erase_bonds);
+int sendData(ble_hrs_t* m_hrs, void* data, size_t length);
 
 
 // Private
-void services_init(void);
+void services_init(ble_hrs_t* m_hrs);
 
 #endif //BLE_INTERFACE_H

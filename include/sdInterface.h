@@ -62,7 +62,6 @@
 
 
 // Define services for the BLE
-BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
 NRF_BLE_GATT_DEF(m_gatt);                                           /**< GATT module instance. */
 BLE_ADVERTISING_DEF(m_advertising);                                 /**< Advertising module instance. */
 
@@ -78,7 +77,7 @@ void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context);
 void ble_stack_init(void);
 void bsp_event_handler(bsp_event_t event);
 void sleep_mode_enter(void);
-void conn_params_init(void);
+void conn_params_init(ble_hrs_t* m_hrs);
 void conn_params_error_handler(uint32_t nrf_error);
 void on_conn_params_evt(ble_conn_params_evt_t * p_evt);
 
