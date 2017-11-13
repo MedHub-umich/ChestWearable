@@ -10,9 +10,13 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 
 # Source files common to all targets
 SRC_FILES += \
+  $(PROJ_DIR)/lib/main.c \
+  $(PROJ_DIR)/lib/sdInterface.c \
+  $(PROJ_DIR)/lib/tempInterface.c \
+  $(PROJ_DIR)/lib/blinkyInterface.c \
+  $(PROJ_DIR)/lib/bleInterface.c \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
-  $(PROJ_DIR)/lib/main.c \
   $(SDK_ROOT)/components/boards/boards.c \
   $(SDK_ROOT)/components/libraries/util/app_error.c \
   $(SDK_ROOT)/components/libraries/util/app_error_weak.c \
@@ -89,8 +93,6 @@ SRC_FILES += \
   $(SDK_ROOT)/components/drivers_nrf/timer/nrf_drv_timer.c \
   $(SDK_ROOT)/components/drivers_nrf/ppi/nrf_drv_ppi.c   \
   $(SDK_ROOT)/components/drivers_nrf/hal/nrf_saadc.c \
-  $(PROJ_DIR)/lib/tempInterface.c \
-  $(PROJ_DIR)/lib/blinkyInterface.c
 
 
 # Include folders common to all targets

@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "ble_conn_state.h": "c",
-        "task.h": "c"
-    }
-}
