@@ -280,19 +280,20 @@ static void taskSendBle (void * pvParameter)
 static void testTask(void* pvParameter) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
     char userData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+    // char userData[1] = {0xAA};
     for (;;) {
         pendingMessagesPush(sizeof(userData), userData, &globalQ);
-        bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 40);
+        // bsp_board_led_invert(BSP_BOARD_LED_1);
+        vTaskDelayUntil(&xLastWakeTime, 5);
     }
 }
 
 static void testTask2(void* pvParameter) {
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    char userData[4] = {0x11, 0x22, 0x33, 0x44};
+    // char userData[4] = {0x11, 0x22, 0x33, 0x44};
     for (;;) {
-        pendingMessagesPush(sizeof(userData), userData, &globalQ);
-        bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 40);
+        // pendingMessagesPush(sizeof(userData), userData, &globalQ);
+        // bsp_board_led_invert(BSP_BOARD_LED_1);
+        vTaskDelayUntil(&xLastWakeTime, 1000);
     }
 }
