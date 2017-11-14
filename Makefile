@@ -10,7 +10,7 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 
 # Source files common to all targets
 SRC_FILES += \
-  $(PROJ_DIR)/lib/main.c \
+  $(PROJ_DIR)/lib/arm_fir_example.c \
   $(PROJ_DIR)/lib/sdInterface.c \
   $(PROJ_DIR)/lib/tempInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
@@ -215,9 +215,11 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/ble/ble_services/ble_rscs \
   $(SDK_ROOT)/components/drivers_nrf/usbd \
   $(SDK_ROOT)/components/ble/ble_services/ble_hrs \
+  $(SDK_ROOT)/components/toolchain \
 
 # Libraries common to all targets
 LIB_FILES += \
+  $(SDK_ROOT)/components/toolchain/cmsis/dsp/GCC/libarm_cortexM4lf_math.a \
 
 # Optimization flags
 OPT = -O3 -g3
@@ -225,6 +227,7 @@ OPT = -O3 -g3
 #OPT += -flto
 
 # C flags common to all targets
+CFLAGS += -DARM_MATH_CM4
 CFLAGS += $(OPT)
 CFLAGS += -DBOARD_PCA10040
 CFLAGS += -DCONFIG_GPIO_AS_PINRESET
