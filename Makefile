@@ -10,7 +10,7 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 
 # Source files common to all targets
 SRC_FILES += \
-  $(PROJ_DIR)/lib/main.c \
+  $(PROJ_DIR)/lib/main2.c \
   $(PROJ_DIR)/lib/sdInterface.c \
   $(PROJ_DIR)/lib/tempInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
