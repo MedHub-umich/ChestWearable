@@ -12,6 +12,8 @@
 typedef struct pendingMessages {
 	char tempBuff[WAIT_MESSAGE_SIZE];
 	QueueHandle_t queue;
+	SemaphoreHandle_t queueLock;
+	int size;
 } pendingMessages_t;
 
 int pendingMessagesCreate(pendingMessages_t* this);
