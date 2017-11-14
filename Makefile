@@ -15,6 +15,8 @@ SRC_FILES += \
   $(PROJ_DIR)/lib/tempInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
   $(PROJ_DIR)/lib/bleInterface.c \
+  $(PROJ_DIR)/lib/notification.c \
+  $(PROJ_DIR)/lib/pendingMessages.c \
   $(SDK_ROOT)/components/toolchain/gcc/gcc_startup_nrf52.S \
   $(SDK_ROOT)/components/toolchain/system_nrf52.c \
   $(SDK_ROOT)/components/boards/boards.c \
