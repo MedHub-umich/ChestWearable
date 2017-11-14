@@ -33,7 +33,7 @@ int sendData(ble_hrs_t* p_hrs, uint8_t* data, size_t length) {
         ble_gatts_hvx_params_t hvx_params;
 
         if (length > MAX_HRM_LEN){
-            return NRF_ERROR_RESOURCES;
+            return NRF_ERROR_BUSY;
         }
 
         // len     = hrm_encode(p_hrs, heart_rate, encoded_hrm);
@@ -78,7 +78,7 @@ void debugErrorMessage(ret_code_t err_code) {
     } else if (err_code == NRF_SUCCESS) {
         NRF_LOG_INFO("Send was successful!");
     } else if (err_code == NRF_ERROR_RESOURCES) {
-        NRF_LOG_ERROR("Data too large!");
+        NRF_LOG_ERROR("Not enough resources to send!");
     } else {
         NRF_LOG_INFO("Unknown state handled: %d", err_code);
     }

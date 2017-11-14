@@ -510,6 +510,10 @@ void conn_params_init(ble_hrs_t* m_hrs)
     cp_init.evt_handler                    = on_conn_params_evt;
     cp_init.error_handler                  = conn_params_error_handler;
 
+    ble_opt_t opt;
+    opt.common_opt.conn_evt_ext.enable = 1;
+    sd_ble_opt_set(BLE_COMMON_OPT_CONN_EVT_EXT, &opt);
+
     err_code = ble_conn_params_init(&cp_init);
     APP_ERROR_CHECK(err_code);
 }

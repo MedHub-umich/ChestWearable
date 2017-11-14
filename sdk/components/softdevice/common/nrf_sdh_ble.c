@@ -47,7 +47,6 @@
 #include "app_error.h"
 #include "nrf_strerror.h"
 
-
 #define NRF_LOG_MODULE_NAME nrf_sdh_ble
 #if NRF_SDH_BLE_LOG_ENABLED
     #define NRF_LOG_LEVEL       NRF_SDH_BLE_LOG_LEVEL
@@ -79,7 +78,8 @@ NRF_SECTION_SET_DEF(sdh_ble_observers, nrf_sdh_ble_evt_observer_t, NRF_SDH_BLE_O
 #endif
 //lint -restore
 
-#define RAM_START       0x20000000
+// #define RAM_START       0x20000000
+#define RAM_START 0x20002750
 #define APP_RAM_START   (uint32_t)m_ram_start
 
 
@@ -90,8 +90,8 @@ ret_code_t nrf_sdh_ble_app_ram_start_get(uint32_t * p_app_ram_start)
         return NRF_ERROR_NULL;
     }
 
-    *p_app_ram_start = APP_RAM_START;
-
+    // *p_app_ram_start = APP_RAM_START;
+    *p_app_ram_start = 0x20002750;
     return NRF_SUCCESS;
 }
 
@@ -142,7 +142,6 @@ ret_code_t nrf_sdh_ble_default_cfg_set(uint8_t conn_cfg_tag, uint32_t * p_ram_st
 
     }
 
-    // Configure the maximum ATT MTU.
 #if (NRF_SDH_BLE_GATT_MAX_MTU_SIZE != 23)
     memset(&ble_cfg, 0x00, sizeof(ble_cfg));
     ble_cfg.conn_cfg.conn_cfg_tag                 = conn_cfg_tag;
