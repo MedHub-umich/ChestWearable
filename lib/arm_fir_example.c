@@ -48,6 +48,7 @@
 #include "nrf_log_default_backends.h"
 #include "nrf_delay.h"
 #include "boards.h"
+#include "bsp.h"
 
 /* ----------------------------------------------------------------------
 ** Macro Defines
@@ -61,29 +62,63 @@ static float32_t testOutputFIR[TEST_LENGTH_SAMPLES];
 
 static float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
 
-/* ----------------------------------------------------------------------
-** FIR Coefficients buffer generated using fir1() MATLAB function.
-** fir1(28, 6/24)
-** ------------------------------------------------------------------- */
-const float32_t firCoeffs32[NUM_TAPS] = {
-  -0.0018225230f, -0.0015879294f, +0.0000000000f, +0.0036977508f, +0.0080754303f, +0.0085302217f, -0.0000000000f, -0.0173976984f,
-  -0.0341458607f, -0.0333591565f, +0.0000000000f, +0.0676308395f, +0.1522061835f, +0.2229246956f, +0.2504960933f, +0.2229246956f,
-  +0.1522061835f, +0.0676308395f, +0.0000000000f, -0.0333591565f, -0.0341458607f, -0.0173976984f, -0.0000000000f, +0.0085302217f,
-  +0.0080754303f, +0.0036977508f, +0.0000000000f, -0.0015879294f, -0.0018225230f
+/*
+FIR filter designed with
+http://t-filter.appspot.com
+
+sampling frequency: 500 Hz
+
+* 0 Hz - 40 Hz
+  gain = 1
+  desired ripple = 5 dB
+  actual ripple = 9.866080153497537 dB
+
+* 50 Hz - 250 Hz
+  gain = 0
+  desired attenuation = -40 dB
+  actual attenuation = -33.236542315797244 dB
+
+*/
+static float32_t firCoeffs32[NUM_TAPS] = {
+  -0.008543732722345373,
+  -0.030271830133054324,
+  -0.03454065915308464,
+  -0.05148005201784088,
+  -0.060155171767034284,
+  -0.06406571685129368,
+  -0.05771876299159945,
+  -0.040434095642361424,
+  -0.011952566378233843,
+  0.025384045648778615,
+  0.06756954673258184,
+  0.1091522081958284,
+  0.14429144935820237,
+  0.1678083092496213,
+  0.17607129923187123,
+  0.1678083092496213,
+  0.14429144935820237,
+  0.1091522081958284,
+  0.06756954673258184,
+  0.025384045648778615,
+  -0.011952566378233843,
+  -0.040434095642361424,
+  -0.05771876299159945,
+  -0.06406571685129368,
+  -0.060155171767034284,
+  -0.05148005201784088,
+  -0.03454065915308464,
+  -0.030271830133054324,
+  -0.008543732722345373
 };
+
 /* ------------------------------------------------------------------
  * Global variables for FIR LPF Example
  * ------------------------------------------------------------------- */
 uint32_t blockSize = BLOCK_SIZE;
 uint32_t numBlocks = TEST_LENGTH_SAMPLES/BLOCK_SIZE;
 //float32_t  snr;
-float32_t sine_freq = 10000.f;
-float32_t sampling_freq = 48000.f;
-
-void createInput()
-{
-
-}
+float32_t sine_freq = 30.f;
+float32_t sampling_freq = 500.f;
 
 /* ----------------------------------------------------------------------
  * FIR LPF Example
@@ -96,7 +131,7 @@ int main(void)
     NRF_LOG_INFO("***************** STARTING ********************");
     NRF_LOG_PROCESS();
 
-    createInput();
+    APP_ERROR_CHECK(bsp_init(BSP_INIT_LED,bsp_event_handler));
 
     int j = 0;
     for (j = 0; j < TEST_LENGTH_SAMPLES; j++)
@@ -139,7 +174,7 @@ int main(void)
 
   while (1)
   {
-    bsp_board_led_invert(2);
+    bsp_board_led_invert(1);
     nrf_delay_ms(100);
   }                             /* main function does not return */
 }
