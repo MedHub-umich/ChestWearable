@@ -134,16 +134,16 @@ int main(void)
     bsp_board_leds_init();
     bsp_board_led_off(1);
 
-    int j = 0;
-    for (j = 0; j < TEST_LENGTH_SAMPLES; j++)
-    {
-      testInput_f32_1kHz_15kHzFIR[j] = 5.f*sin(sine_freq * (2.f * 3.1415) * (float32_t)j / sampling_freq);
-      NRF_LOG_INFO("Input: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(testInput_f32_1kHz_15kHzFIR[j]));
-      NRF_LOG_PROCESS();
-      //NRF_LOG_INFO("%d",j); // Print index
-      //NRF_LOG_PROCESS();
-      nrf_delay_ms(20);
-    }
+    // int j = 0;
+    // for (j = 0; j < TEST_LENGTH_SAMPLES; j++)
+    // {
+    //   testInput_f32_1kHz_15kHzFIR[j] = 200.f*sin(sine_freq * (2.f * 3.1415) * (float32_t)j / sampling_freq)+1500.f;
+    //   NRF_LOG_INFO("Input: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(testInput_f32_1kHz_15kHzFIR[j]));
+    //   NRF_LOG_PROCESS();
+    //   //NRF_LOG_INFO("%d",j); // Print index
+    //   //NRF_LOG_PROCESS();
+    //   nrf_delay_ms(20);
+    // }
 
     uint32_t i;
     arm_fir_instance_f32 S;
@@ -165,19 +165,25 @@ int main(void)
   bsp_board_led_off(1);
 
 
-  for(i = 0; i < TEST_LENGTH_SAMPLES; i++)
-  {
-    NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(outputF32[i]));
-    NRF_LOG_PROCESS();
-    //NRF_LOG_INFO("%d",i); //Print Index
-    //NRF_LOG_PROCESS();
-    nrf_delay_ms(1);
-  }
+  // for(i = 0; i < TEST_LENGTH_SAMPLES; i++)
+  // {
+  //   NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(outputF32[i]));
+  //   NRF_LOG_PROCESS();
+  //   //NRF_LOG_INFO("%d",i); //Print Index
+  //   //NRF_LOG_PROCESS();
+  //   nrf_delay_ms(1);
+  // }
   //NRF_LOG_FLUSH();
 
   while (1)
   {
-    bsp_board_led_invert(0);
-    nrf_delay_ms(100);
+    //bsp_board_led_invert(0);
+  bsp_board_led_on(1);
+  for(i=0; i < numBlocks; i++)
+  {
+    arm_fir_f32(&S, inputF32 + (i * blockSize), outputF32 + (i * blockSize), blockSize);
+  }
+  bsp_board_led_off(1);
+  nrf_delay_ms(1000);
   }                             /* main function does not return */
 }
