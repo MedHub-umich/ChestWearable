@@ -53,7 +53,7 @@
 /* ----------------------------------------------------------------------
 ** Macro Defines
 ** ------------------------------------------------------------------- */
-#define TEST_LENGTH_SAMPLES  150
+#define TEST_LENGTH_SAMPLES  500
 #define BLOCK_SIZE            32
 #define NUM_TAPS              29
 
@@ -131,7 +131,8 @@ int main(void)
     NRF_LOG_INFO("***************** STARTING ********************");
     NRF_LOG_PROCESS();
 
-    APP_ERROR_CHECK(bsp_init(BSP_INIT_LED,bsp_event_handler));
+    bsp_board_leds_init();
+    bsp_board_led_off(1);
 
     int j = 0;
     for (j = 0; j < TEST_LENGTH_SAMPLES; j++)
@@ -156,10 +157,12 @@ int main(void)
   /* ----------------------------------------------------------------------
   ** Call the FIR process function for every blockSize samples
   ** ------------------------------------------------------------------- */
+  bsp_board_led_on(1);
   for(i=0; i < numBlocks; i++)
   {
     arm_fir_f32(&S, inputF32 + (i * blockSize), outputF32 + (i * blockSize), blockSize);
   }
+  bsp_board_led_off(1);
 
 
   for(i = 0; i < TEST_LENGTH_SAMPLES; i++)
@@ -174,7 +177,7 @@ int main(void)
 
   while (1)
   {
-    bsp_board_led_invert(1);
+    bsp_board_led_invert(0);
     nrf_delay_ms(100);
   }                             /* main function does not return */
 }
