@@ -188,6 +188,8 @@ void taskFIR (void * pvParameter)
     NRF_LOG_INFO("Checkpoint: beginning of taskFIR");
     int i;
 
+    uint16_t dataBufferFilteredCast[SAMPLES_IN_BUFFER];
+
     while (true)
     {
         waitForNotification(SAADC_BUFFER_NOTIFICATION);
@@ -196,16 +198,21 @@ void taskFIR (void * pvParameter)
         arm_fir_f32(&S, dataBuffer, dataBufferFiltered, blockSize);
         bsp_board_led_off(1);
 
+        // for(i = 0; i < SAMPLES_IN_BUFFER; ++i)
+        // {
+        //     // downsample: copy every 3rd value
+        //     if (i % 3 == 0)
+        //     {
+        //         dataBufferFilteredDownSampled[i/3] = (uint16_t)dataBufferFiltered[i];
+        //         NRF_LOG_INFO("Output: %d", dataBufferFilteredDownSampled[i/3]);
+        //     }
+        // }
+        //pendingMessagesPush(sizeof(uint16_t)*SAMPLES_IN_BUFFER/3, (char*)dataBufferFilteredDownSampled, &globalQ);
         for(i = 0; i < SAMPLES_IN_BUFFER; ++i)
         {
-            // downsample: copy every 3rd value
-            if (i % 3 == 0)
-            {
-                dataBufferFilteredDownSampled[i/3] = (uint16_t)dataBufferFiltered[i];
-                NRF_LOG_INFO("Output: %d", dataBufferFilteredDownSampled[i/3]);
-            }
+            dataBufferFilteredCast[i] = (uint16_t) dataBufferFiltered[i];
         }
-        pendingMessagesPush(sizeof(uint16_t)*SAMPLES_IN_BUFFER/3, (char*)dataBufferFilteredDownSampled, &globalQ);
+        pendingMessagesPush(sizeof(uint16_t)*SAMPLES_IN_BUFFER, (char*)dataBufferFilteredCast, &globalQ);
     }
 }
 
