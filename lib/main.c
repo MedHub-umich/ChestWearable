@@ -64,13 +64,10 @@ static void taskSendBle(void * pvParameter);
 
 BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
 
-TaskHandle_t testTaskHandle;
-static void testTask(void* pvParameter);
+// TaskHandle_t testTaskHandle;
+// static void testTask(void* pvParameter);
 
-TaskHandle_t testTask2Handle;
-static void testTask2(void* pvParameter);
-
-pendingMessages_t globalQ;
+//pendingMessages_t globalQ;
 struct tempObject_t * tempObject_ptr;
 
 // END SAADC ****************************************************
@@ -121,6 +118,22 @@ static void log_init(void)
     #endif
 
     NRF_LOG_DEFAULT_BACKENDS_INIT();
+}
+
+static void checkReturn(BaseType_t retVal)
+{
+    if (retVal == pdPASS)
+    {
+        NRF_LOG_INFO("Checkpoint: created task");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    }
 }
 
 
@@ -180,51 +193,11 @@ int main(void)
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
 
-    BaseType_t retVal = xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle);
-    if (retVal == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    }
+    checkReturn(xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle));
 
-    BaseType_t retVal2 = xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle);
-    if (retVal2 == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal2 == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    }
+    //checkReturn(xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle));
 
-    retVal2 = xTaskCreate(testTask2, "TestTask2", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTask2Handle);
-    if (retVal2 == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal2 == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    }
-
-
-
-    //UNUSED_VARIABLE(tempInit(tempObject_ptr));
+    UNUSED_VARIABLE(tempInit(tempObject_ptr));
     //UNUSED_VARIABLE(blinkyInit());
 
     // Start FreeRTOS scheduler.
@@ -277,23 +250,14 @@ static void taskSendBle (void * pvParameter)
 }
 
 
-static void testTask(void* pvParameter) {
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    char userData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
-    // char userData[1] = {0xAA};
-    for (;;) {
-        pendingMessagesPush(sizeof(userData), userData, &globalQ);
-        // bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 5);
-    }
-}
+// static void testTask(void* pvParameter) {
+//     TickType_t xLastWakeTime = xTaskGetTickCount();
+//     char userData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+//     // char userData[1] = {0xAA};
+//     for (;;) {
+//         pendingMessagesPush(sizeof(userData), userData, &globalQ);
+//         // bsp_board_led_invert(BSP_BOARD_LED_1);
+//         vTaskDelayUntil(&xLastWakeTime, 5);
+//     }
+// }
 
-static void testTask2(void* pvParameter) {
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    // char userData[4] = {0x11, 0x22, 0x33, 0x44};
-    for (;;) {
-        // pendingMessagesPush(sizeof(userData), userData, &globalQ);
-        // bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 1000);
-    }
-}

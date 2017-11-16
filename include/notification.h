@@ -6,10 +6,11 @@
 #include "portmacro_cmsis.h"
 
 
-#define NUM_NOTIFICATIONS 2  //Change whenever you add a new semaphore
+#define NUM_NOTIFICATIONS 3  //Change whenever you add a new semaphore
 
 #define TEMPERATURE_NOTIFICATION 0
 #define BLUETOOTH_NOTIFICATION 1
+#define SAADC_BUFFER_NOTIFICATION 2
 
 
 SemaphoreHandle_t semphMap[NUM_NOTIFICATIONS]; 

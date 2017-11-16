@@ -16,6 +16,8 @@ typedef struct pendingMessages {
 	int size;
 } pendingMessages_t;
 
+pendingMessages_t globalQ;
+
 int pendingMessagesCreate(pendingMessages_t* this);
 
 // 1. Wait for notification for queue is appreciably full 

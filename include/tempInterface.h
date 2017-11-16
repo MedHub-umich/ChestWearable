@@ -8,6 +8,7 @@
 #include "task.h"
 #include "semphr.h"
 #include "nrf_timer.h"
+#include "arm_const_structs.h"
 
 
 
@@ -15,7 +16,7 @@ struct tempObject_t {};
 
 // Public
 int tempInit(struct tempObject_t*);
-nrf_saadc_value_t * tempGetDataBuffer();
+float32_t * tempGetDataBuffer();
 
 // Private
 void saadc_init(void);
