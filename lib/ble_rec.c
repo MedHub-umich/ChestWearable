@@ -10,7 +10,7 @@
 
 #define BLE_REC_MAX_RX_CHAR_LEN        BLE_NUS_MAX_DATA_LEN        /**< Maximum length of the RX Characteristic (in bytes). */
 
-#define NUS_BASE_UUID                  {{0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0, 0x93, 0xF3, 0xA3, 0xB5, 0x00, 0x00, 0x40, 0x6E}} /**< Used vendor specific UUID. */
+#define REC_BASE_UUID                  {{0x9E, 0xCA, 0xDC, 0x24, 0x0E, 0xE5, 0xA9, 0xE0, 0x93, 0xF3, 0xA3, 0xB5, 0x00, 0x00, 0x40, 0x6E}} /**< Used vendor specific UUID. */
 
 // Function to handle the BLE_GAP_EVT_CONNECTTED event
 static void on_connect(ble_rec_t *p_rec, ble_evt_t const * p_ble_evt){
@@ -107,4 +107,37 @@ void ble_rec_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {
         default:
             break;
     }
+}
+
+// Initializer for the event
+uint32_t ble_rec_init(ble_rec_t* p_rec, ble_rec_init_t const * p_rec_init) {
+    uint32_t err_code;
+    ble_uuid_t ble_uuid;
+    ble_uuid128_t rec_base_uuid = REC_BASE_UUID;
+
+    VERIFY_PARAM_NOT_NULL(p_rec);
+    VERIFY_PARAM_NOT_NULL(p_rec_init);
+
+    // Initialze the service
+    p_rec->conn_handle = BLE_CONN_HANDLE_INVALID;
+    p_rec->data_handler = p_rec_init->data_handler;
+    
+    // Add custome base UUID
+    err_code = sd_ble_uuid_vs_add(&rec_base_uuid, &p_rec->uuid_type);
+    VERIFY_SUCCESS(err_code);
+
+    ble_uuid.type = p_rec->uuid_type;
+    ble_uuid.uuid = BLE_UUID_REC_SERVICE;
+
+    // Add (register) the new service
+    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY,
+                                        &ble_uuid,
+                                        &p_rec->service_handle);
+    VERIFY_SUCCESS(err_code);
+
+    // Add the RX characteristic
+    err_code = rx_char_add(p_rec, p_rec_init);
+    VERIFY_SUCCESS(err_code);
+
+    return NRF_SUCCESS;
 }

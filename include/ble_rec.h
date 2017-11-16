@@ -8,7 +8,7 @@
 #include "ble_srv_common.h"
 #include "nrf_sdh_ble.h"
 
-#define BLE_UUID_NUS_SERVICE 0x0002                      /**< The UUID of the Nordic UART Service. */
+#define BLE_UUID_REC_SERVICE 0x0002                      /**< The UUID of the Nordic UART Service. */
 
 #define OPCODE_LENGTH 1
 #define HANDLE_LENGTH 2

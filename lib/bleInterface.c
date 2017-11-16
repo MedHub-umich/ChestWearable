@@ -2,17 +2,18 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
+#include "ble_rec.h"
 
 #define OPCODE_LENGTH 1                                                              /**< Length of opcode inside Heart Rate Measurement packet. */
 #define HANDLE_LENGTH 2 
 #define MAX_HRM_LEN      (NRF_SDH_BLE_GATT_MAX_MTU_SIZE - OPCODE_LENGTH - HANDLE_LENGTH) /**< Maximum size of a transmitted Heart Rate Measurement. */
 
-void bleInit(ble_hrs_t* m_hrs) {
+void bleInit(ble_hrs_t* m_hrs, ble_rec_t* m_rec) {
     ble_stack_init();
     gap_params_init();
     gatt_init();
     advertising_init();
-    services_init(m_hrs);
+    services_init(m_hrs, m_rec);
     conn_params_init(m_hrs);
     peer_manager_init();    
 }
@@ -86,12 +87,7 @@ void debugErrorMessage(ret_code_t err_code) {
     }
 }
 
-/**@brief Function for initializing services that will be used by the application.
- *
- * @details Initialize the Heart Rate, Battery and Device Information services.
- */
-void services_init(ble_hrs_t* m_hrs)
-{
+static void service_init_hrs(ble_hrs_t* m_hrs) {
     ret_code_t     err_code;
     ble_hrs_init_t hrs_init;
     ble_dis_init_t dis_init;
@@ -127,4 +123,18 @@ void services_init(ble_hrs_t* m_hrs)
 
     err_code = ble_dis_init(&dis_init);
     APP_ERROR_CHECK(err_code);
+}
+
+static void service_init_rec(ble_rec_t* m_rec) {
+
+}
+
+/**@brief Function for initializing services that will be used by the application.
+ *
+ * @details Initialize the Heart Rate, Battery and Device Information services.
+ */
+void services_init(ble_hrs_t* m_hrs, ble_rec_t* m_rec)
+{
+    service_init_hrs(m_hrs);
+    service_init_rec(m_rec);
 }
