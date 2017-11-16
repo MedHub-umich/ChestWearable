@@ -63,6 +63,7 @@ TaskHandle_t  taskSendBleHandle;
 static void taskSendBle(void * pvParameter);
 
 BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
+BLE_REC_DEF(m_rec);
 
 TaskHandle_t testTaskHandle;
 static void testTask(void* pvParameter);
