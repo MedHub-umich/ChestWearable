@@ -55,6 +55,7 @@
 #include "sdInterface.h"
 #include "notification.h"
 #include "pendingMessages.h"
+#include "ble_rec.h"
 
 // SAADC ********************************************************
 // FreeRTOS
