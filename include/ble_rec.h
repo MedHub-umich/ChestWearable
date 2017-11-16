@@ -38,6 +38,9 @@ typedef struct
     uint16_t        length;           /**< Length of received data. */
 } ble_rec_evt_rx_data_t;
 
+// Forward delcaration for the rec type
+typedef struct ble_rec_s ble_rec_t;
+
 // Event structure for rec
 typedef struct {
     ble_rec_evt_type_t evt_type; // Type of event
@@ -51,7 +54,7 @@ typedef struct {
 typedef struct ble_rec_s ble_rec_t;
 
 // Type for data handler used
-typedef void (*ble_rec_data_handler_t) (ble_rec_t * p_hrs);
+typedef void (*ble_rec_data_handler_t) (ble_rec_evt_t * p_rec_evt);
 
 // Struct needed to init things
 typedef struct {
@@ -61,7 +64,8 @@ typedef struct {
 // Structure for the receive service
 struct ble_rec_s {
     uint8_t uuid_type;
-    ble_rec_data_handler_t evt_handler;
+    ble_rec_data_handler_t data_handler; // Handler used to receive data
+    ble_gatts_char_handles_t rx_handles;              /**< Handles related to the RX characteristic (as provided by the SoftDevice). */
     uint16_t service_handle;
     uint16_t conn_handle;
 
