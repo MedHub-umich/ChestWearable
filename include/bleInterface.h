@@ -6,11 +6,12 @@
 
 #define MIN_PACKET_SIZE 2
 #define MAX_REC_TYPES 256
+#define MAX_PACKET_SIZE 10
 
 typedef struct {
     uint8_t rec_type;
     uint8_t data_length;
-    uint8_t *data;
+    uint8_t data[MAX_PACKET_SIZE - MIN_PACKET_SIZE];
 } rec_data_t;
 
 // Type for main function handle registering

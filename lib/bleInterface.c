@@ -150,6 +150,11 @@ static void rec_data_handler(ble_rec_evt_t* p_evt) {
         return;
     }
 
+    if (packet_len > MAX_PACKET_SIZE) {
+        NRF_LOG_ERROR("Received packed over the required data amount... dropping")
+        return;
+    }
+
     // Check to make sure the packet is a valid length for what it says
     rec_data_t* rec_data = (rec_data_t*)p_evt->params.rx_data.p_data;
     if (rec_data->data_length + 2 != packet_len) {
