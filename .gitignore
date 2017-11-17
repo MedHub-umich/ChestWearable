@@ -29,7 +29,7 @@ sdk/components/toolchain/gcc/Makefile.posix
 
 # Libraries
 *.lib
-*.a
+#*.a
 *.la
 *.lo
 
