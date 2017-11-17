@@ -16,7 +16,7 @@ typedef struct {
 // Type for main function handle registering
 typedef void(*rec_data_hook_t) (rec_data_t* rec_data);
 
-rec_data_hook_t hooks[256];
+rec_data_hook_t hooks[MAX_REC_TYPES];
 
 void bleInit(ble_hrs_t* m_hrs, ble_rec_t* m_rec);
 void bleBegin(void * p_erase_bonds);
