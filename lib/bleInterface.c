@@ -10,8 +10,8 @@
 
 // Sets hooks to NULL
 static void initializeHook() {
-    for (unsigned int i = 0; i < sizeof(uint8_t); ++i) {
-        hooks[i] = NULL;
+    for (int i = 0; i < MAX_REC_TYPES; ++i) {
+        hooks[i] = 0;
     }
 }
 
@@ -95,7 +95,7 @@ void debugErrorMessage(ret_code_t err_code) {
     }
 }
 
-int registerDataHook(uint8_t index, rec_data_hook_t* hook) {
+int registerDataHook(uint8_t index, rec_data_hook_t hook) {
     if (hooks[index] != NULL) {
         return NRF_ERROR_INVALID_PARAM;
     }
@@ -142,8 +142,29 @@ static void service_init_hrs(ble_hrs_t* m_hrs) {
 }
 
 static void rec_data_handler(ble_rec_evt_t* p_evt) {
-    NRF_LOG_INFO("Recieved info from REC service, handling now");
-    NRF_LOG_HEXDUMP_INFO(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
+    //NRF_LOG_HEXDUMP_INFO(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
+    NRF_LOG_INFO("Size of data received is %d", p_evt->params.rx_data.length);
+    uint8_t packet_len = p_evt->params.rx_data.length;
+    if (packet_len < MIN_PACKET_SIZE) {
+        NRF_LOG_ERROR("Received packed under the required data amount... dropping")
+        return;
+    }
+
+    // Check to make sure the packet is a valid length for what it says
+    rec_data_t* rec_data = (rec_data_t*)p_evt->params.rx_data.p_data;
+    if (rec_data->data_length + 2 != packet_len) {
+        NRF_LOG_ERROR("Packet does not agree with size given... dropping");
+        return;
+    }
+
+    NRF_LOG_INFO("Function at hook: %d NULL is %d", rec_data->rec_type, hooks[rec_data->rec_type] == NULL)
+    if (!hooks[rec_data->rec_type]) {
+        NRF_LOG_ERROR("Packet is sent for an unregistered rec_type... dropping");
+        return;
+    }
+
+    // Call the hook with the appropriate data
+    // hooks[rec_data->rec_type](rec_data);
 }
 
 static void service_init_rec(ble_rec_t* m_rec) {
