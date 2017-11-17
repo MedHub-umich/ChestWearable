@@ -12,7 +12,7 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 SRC_FILES += \
   $(PROJ_DIR)/lib/main.c \
   $(PROJ_DIR)/lib/sdInterface.c \
-  $(PROJ_DIR)/lib/tempInterface.c \
+  $(PROJ_DIR)/lib/ecgInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
   $(PROJ_DIR)/lib/bleInterface.c \
   $(PROJ_DIR)/lib/notification.c \
@@ -216,9 +216,11 @@ INC_FOLDERS += \
   $(SDK_ROOT)/components/ble/ble_services/ble_rscs \
   $(SDK_ROOT)/components/drivers_nrf/usbd \
   $(SDK_ROOT)/components/ble/ble_services/ble_hrs \
+  $(SDK_ROOT)/components/toolchain \
 
 # Libraries common to all targets
 LIB_FILES += \
+  $(SDK_ROOT)/components/toolchain/cmsis/dsp/GCC/libarm_cortexM4lf_math.a \
 
 # Optimization flags
 OPT = -O3 -g3
@@ -226,6 +228,7 @@ OPT = -O3 -g3
 #OPT += -flto
 
 # C flags common to all targets
+CFLAGS += -DARM_MATH_CM4
 CFLAGS += $(OPT)
 CFLAGS += -DBOARD_PCA10040
 CFLAGS += -DCONFIG_GPIO_AS_PINRESET
@@ -240,7 +243,7 @@ CFLAGS += -D__HEAP_SIZE=1024
 CFLAGS += -D__STACK_SIZE=2048
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS +=  -Wall -Werror
+//CFLAGS +=  -Wall -Werror
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in a separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing

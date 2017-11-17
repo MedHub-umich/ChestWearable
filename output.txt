@@ -1,0 +1,1655 @@
+Compiling file: arm_fir_example.c
+In file included from ./lib/arm_fir_example.c:44:0:
+sdk/components/toolchain/cmsis/include/arm_math.h:190:4: error: #error "Define according the used Cortex core ARM_MATH_CM7, ARM_MATH_CM4, ARM_MATH_CM3, ARM_MATH_CM0PLUS or ARM_MATH_CM0"
+   #error "Define according the used Cortex core ARM_MATH_CM7, ARM_MATH_CM4, ARM_MATH_CM3, ARM_MATH_CM0PLUS or ARM_MATH_CM0"
+    ^~~~~
+In file included from ./lib/arm_fir_example.c:44:0:
+sdk/components/toolchain/cmsis/include/arm_math.h:263:11: error: unknown type name 'int8_t'
+   typedef int8_t q7_t;
+           ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:268:11: error: unknown type name 'int16_t'
+   typedef int16_t q15_t;
+           ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:273:11: error: unknown type name 'int32_t'
+   typedef int32_t q31_t;
+           ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:278:11: error: unknown type name 'int64_t'
+   typedef int64_t q63_t;
+           ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:360:10: error: unknown type name '__INLINE'
+   static __INLINE q31_t clip_q63_to_q31(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:360:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'clip_q63_to_q31'
+   static __INLINE q31_t clip_q63_to_q31(
+                         ^~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:370:10: error: unknown type name '__INLINE'
+   static __INLINE q15_t clip_q63_to_q15(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:370:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'clip_q63_to_q15'
+   static __INLINE q15_t clip_q63_to_q15(
+                         ^~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:380:10: error: unknown type name '__INLINE'
+   static __INLINE q7_t clip_q31_to_q7(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:380:24: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'clip_q31_to_q7'
+   static __INLINE q7_t clip_q31_to_q7(
+                        ^~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:390:10: error: unknown type name '__INLINE'
+   static __INLINE q15_t clip_q31_to_q15(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:390:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'clip_q31_to_q15'
+   static __INLINE q15_t clip_q31_to_q15(
+                         ^~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:401:10: error: unknown type name '__INLINE'
+   static __INLINE q63_t mult32x64(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:401:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'mult32x64'
+   static __INLINE q63_t mult32x64(
+                         ^~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:439:10: error: unknown type name '__INLINE'
+   static __INLINE uint32_t arm_recip_q31(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:439:28: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_recip_q31'
+   static __INLINE uint32_t arm_recip_q31(
+                            ^~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:490:10: error: unknown type name '__INLINE'
+   static __INLINE uint32_t arm_recip_q15(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:490:28: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_recip_q15'
+   static __INLINE uint32_t arm_recip_q15(
+                            ^~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:907:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;        /**< number of filter coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:917:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;         /**< number of filter coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:927:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;         /**< number of filter coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:937:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;     /**< number of filter coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:954:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:967:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:970:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:984:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:998:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1013:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1016:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1030:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1044:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1057:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1060:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1074:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1087:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1090:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1098:5: error: unknown type name 'int8_t'
+     int8_t numStages;        /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1101:5: error: unknown type name 'int8_t'
+     int8_t postShift;        /**< Additional shift, in bits, applied to each output sample. */
+     ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1109:5: error: unknown type name 'uint32_t'
+     uint32_t numStages;      /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1112:5: error: unknown type name 'uint8_t'
+     uint8_t postShift;       /**< Additional shift, in bits, applied to each output sample. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1120:5: error: unknown type name 'uint32_t'
+     uint32_t numStages;      /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1137:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1150:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1153:3: error: unknown type name 'int8_t'
+   int8_t postShift);
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1167:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1181:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1195:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1208:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1211:3: error: unknown type name 'int8_t'
+   int8_t postShift);
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1225:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1237:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1247:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;     /**< number of rows of the matrix.     */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1248:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;     /**< number of columns of the matrix.  */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1258:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;     /**< number of rows of the matrix.     */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1259:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;     /**< number of columns of the matrix.  */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1268:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;     /**< number of rows of the matrix.     */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1269:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;     /**< number of columns of the matrix.  */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1278:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;     /**< number of rows of the matrix.     */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1279:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;     /**< number of columns of the matrix.  */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1547:3: error: unknown type name 'int32_t'
+   int32_t shift,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1563:3: error: unknown type name 'int32_t'
+   int32_t shift,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1576:3: error: unknown type name 'uint16_t'
+   uint16_t nRows,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1577:3: error: unknown type name 'uint16_t'
+   uint16_t nColumns,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1590:3: error: unknown type name 'uint16_t'
+   uint16_t nRows,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1591:3: error: unknown type name 'uint16_t'
+   uint16_t nColumns,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1604:3: error: unknown type name 'uint16_t'
+   uint16_t nRows,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1605:3: error: unknown type name 'uint16_t'
+   uint16_t nColumns,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1665:3: error: unknown type name 'int32_t'
+   int32_t resetStateFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1683:3: error: unknown type name 'int32_t'
+   int32_t resetStateFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1702:3: error: unknown type name 'int32_t'
+   int32_t resetStateFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1718:5: error: unknown type name 'uint32_t'
+     uint32_t nValues;           /**< nValues */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1729:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;   /**< number of rows in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1730:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;   /**< number of columns in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1739:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;   /**< number of rows in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1740:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;   /**< number of columns in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1749:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;   /**< number of rows in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1750:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;   /**< number of columns in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1759:5: error: unknown type name 'uint16_t'
+     uint16_t numRows;   /**< number of rows in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1760:5: error: unknown type name 'uint16_t'
+     uint16_t numCols;   /**< number of columns in the data table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1776:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1790:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1804:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1818:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1826:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                 /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1827:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag;                /**< flag that selects forward (ifftFlag=0) or inverse (ifftFlag=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1828:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag;          /**< flag that enables (bitReverseFlag=1) or disables (bitReverseFlag=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1830:5: error: unknown type name 'uint16_t'
+     uint16_t *pBitRevTable;          /**< points to the bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1831:5: error: unknown type name 'uint16_t'
+     uint16_t twidCoefModifier;       /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1832:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevFactor;           /**< bit reversal modifier that supports different size FFTs with the same bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1838:3: error: unknown type name 'uint16_t'
+   uint16_t fftLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1839:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1840:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1853:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                 /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1854:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag;                /**< flag that selects forward (ifftFlag=0) or inverse (ifftFlag=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1855:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag;          /**< flag that enables (bitReverseFlag=1) or disables (bitReverseFlag=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1857:5: error: unknown type name 'uint16_t'
+     uint16_t *pBitRevTable;          /**< points to the bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1858:5: error: unknown type name 'uint16_t'
+     uint16_t twidCoefModifier;       /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1859:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevFactor;           /**< bit reversal modifier that supports different size FFTs with the same bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1865:3: error: unknown type name 'uint16_t'
+   uint16_t fftLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1866:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1867:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1879:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                 /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1880:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag;                /**< flag that selects forward (ifftFlag=0) or inverse (ifftFlag=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1881:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag;          /**< flag that enables (bitReverseFlag=1) or disables (bitReverseFlag=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1883:5: error: unknown type name 'uint16_t'
+     uint16_t *pBitRevTable;          /**< points to the bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1884:5: error: unknown type name 'uint16_t'
+     uint16_t twidCoefModifier;       /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1885:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevFactor;           /**< bit reversal modifier that supports different size FFTs with the same bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1891:3: error: unknown type name 'uint16_t'
+   uint16_t fftLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1892:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1893:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1905:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                 /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1906:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag;                /**< flag that selects forward (ifftFlag=0) or inverse (ifftFlag=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1907:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag;          /**< flag that enables (bitReverseFlag=1) or disables (bitReverseFlag=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1909:5: error: unknown type name 'uint16_t'
+     uint16_t *pBitRevTable;          /**< points to the bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1910:5: error: unknown type name 'uint16_t'
+     uint16_t twidCoefModifier;       /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1911:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevFactor;           /**< bit reversal modifier that supports different size FFTs with the same bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1922:3: error: unknown type name 'uint16_t'
+   uint16_t fftLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1923:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1924:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1931:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                   /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1932:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag;                  /**< flag that selects forward (ifftFlag=0) or inverse (ifftFlag=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1933:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag;            /**< flag that enables (bitReverseFlag=1) or disables (bitReverseFlag=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1935:5: error: unknown type name 'uint16_t'
+     uint16_t *pBitRevTable;            /**< points to the bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1936:5: error: unknown type name 'uint16_t'
+     uint16_t twidCoefModifier;         /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1937:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevFactor;             /**< bit reversal modifier that supports different size FFTs with the same bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1944:3: error: unknown type name 'uint16_t'
+   uint16_t fftLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1945:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1946:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1958:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                   /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1959:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag;                  /**< flag that selects forward (ifftFlag=0) or inverse (ifftFlag=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1960:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag;            /**< flag that enables (bitReverseFlag=1) or disables (bitReverseFlag=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1962:5: error: unknown type name 'uint16_t'
+     uint16_t *pBitRevTable;            /**< points to the bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1963:5: error: unknown type name 'uint16_t'
+     uint16_t twidCoefModifier;         /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1964:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevFactor;             /**< bit reversal modifier that supports different size FFTs with the same bit reversal table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1971:3: error: unknown type name 'uint16_t'
+   uint16_t fftLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1972:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1973:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1985:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                   /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1987:11: error: unknown type name 'uint16_t'
+     const uint16_t *pBitRevTable;      /**< points to the bit reversal table. */
+           ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1988:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevLength;             /**< bit reversal table length. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1994:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag,
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:1995:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag);
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2002:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                   /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2004:11: error: unknown type name 'uint16_t'
+     const uint16_t *pBitRevTable;      /**< points to the bit reversal table. */
+           ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2005:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevLength;             /**< bit reversal table length. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2011:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlag,
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2012:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlag);
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2019:5: error: unknown type name 'uint16_t'
+     uint16_t fftLen;                   /**< length of the FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2021:11: error: unknown type name 'uint16_t'
+     const uint16_t *pBitRevTable;      /**< points to the bit reversal table. */
+           ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2022:5: error: unknown type name 'uint16_t'
+     uint16_t bitRevLength;             /**< bit reversal table length. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2028:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2029:3: error: unknown type name 'uint8_t'
+   uint8_t bitReverseFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2036:5: error: unknown type name 'uint32_t'
+     uint32_t fftLenReal;                      /**< length of the real FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2037:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlagR;                        /**< flag that selects forward (ifftFlagR=0) or inverse (ifftFlagR=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2038:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlagR;                  /**< flag that enables (bitReverseFlagR=1) or disables (bitReverseFlagR=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2039:5: error: unknown type name 'uint32_t'
+     uint32_t twidCoefRModifier;               /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2047:3: error: unknown type name 'uint32_t'
+   uint32_t fftLenReal,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2048:3: error: unknown type name 'uint32_t'
+   uint32_t ifftFlagR,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2049:3: error: unknown type name 'uint32_t'
+   uint32_t bitReverseFlag);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2061:5: error: unknown type name 'uint32_t'
+     uint32_t fftLenReal;                        /**< length of the real FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2062:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlagR;                          /**< flag that selects forward (ifftFlagR=0) or inverse (ifftFlagR=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2063:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlagR;                    /**< flag that enables (bitReverseFlagR=1) or disables (bitReverseFlagR=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2064:5: error: unknown type name 'uint32_t'
+     uint32_t twidCoefRModifier;                 /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2072:3: error: unknown type name 'uint32_t'
+   uint32_t fftLenReal,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2073:3: error: unknown type name 'uint32_t'
+   uint32_t ifftFlagR,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2074:3: error: unknown type name 'uint32_t'
+   uint32_t bitReverseFlag);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2086:5: error: unknown type name 'uint32_t'
+     uint32_t fftLenReal;                        /**< length of the real FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2087:5: error: unknown type name 'uint16_t'
+     uint16_t fftLenBy2;                         /**< length of the complex FFT. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2088:5: error: unknown type name 'uint8_t'
+     uint8_t ifftFlagR;                          /**< flag that selects forward (ifftFlagR=0) or inverse (ifftFlagR=1) transform. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2089:5: error: unknown type name 'uint8_t'
+     uint8_t bitReverseFlagR;                    /**< flag that enables (bitReverseFlagR=1) or disables (bitReverseFlagR=0) bit reversal of output. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2090:5: error: unknown type name 'uint32_t'
+     uint32_t twidCoefRModifier;                     /**< twiddle coefficient modifier that supports different size FFTs with the same twiddle factor table. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2099:3: error: unknown type name 'uint32_t'
+   uint32_t fftLenReal,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2100:3: error: unknown type name 'uint32_t'
+   uint32_t ifftFlagR,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2101:3: error: unknown type name 'uint32_t'
+   uint32_t bitReverseFlag);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2114:5: error: unknown type name 'uint16_t'
+     uint16_t fftLenRFFT;             /**< length of the real sequence */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2120:4: error: unknown type name 'uint16_t'
+    uint16_t fftLen);
+    ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2125:3: error: unknown type name 'uint8_t'
+   uint8_t ifftFlag);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2132:5: error: unknown type name 'uint16_t'
+     uint16_t N;                          /**< length of the DCT4. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2133:5: error: unknown type name 'uint16_t'
+     uint16_t Nby2;                       /**< half of the length of the DCT4. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2156:3: error: unknown type name 'uint16_t'
+   uint16_t N,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2157:3: error: unknown type name 'uint16_t'
+   uint16_t Nby2,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2178:5: error: unknown type name 'uint16_t'
+     uint16_t N;                          /**< length of the DCT4. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2179:5: error: unknown type name 'uint16_t'
+     uint16_t Nby2;                       /**< half of the length of the DCT4. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2202:3: error: unknown type name 'uint16_t'
+   uint16_t N,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2203:3: error: unknown type name 'uint16_t'
+   uint16_t Nby2,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2224:5: error: unknown type name 'uint16_t'
+     uint16_t N;                          /**< length of the DCT4. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2225:5: error: unknown type name 'uint16_t'
+     uint16_t Nby2;                       /**< half of the length of the DCT4. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2248:3: error: unknown type name 'uint16_t'
+   uint16_t N,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2249:3: error: unknown type name 'uint16_t'
+   uint16_t Nby2,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2276:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2290:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2304:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2318:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2332:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2346:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2360:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2374:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2388:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2402:3: error: unknown type name 'int8_t'
+   int8_t shift,
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2404:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2418:3: error: unknown type name 'int8_t'
+   int8_t shift,
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2420:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2434:3: error: unknown type name 'int8_t'
+   int8_t shift,
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2436:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2448:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2460:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2472:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2484:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2497:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2511:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2525:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2539:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2552:3: error: unknown type name 'int8_t'
+   int8_t shiftBits,
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2554:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2566:3: error: unknown type name 'int8_t'
+   int8_t shiftBits,
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2568:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2580:3: error: unknown type name 'int8_t'
+   int8_t shiftBits,
+   ^~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2582:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2596:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2610:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2624:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2638:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2650:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2662:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2674:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2686:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2698:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2710:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2722:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2734:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2746:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2758:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2770:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2782:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2795:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2797:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2813:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2815:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2831:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2833:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2847:11: error: unknown type name 'uint32_t'
+           uint32_t srcALen,
+           ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2849:11: error: unknown type name 'uint32_t'
+           uint32_t srcBLen,
+           ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2865:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2867:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2883:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2885:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2899:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2901:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2917:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2919:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2935:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2937:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2954:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2956:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2958:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2959:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2977:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2979:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2981:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:2982:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3000:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3002:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3004:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3005:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3021:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3023:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3025:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3026:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3044:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3046:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3048:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3049:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3067:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3069:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3071:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3072:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3088:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3090:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3092:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3093:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3111:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3113:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3115:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3116:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3134:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3136:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3138:3: error: unknown type name 'uint32_t'
+   uint32_t firstIndex,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3139:3: error: unknown type name 'uint32_t'
+   uint32_t numPoints);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3147:5: error: unknown type name 'uint8_t'
+     uint8_t M;                  /**< decimation factor. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3148:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;           /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3158:5: error: unknown type name 'uint8_t'
+     uint8_t M;                  /**< decimation factor. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3159:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;           /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3169:5: error: unknown type name 'uint8_t'
+     uint8_t M;                  /**< decimation factor. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3170:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;           /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3187:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3203:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3204:3: error: unknown type name 'uint8_t'
+   uint8_t M,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3207:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3221:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3235:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3251:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3252:3: error: unknown type name 'uint8_t'
+   uint8_t M,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3255:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3269:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3282:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3298:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3299:3: error: unknown type name 'uint8_t'
+   uint8_t M,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3302:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3310:5: error: unknown type name 'uint8_t'
+     uint8_t L;                      /**< upsample factor. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3311:5: error: unknown type name 'uint16_t'
+     uint16_t phaseLength;           /**< length of each polyphase filter component. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3321:5: error: unknown type name 'uint8_t'
+     uint8_t L;                      /**< upsample factor. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3322:5: error: unknown type name 'uint16_t'
+     uint16_t phaseLength;           /**< length of each polyphase filter component. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3332:5: error: unknown type name 'uint8_t'
+     uint8_t L;                     /**< upsample factor. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3333:5: error: unknown type name 'uint16_t'
+     uint16_t phaseLength;          /**< length of each polyphase filter component. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3350:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3366:3: error: unknown type name 'uint8_t'
+   uint8_t L,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3367:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3370:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3384:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3400:3: error: unknown type name 'uint8_t'
+   uint8_t L,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3401:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3404:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3418:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3434:3: error: unknown type name 'uint8_t'
+   uint8_t L,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3435:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3438:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3446:5: error: unknown type name 'uint8_t'
+     uint8_t numStages;       /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3449:5: error: unknown type name 'uint8_t'
+     uint8_t postShift;       /**< additional shift, in bits, applied to each output sample. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3463:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3475:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3478:3: error: unknown type name 'uint8_t'
+   uint8_t postShift);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3486:5: error: unknown type name 'uint8_t'
+     uint8_t numStages;         /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3496:5: error: unknown type name 'uint8_t'
+     uint8_t numStages;         /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3506:5: error: unknown type name 'uint8_t'
+     uint8_t numStages;         /**< number of 2nd order stages in the filter.  Overall order is 2*numStages. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3523:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3537:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3551:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3563:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3577:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3591:3: error: unknown type name 'uint8_t'
+   uint8_t numStages,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3601:5: error: unknown type name 'uint16_t'
+     uint16_t numStages;                  /**< number of filter stages. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3611:5: error: unknown type name 'uint16_t'
+     uint16_t numStages;                  /**< number of filter stages. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3621:5: error: unknown type name 'uint16_t'
+     uint16_t numStages;                  /**< number of filter stages. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3636:3: error: unknown type name 'uint16_t'
+   uint16_t numStages,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3652:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3664:3: error: unknown type name 'uint16_t'
+   uint16_t numStages,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3680:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3692:3: error: unknown type name 'uint16_t'
+   uint16_t numStages,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3708:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3716:5: error: unknown type name 'uint16_t'
+     uint16_t numStages;                  /**< number of stages in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3727:5: error: unknown type name 'uint16_t'
+     uint16_t numStages;                  /**< number of stages in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3738:5: error: unknown type name 'uint16_t'
+     uint16_t numStages;                  /**< number of stages in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3756:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3770:3: error: unknown type name 'uint16_t'
+   uint16_t numStages,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3774:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3788:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3802:3: error: unknown type name 'uint16_t'
+   uint16_t numStages,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3806:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3820:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3834:3: error: unknown type name 'uint16_t'
+   uint16_t numStages,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3838:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3846:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;    /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3868:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3882:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3886:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3894:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;    /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3898:5: error: unknown type name 'uint32_t'
+     uint32_t postShift;  /**< bit shift applied to coefficients. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3914:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3918:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3919:3: error: unknown type name 'uint32_t'
+   uint32_t postShift);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3937:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3945:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;    /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3949:5: error: unknown type name 'uint32_t'
+     uint32_t postShift;  /**< bit shift applied to coefficients. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3968:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3983:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3987:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3988:3: error: unknown type name 'uint32_t'
+   uint32_t postShift);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:3996:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;     /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4020:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4034:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4038:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4046:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;     /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4050:5: error: unknown type name 'uint8_t'
+     uint8_t postShift;    /**< bit shift applied to coefficients. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4072:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4087:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4091:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4092:3: error: unknown type name 'uint8_t'
+   uint8_t postShift);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4100:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;     /**< Number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4104:5: error: unknown type name 'uint8_t'
+     uint8_t postShift;    /**< bit shift applied to coefficients. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4126:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4141:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4145:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4146:3: error: unknown type name 'uint8_t'
+   uint8_t postShift);
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4159:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4161:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4176:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4178:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4194:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4196:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4211:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4213:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4228:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4230:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4245:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4247:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4261:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4263:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4279:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4281:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4297:3: error: unknown type name 'uint32_t'
+   uint32_t srcALen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4299:3: error: unknown type name 'uint32_t'
+   uint32_t srcBLen,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4308:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;             /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4309:5: error: unknown type name 'uint16_t'
+     uint16_t stateIndex;          /**< state buffer index.  Points to the oldest sample in the state buffer. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4312:5: error: unknown type name 'uint16_t'
+     uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4313:5: error: unknown type name 'int32_t'
+     int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4321:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;             /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4322:5: error: unknown type name 'uint16_t'
+     uint16_t stateIndex;          /**< state buffer index.  Points to the oldest sample in the state buffer. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4325:5: error: unknown type name 'uint16_t'
+     uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4326:5: error: unknown type name 'int32_t'
+     int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4334:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;             /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4335:5: error: unknown type name 'uint16_t'
+     uint16_t stateIndex;          /**< state buffer index.  Points to the oldest sample in the state buffer. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4338:5: error: unknown type name 'uint16_t'
+     uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4339:5: error: unknown type name 'int32_t'
+     int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4347:5: error: unknown type name 'uint16_t'
+     uint16_t numTaps;             /**< number of coefficients in the filter. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4348:5: error: unknown type name 'uint16_t'
+     uint16_t stateIndex;          /**< state buffer index.  Points to the oldest sample in the state buffer. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4351:5: error: unknown type name 'uint16_t'
+     uint16_t maxDelay;            /**< maximum offset specified by the pTapDelay array. */
+     ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4352:5: error: unknown type name 'int32_t'
+     int32_t *pTapDelay;           /**< points to the array of delay values.  The array is of length numTaps. */
+     ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4369:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4384:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4387:3: error: unknown type name 'int32_t'
+   int32_t * pTapDelay,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4388:3: error: unknown type name 'uint16_t'
+   uint16_t maxDelay,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4389:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4405:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4420:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4423:3: error: unknown type name 'int32_t'
+   int32_t * pTapDelay,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4424:3: error: unknown type name 'uint16_t'
+   uint16_t maxDelay,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4425:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4443:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4458:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4461:3: error: unknown type name 'int32_t'
+   int32_t * pTapDelay,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4462:3: error: unknown type name 'uint16_t'
+   uint16_t maxDelay,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4463:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4481:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4496:3: error: unknown type name 'uint16_t'
+   uint16_t numTaps,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4499:3: error: unknown type name 'int32_t'
+   int32_t * pTapDelay,
+   ^~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4500:3: error: unknown type name 'uint16_t'
+   uint16_t maxDelay,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4501:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4537:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4548:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4560:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4572:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4584:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4596:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4671:10: error: unknown type name '__INLINE'
+   static __INLINE float32_t arm_pid_f32(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4671:29: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_pid_f32'
+   static __INLINE float32_t arm_pid_f32(
+                             ^~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4705:10: error: unknown type name '__INLINE'
+   static __INLINE q31_t arm_pid_q31(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4705:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_pid_q31'
+   static __INLINE q31_t arm_pid_q31(
+                         ^~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4752:10: error: unknown type name '__INLINE'
+   static __INLINE q15_t arm_pid_q15(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4752:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_pid_q15'
+   static __INLINE q15_t arm_pid_q15(
+                         ^~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4863:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_clarke_f32(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4890:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_clarke_q31(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4924:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4960:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_inv_clarke_f32(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:4987:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_inv_clarke_q31(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5021:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5070:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_park_f32(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5101:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_park_q31(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5145:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5183:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_inv_park_f32(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5214:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_inv_park_q31(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5259:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5309:10: error: unknown type name '__INLINE'
+   static __INLINE float32_t arm_linear_interp_f32(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5309:29: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_linear_interp_f32'
+   static __INLINE float32_t arm_linear_interp_f32(
+                             ^~~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5366:10: error: unknown type name '__INLINE'
+   static __INLINE q31_t arm_linear_interp_q31(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5366:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_linear_interp_q31'
+   static __INLINE q31_t arm_linear_interp_q31(
+                         ^~~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5424:10: error: unknown type name '__INLINE'
+   static __INLINE q15_t arm_linear_interp_q15(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5424:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_linear_interp_q15'
+   static __INLINE q15_t arm_linear_interp_q15(
+                         ^~~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5481:10: error: unknown type name '__INLINE'
+   static __INLINE q7_t arm_linear_interp_q7(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5481:24: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_linear_interp_q7'
+   static __INLINE q7_t arm_linear_interp_q7(
+                        ^~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5621:10: error: unknown type name '__INLINE'
+   static __INLINE arm_status arm_sqrt_f32(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5621:30: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_sqrt_f32'
+   static __INLINE arm_status arm_sqrt_f32(
+                              ^~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5681:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_circularWrite_f32(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5726:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_circularRead_f32(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5781:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_circularWrite_q15(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5825:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_circularRead_q15(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5881:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_circularWrite_q7(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5925:19: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'void'
+   static __INLINE void arm_circularRead_q7(
+                   ^~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5986:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:5998:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6010:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6022:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6034:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6046:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6058:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6070:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6082:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6094:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6106:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6118:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6130:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6142:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6154:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6166:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6178:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6191:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6203:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6215:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6229:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6245:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6261:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6277:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6291:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6305:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6317:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6319:3: error: unknown type name 'uint32_t'
+   uint32_t * index);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6331:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6333:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6345:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6347:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6359:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6361:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6373:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6375:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6387:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6389:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6401:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6403:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6415:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize,
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6417:3: error: unknown type name 'uint32_t'
+   uint32_t * pIndex);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6431:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6445:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6459:3: error: unknown type name 'uint32_t'
+   uint32_t numSamples);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6471:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6483:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6495:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6507:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6519:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6531:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6543:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6555:3: error: unknown type name 'uint32_t'
+   uint32_t blockSize);
+   ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6628:10: error: unknown type name '__INLINE'
+   static __INLINE float32_t arm_bilinear_interp_f32(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6628:29: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_bilinear_interp_f32'
+   static __INLINE float32_t arm_bilinear_interp_f32(
+                             ^~~~~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6694:10: error: unknown type name '__INLINE'
+   static __INLINE q31_t arm_bilinear_interp_q31(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6694:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_bilinear_interp_q31'
+   static __INLINE q31_t arm_bilinear_interp_q31(
+                         ^~~~~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6768:10: error: unknown type name '__INLINE'
+   static __INLINE q15_t arm_bilinear_interp_q15(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6768:25: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_bilinear_interp_q15'
+   static __INLINE q15_t arm_bilinear_interp_q15(
+                         ^~~~~~~~~~~~~~~~~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6846:10: error: unknown type name '__INLINE'
+   static __INLINE q7_t arm_bilinear_interp_q7(
+          ^~~~~~~~
+sdk/components/toolchain/cmsis/include/arm_math.h:6846:24: error: expected '=', ',', ';', 'asm' or '__attribute__' before 'arm_bilinear_interp_q7'
+   static __INLINE q7_t arm_bilinear_interp_q7(
+                        ^~~~~~~~~~~~~~~~~~~~~~
+./lib/arm_fir_example.c:45:25: fatal error: math_helper.h: No such file or directory
+ #include "math_helper.h"
+                         ^
+compilation terminated.
+make: *** [build/nrf52832_xxaa/arm_fir_example.c.o] Error 1

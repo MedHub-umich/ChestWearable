@@ -49,7 +49,7 @@
 #include "nrf_timer.h"
 
 // Interfaces
-#include "tempInterface.h"
+#include "ecgInterface.h"
 #include "blinkyInterface.h"
 #include "bleInterface.h"
 #include "sdInterface.h"
@@ -57,46 +57,24 @@
 #include "pendingMessages.h"
 #include "ble_rec.h"
 
-// SAADC ********************************************************
-// FreeRTOS
+struct ecgObject_t * ecgObject_ptr;
 
-TaskHandle_t  taskSendBleHandle;
+TaskHandle_t  bleHandle;
 static void taskSendBle(void * pvParameter);
 
-BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
+BLE_HRS_DEF(m_hrs);
 BLE_REC_DEF(m_rec);
-
-TaskHandle_t testTaskHandle;
-static void testTask(void* pvParameter);
-
-TaskHandle_t testTask2Handle;
-static void testTask2(void* pvParameter);
-
-pendingMessages_t globalQ;
-struct tempObject_t * tempObject_ptr;
 
 static void checkTaskCreate(BaseType_t retVal);
 
-// END SAADC ****************************************************
-
-#define HEART_RATE_MEAS_INTERVAL            1000                                    /**< Heart rate measurement interval (ms). */
-#define MIN_HEART_RATE                      140                                     /**< Minimum heart rate as returned by the simulated measurement function. */
-#define MAX_HEART_RATE                      300                                     /**< Maximum heart rate as returned by the simulated measurement function. */
-#define HEART_RATE_INCREMENT                10                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
-
-#define OSTIMER_WAIT_FOR_QUEUE              2                                       /**< Number of ticks to wait for the timer queue to be ready */
-
-static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
 
 #if NRF_LOG_ENABLED
 /**@brief Thread for handling the logger.
  *
  * @details This thread is responsible for processing log entries if logs are deferred.
  *          Thread flushes all log entries and suspends. It is resumed by idle task hook.
- *
- * @param[in]   arg   Pointer used for passing some arbitrary information (context) from the
- *                    osThreadCreate() call to the thread.
  */
+static TaskHandle_t m_logger_thread;                 /**< Definition of Logger thread. */
 static void logger_thread(void * arg)
 {
     UNUSED_PARAMETER(arg);
@@ -127,10 +105,27 @@ static void log_init(void)
     NRF_LOG_DEFAULT_BACKENDS_INIT();
 }
 
+static void checkReturn(BaseType_t retVal)
+{
+    if (retVal == pdPASS)
+    {
+        NRF_LOG_INFO("Checkpoint: created task");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+    }
+}
+
 
 /**@brief Function for initializing buttons and leds.
  *
- * @param[out] p_erase_bonds  Will be true if the clear bonding button was pressed to wake the application up.
+ * @param[out] p_erase_bonds  Will be true if the clear bonding button was pressed 
+ * to wake the application up.
  */
 static void buttons_leds_init(bool * p_erase_bonds)
 {
@@ -210,19 +205,9 @@ int main(void)
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
 
-    BaseType_t retVal = xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle);
-    checkTaskCreate(retVal);
+    checkReturn(xTaskCreate(taskSendBle, "x", configMINIMAL_STACK_SIZE+200, NULL, 3, &bleHandle));
 
-    retVal = xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle);
-    checkTaskCreate(retVal);
-
-    retVal = xTaskCreate(testTask2, "TestTask2", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTask2Handle);
-    checkTaskCreate(retVal);
-
-
-    // Start FreeRTOS scheduler.
-    NRF_LOG_INFO("Checkpoint: right before scheduler starts");
-    NRF_LOG_FLUSH();
+    UNUSED_VARIABLE(ecgInit(ecgObject_ptr));
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -251,21 +236,14 @@ static void checkTaskCreate(BaseType_t retVal) {
 }
 
 
-/**@taskToggleLed
- *
- * Flushes the log buffer to send messages to segger RTT.
- * Deferred interrupt.
- *
- */
 static void taskSendBle (void * pvParameter)
 {
-    //uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
+
     char reqData[WAIT_MESSAGE_SIZE];
 
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
-    ret_code_t err_code;
 
     while (true)
     {
@@ -274,35 +252,9 @@ static void taskSendBle (void * pvParameter)
 
         nrf_gpio_pin_write(27, 1);
 
-        // call this function to SEND DATA OVER BLE
-        err_code = sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData));
-        // debugErrorMessage(err_code);
-        UNUSED_VARIABLE(err_code);
+        debugErrorMessage(sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData)));
         
         nrf_gpio_pin_write(27, 0);
-
-        //vTaskDelay(1000);
     }
 }
 
-
-static void testTask(void* pvParameter) {
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    char userData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
-    // char userData[1] = {0xAA};
-    for (;;) {
-        pendingMessagesPush(sizeof(userData), userData, &globalQ);
-        // bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 5);
-    }
-}
-
-static void testTask2(void* pvParameter) {
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    // char userData[4] = {0x11, 0x22, 0x33, 0x44};
-    for (;;) {
-        // pendingMessagesPush(sizeof(userData), userData, &globalQ);
-        // bsp_board_led_invert(BSP_BOARD_LED_1);
-        vTaskDelayUntil(&xLastWakeTime, 1000);
-    }
-}

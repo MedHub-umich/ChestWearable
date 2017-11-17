@@ -33,7 +33,7 @@ void bleBegin(void * p_erase_bonds) {
 int sendData(ble_hrs_t* p_hrs, uint8_t* data, size_t length) {
     uint32_t err_code;
 
-    bsp_board_led_invert(BSP_BOARD_LED_1);
+    //bsp_board_led_invert(BSP_BOARD_LED_1);
     // Send value if connected and notifying
     if (p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID)
     {
@@ -67,7 +67,7 @@ int sendData(ble_hrs_t* p_hrs, uint8_t* data, size_t length) {
     {
         err_code = NRF_ERROR_INVALID_STATE;
     }
-    bsp_board_led_invert(BSP_BOARD_LED_1);
+    //bsp_board_led_invert(BSP_BOARD_LED_1);
 
 
     return err_code;

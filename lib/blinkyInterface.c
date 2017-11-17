@@ -1,5 +1,5 @@
 // tempInterface.c
-#include "tempInterface.h"
+//#include "tempInterface.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "boards.h"
