@@ -128,8 +128,6 @@ static void service_init_hrs(ble_hrs_t* m_hrs) {
 static void rec_data_handler(ble_rec_evt_t* p_evt) {
     NRF_LOG_INFO("Recieved info from REC service, printing now");
     NRF_LOG_HEXDUMP_INFO(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
-    // UNUSED_PARAMETER(p_evt);
-    // NRF_LOG_INFO("HERE");
 }
 
 static void service_init_rec(ble_rec_t* m_rec) {
