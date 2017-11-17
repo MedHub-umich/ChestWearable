@@ -4,9 +4,12 @@
 #include "sdk_common.h"
 #include "ble.h"
 #include "ble_srv_common.h"
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+#include "nrf_log_default_backends.h"
 
 
-#define BLE_UUID_REC_RX_CHARACTERISTIC 0x0002                      /**< The UUID of the RX Characteristic. */
+#define BLE_UUID_REC_RX_CHARACTERISTIC 0x0001                      /**< The UUID of the RX Characteristic. */
 
 #define BLE_REC_MAX_RX_CHAR_LEN        BLE_NUS_MAX_DATA_LEN        /**< Maximum length of the RX Characteristic (in bytes). */
 
@@ -45,6 +48,7 @@ static uint32_t rx_char_add(ble_rec_t* p_rec, const ble_rec_init_t * p_rec_init)
     ble_gatts_attr_t attr_char_value;
     ble_uuid_t ble_uuid;
     ble_gatts_attr_md_t attr_md;
+    uint32_t err_code;
 
     // Define the character attributes for the rx
     memset(&char_md, 0, sizeof(char_md));
@@ -78,12 +82,15 @@ static uint32_t rx_char_add(ble_rec_t* p_rec, const ble_rec_init_t * p_rec_init)
     attr_char_value.init_len = 1; // Initial lenght of attribute
     attr_char_value.init_offs = 0; // Offset of where the attribute stats (ignore)
     attr_char_value.max_len = BLE_REC_MAX_RX_CHAR_LEN; // Maximum size the attribute can be
-
+    NRF_LOG_INFO("Here");
     // Register the attribute with the device
-    return sd_ble_gatts_characteristic_add(p_rec->service_handle,
+    err_code =  sd_ble_gatts_characteristic_add(p_rec->service_handle,
                                            &char_md,
                                            &attr_char_value,
                                            &p_rec->rx_handles);
+
+    NRF_LOG_INFO("%d", err_code);
+    return err_code;
 }
 
 // Handler for bluetooth events
@@ -113,7 +120,7 @@ void ble_rec_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {
 uint32_t ble_rec_init(ble_rec_t* p_rec, ble_rec_init_t const * p_rec_init) {
     uint32_t err_code;
     ble_uuid_t ble_uuid;
-    ble_uuid128_t rec_base_uuid = REC_BASE_UUID;
+    // ble_uuid128_t rec_base_uuid = REC_BASE_UUID;
 
     VERIFY_PARAM_NOT_NULL(p_rec);
     VERIFY_PARAM_NOT_NULL(p_rec_init);
@@ -123,21 +130,20 @@ uint32_t ble_rec_init(ble_rec_t* p_rec, ble_rec_init_t const * p_rec_init) {
     p_rec->data_handler = p_rec_init->data_handler;
     
     // Add custome base UUID
-    err_code = sd_ble_uuid_vs_add(&rec_base_uuid, &p_rec->uuid_type);
-    VERIFY_SUCCESS(err_code);
-
-    ble_uuid.type = p_rec->uuid_type;
-    ble_uuid.uuid = BLE_UUID_REC_SERVICE;
+    // err_code = sd_ble_uuid_vs_add(&rec_base_uuid, &p_rec->uuid_type);
+    BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REC_SERVICE);
+    NRF_LOG_INFO("STARTING CHECKS");
+    // ble_uuid.type = p_rec->uuid_type;
+    // ble_uuid.uuid = BLE_UUID_REC_SERVICE;
 
     // Add (register) the new service
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY,
                                         &ble_uuid,
                                         &p_rec->service_handle);
     VERIFY_SUCCESS(err_code);
-
     // Add the RX characteristic
     err_code = rx_char_add(p_rec, p_rec_init);
     VERIFY_SUCCESS(err_code);
-
+    NRF_LOG_INFO("SUCCESS IN INIT!");
     return NRF_SUCCESS;
 }

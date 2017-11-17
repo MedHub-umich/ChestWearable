@@ -173,7 +173,7 @@ int main(void)
     bool erase_bonds;
 
     clock_init();
-    bleInit(&m_hrs);
+    bleInit(&m_hrs, &m_rec);
     buttons_leds_init(&erase_bonds);
     initNotification();
     pendingMessagesCreate(&globalQ);

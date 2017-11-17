@@ -125,8 +125,21 @@ static void service_init_hrs(ble_hrs_t* m_hrs) {
     APP_ERROR_CHECK(err_code);
 }
 
-static void service_init_rec(ble_rec_t* m_rec) {
+static void rec_data_handler(ble_rec_evt_t* p_evt) {
+    UNUSED_PARAMETER(p_evt);
+    NRF_LOG_INFO("I was called!");
+}
 
+static void service_init_rec(ble_rec_t* m_rec) {
+    uint32_t err_code;
+    ble_rec_init_t rec_init;
+
+    memset(&rec_init, 0, sizeof(rec_init));
+
+    rec_init.data_handler = rec_data_handler;
+    err_code = ble_rec_init(m_rec, &rec_init);
+    APP_ERROR_CHECK(err_code);
+    NRF_LOG_INFO("I WORKED");
 }
 
 /**@brief Function for initializing services that will be used by the application.
