@@ -1,5 +1,6 @@
-// tempInterface.c
-#include "tempInterface.h"
+// ecgInterface.c
+
+#include "ecgInterface.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
@@ -15,38 +16,36 @@
 #include "nrf_drv_ppi.h"
 #include "nrf_drv_timer.h"
 #include "notification.h"
-// DSP
+// FILTER
 #include "app_util_platform.h"
 #include "arm_const_structs.h"
 
-// *************** Internal State ****************************** //
-static struct tempObject_t * this = 0;
-static struct tempObject_t tempObject;
-// ************************************************************* //
+// This
+static struct ecgObject_t * this = 0;
+static struct ecgObject_t ecgObject;
 
 // SAADC
-
 #define SAMPLE_PERIOD_MILLI             2
-#define SAMPLES_IN_BUFFER               34
+#define SAMPLES_IN_BUFFER               34 // MUST BE DIVISIBLE BY DOWNSAMPLE FACTOR
 #define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
 #define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
 #define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
 #define ADC_RESULT_IN_MILLI_VOLTS(ADC_VALUE)\
         ((((ADC_VALUE) * ADC_REF_VOLTAGE_IN_MILLIVOLTS) / ADC_RES_10BIT) * ADC_PRE_SCALING_COMPENSATION)
+static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
+static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
+static nrf_ppi_channel_t     m_ppi_channel;
+static nrf_saadc_value_t dummy = 0xBEEF;
 
-//#define TEST_LENGTH_SAMPLES  500
+// Filter
 #define NUM_TAPS              27
-
 #define BLOCK_SIZE SAMPLES_IN_BUFFER
-//static float32_t testInput_f32_1kHz_15kHzFIR[TEST_LENGTH_SAMPLES];
-//static float32_t testOutputFIR[TEST_LENGTH_SAMPLES];
+TaskHandle_t  taskFIRHandle;
+static arm_fir_instance_f32 S;
 static float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
 static const uint32_t blockSize = BLOCK_SIZE;
-static arm_fir_instance_f32 S;
-
-//uint32_t numBlocks = TEST_LENGTH_SAMPLES/blockSize;
-//float32_t sine_freq = 30.f;
-//float32_t sampling_freq = 500.f;
+static float32_t dataBuffer[SAMPLES_IN_BUFFER];
+static float32_t dataBufferFiltered[SAMPLES_IN_BUFFER];
 
 static float32_t firCoeffs32[NUM_TAPS] = {
   -0.019008758166749587,
@@ -77,17 +76,6 @@ static float32_t firCoeffs32[NUM_TAPS] = {
   0.015889163933487414,
   -0.019008758166749587
 };
-
-static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
-static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
-static nrf_ppi_channel_t     m_ppi_channel;
-
-static nrf_saadc_value_t dummy = 0xBEEF;
-static float32_t dataBuffer[SAMPLES_IN_BUFFER];
-static float32_t dataBufferFiltered[SAMPLES_IN_BUFFER];
-
-#define TASK_DELAY        400           /**< Task delay. Delays a LED0 task for 200 ms */
-TaskHandle_t  taskFIRHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
 
 void saadc_sampling_event_init(void)
 {
@@ -213,13 +201,13 @@ void taskFIR (void * pvParameter)
 }
 
 
-int tempInit(struct tempObject_t * inTempObject_ptr)
+int ecgInit(struct ecgObject_t * inEcgObject_ptr)
 {
     // ********** DSP ************//
     arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], blockSize);
     // ************ END DSP ************ //
 
-    this = &tempObject;
+    this = &ecgObject;
 
     // initialize ADC if not already initialized
     // Actually currently not checking
@@ -231,20 +219,20 @@ int tempInit(struct tempObject_t * inTempObject_ptr)
     BaseType_t retVal = xTaskCreate(taskFIR, "LED0", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskFIRHandle);
     if (retVal == pdPASS)
     {
-        NRF_LOG_INFO("TEMP SENSOR GPIO TOGGLE THREAD CREATED");
+        NRF_LOG_INFO("ecg SENSOR GPIO TOGGLE THREAD CREATED");
     }
     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
     {
-        NRF_LOG_INFO("TEMP SENSOR GPIO TOGGLE NEED MORE HEAP!!!!!!!!");
+        NRF_LOG_INFO("ecg SENSOR GPIO TOGGLE NEED MORE HEAP!!!!!!!!");
     }
     else
     {
-        NRF_LOG_INFO("TEMP SENSOR GPIO TOGGLE THREAD DID NOT PASS XXXXXXXXX");
+        NRF_LOG_INFO("ecg SENSOR GPIO TOGGLE THREAD DID NOT PASS XXXXXXXXX");
     }
 
-    NRF_LOG_INFO("Checkpoint: end of tempInit");
+    NRF_LOG_INFO("Checkpoint: end of ecgInit");
 
-    inTempObject_ptr = this;
+    inEcgObject_ptr = this;
     return 0;
 }
 

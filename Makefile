@@ -12,7 +12,7 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 SRC_FILES += \
   $(PROJ_DIR)/lib/main.c \
   $(PROJ_DIR)/lib/sdInterface.c \
-  $(PROJ_DIR)/lib/tempInterface.c \
+  $(PROJ_DIR)/lib/ecgInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
   $(PROJ_DIR)/lib/bleInterface.c \
   $(PROJ_DIR)/lib/notification.c \

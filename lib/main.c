@@ -49,35 +49,20 @@
 #include "nrf_timer.h"
 
 // Interfaces
-#include "tempInterface.h"
+#include "ecgInterface.h"
 #include "blinkyInterface.h"
 #include "bleInterface.h"
 #include "sdInterface.h"
 #include "notification.h"
 #include "pendingMessages.h"
 
-// SAADC ********************************************************
-// FreeRTOS
+
+struct ecgObject_t * ecgObject_ptr;
 
 TaskHandle_t  taskSendBleHandle;
 static void taskSendBle(void * pvParameter);
 
 BLE_HRS_DEF(m_hrs);                                                 /**< Heart rate service instance. */
-
-// TaskHandle_t testTaskHandle;
-// static void testTask(void* pvParameter);
-
-//pendingMessages_t globalQ;
-struct tempObject_t * tempObject_ptr;
-
-// END SAADC ****************************************************
-
-#define HEART_RATE_MEAS_INTERVAL            1000                                    /**< Heart rate measurement interval (ms). */
-#define MIN_HEART_RATE                      140                                     /**< Minimum heart rate as returned by the simulated measurement function. */
-#define MAX_HEART_RATE                      300                                     /**< Maximum heart rate as returned by the simulated measurement function. */
-#define HEART_RATE_INCREMENT                10                                      /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
-
-#define OSTIMER_WAIT_FOR_QUEUE              2                                       /**< Number of ticks to wait for the timer queue to be ready */
 
 static TaskHandle_t m_logger_thread;                                /**< Definition of Logger thread. */
 
@@ -86,9 +71,6 @@ static TaskHandle_t m_logger_thread;                                /**< Definit
  *
  * @details This thread is responsible for processing log entries if logs are deferred.
  *          Thread flushes all log entries and suspends. It is resumed by idle task hook.
- *
- * @param[in]   arg   Pointer used for passing some arbitrary information (context) from the
- *                    osThreadCreate() call to the thread.
  */
 static void logger_thread(void * arg)
 {
@@ -193,11 +175,9 @@ int main(void)
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
 
-    checkReturn(xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle));
+    checkReturn(xTaskCreate(taskSendBle, "taskSendBle", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle));
 
-    //checkReturn(xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle));
-
-    UNUSED_VARIABLE(tempInit(tempObject_ptr));
+    UNUSED_VARIABLE(ecgInit(ecgObject_ptr));
     //UNUSED_VARIABLE(blinkyInit());
 
     // Start FreeRTOS scheduler.
@@ -224,47 +204,22 @@ int main(void)
  */
 static void taskSendBle (void * pvParameter)
 {
-    //uint16_t millivolts = 0;
     UNUSED_PARAMETER(pvParameter);
+
     char reqData[WAIT_MESSAGE_SIZE];
 
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
-    ret_code_t err_code;
-
-    // uint16_t countBuffer[17];
-    // int count = 0;
 
     while (true)
     {
         // Wait for Signal
         pendingMessagesWaitAndPop(reqData, &globalQ);
-        // int i;
-        // for (i = 0; i < ; ++i)
-        // {
-        //     ++count;
-        //     countBuffer[i] = count;
-        // }
 
         nrf_gpio_pin_write(27, 1);
 
-        // call this function to SEND DATA OVER BLE
-        err_code = sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData));
-        debugErrorMessage(err_code);
+        debugErrorMessage(sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData)));
         
         nrf_gpio_pin_write(27, 0);
     }
 }
-
-
-// static void testTask(void* pvParameter) {
-//     TickType_t xLastWakeTime = xTaskGetTickCount();
-//     char userData[4] = {0xAA, 0xBB, 0xCC, 0xDD};
-//     // char userData[1] = {0xAA};
-//     for (;;) {
-//         pendingMessagesPush(sizeof(userData), userData, &globalQ);
-//         // bsp_board_led_invert(BSP_BOARD_LED_1);
-//         vTaskDelayUntil(&xLastWakeTime, 5);
-//     }
-// }
-
