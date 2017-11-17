@@ -8,6 +8,13 @@
 #define HANDLE_LENGTH 2 
 #define MAX_HRM_LEN      (NRF_SDH_BLE_GATT_MAX_MTU_SIZE - OPCODE_LENGTH - HANDLE_LENGTH) /**< Maximum size of a transmitted Heart Rate Measurement. */
 
+// Sets hooks to NULL
+static void initializeHook() {
+    for (unsigned int i = 0; i < sizeof(uint8_t); ++i) {
+        hooks[i] = NULL;
+    }
+}
+
 void bleInit(ble_hrs_t* m_hrs, ble_rec_t* m_rec) {
     ble_stack_init();
     gap_params_init();
@@ -15,7 +22,8 @@ void bleInit(ble_hrs_t* m_hrs, ble_rec_t* m_rec) {
     advertising_init();
     services_init(m_hrs, m_rec);
     conn_params_init(m_hrs);
-    peer_manager_init();    
+    peer_manager_init();
+    initializeHook();
 }
 
 void bleBegin(void * p_erase_bonds) {
@@ -87,6 +95,14 @@ void debugErrorMessage(ret_code_t err_code) {
     }
 }
 
+int registerDataHook(uint8_t index, rec_data_hook_t* hook) {
+    if (hooks[index] != NULL) {
+        return NRF_ERROR_INVALID_PARAM;
+    }
+    hooks[index] = hook;
+    return NRF_SUCCESS;
+}
+
 static void service_init_hrs(ble_hrs_t* m_hrs) {
     ret_code_t     err_code;
     ble_hrs_init_t hrs_init;
@@ -126,7 +142,7 @@ static void service_init_hrs(ble_hrs_t* m_hrs) {
 }
 
 static void rec_data_handler(ble_rec_evt_t* p_evt) {
-    NRF_LOG_INFO("Recieved info from REC service, printing now");
+    NRF_LOG_INFO("Recieved info from REC service, handling now");
     NRF_LOG_HEXDUMP_INFO(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
 }
 
@@ -151,3 +167,4 @@ void services_init(ble_hrs_t* m_hrs, ble_rec_t* m_rec)
     service_init_hrs(m_hrs);
     service_init_rec(m_rec);
 }
+

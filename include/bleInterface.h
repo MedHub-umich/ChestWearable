@@ -13,13 +13,13 @@ typedef struct {
 // Type for main function handle registering
 typedef void(*rec_data_hook_t) (rec_data_t* rec_data);
 
-rec_data_hook_t hooks[sizeof(uint8_t)];
+rec_data_hook_t* hooks[sizeof(uint8_t)];
 
 void bleInit(ble_hrs_t* m_hrs, ble_rec_t* m_rec);
 void bleBegin(void * p_erase_bonds);
 int sendData(ble_hrs_t* m_hrs, uint8_t* data, size_t length);
 void debugErrorMessage(ret_code_t err_code);
-int registerDataHook(int index, rec_data_hook_t* hook);
+int registerDataHook(uint8_t index, rec_data_hook_t* hook);
 
 
 // Private
