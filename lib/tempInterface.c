@@ -25,7 +25,9 @@ static struct tempObject_t tempObject;
 // ************************************************************* //
 
 // SAADC
-#define SAMPLES_IN_BUFFER               33
+
+#define SAMPLE_PERIOD_MILLI             2
+#define SAMPLES_IN_BUFFER               34
 #define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
 #define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
 #define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
@@ -83,7 +85,6 @@ static nrf_ppi_channel_t     m_ppi_channel;
 static nrf_saadc_value_t dummy = 0xBEEF;
 static float32_t dataBuffer[SAMPLES_IN_BUFFER];
 static float32_t dataBufferFiltered[SAMPLES_IN_BUFFER];
-static uint16_t dataBufferFilteredDownSampled[SAMPLES_IN_BUFFER/3];
 
 #define TASK_DELAY        400           /**< Task delay. Delays a LED0 task for 200 ms */
 TaskHandle_t  taskFIRHandle;   /**< Reference to LED0 toggling FreeRTOS task. */
@@ -101,7 +102,7 @@ void saadc_sampling_event_init(void)
     APP_ERROR_CHECK(err_code);
 
     /* setup m_timer for compare event every 100ms */
-    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, 3); // TOM
+    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, SAMPLE_PERIOD_MILLI); // TOM
     nrf_drv_timer_extended_compare(&m_timer,
                                    NRF_TIMER_CC_CHANNEL0,
                                    ticks,
@@ -187,8 +188,10 @@ void taskFIR (void * pvParameter)
 
     NRF_LOG_INFO("Checkpoint: beginning of taskFIR");
     int i;
-
+    int count = 0;
     uint16_t dataBufferFilteredCast[SAMPLES_IN_BUFFER];
+    uint16_t dataBufferFilteredDownSampled[SAMPLES_IN_BUFFER/2];
+    uint16_t countBuffer[SAMPLES_IN_BUFFER/2];
 
     while (true)
     {
@@ -198,21 +201,28 @@ void taskFIR (void * pvParameter)
         arm_fir_f32(&S, dataBuffer, dataBufferFiltered, blockSize);
         bsp_board_led_off(1);
 
-        // for(i = 0; i < SAMPLES_IN_BUFFER; ++i)
-        // {
-        //     // downsample: copy every 3rd value
-        //     if (i % 3 == 0)
-        //     {
-        //         dataBufferFilteredDownSampled[i/3] = (uint16_t)dataBufferFiltered[i];
-        //         NRF_LOG_INFO("Output: %d", dataBufferFilteredDownSampled[i/3]);
-        //     }
-        // }
-        //pendingMessagesPush(sizeof(uint16_t)*SAMPLES_IN_BUFFER/3, (char*)dataBufferFilteredDownSampled, &globalQ);
         for(i = 0; i < SAMPLES_IN_BUFFER; ++i)
         {
-            dataBufferFilteredCast[i] = (uint16_t) dataBufferFiltered[i];
+            // downsample: copy every 2rd value
+            if (i % 2 == 0)
+            {
+                dataBufferFilteredDownSampled[i/2] = (uint16_t)dataBufferFiltered[i];
+                //NRF_LOG_INFO("%d", dataBufferFilteredDownSampled[i/2]);
+            }
         }
-        pendingMessagesPush(sizeof(uint16_t)*SAMPLES_IN_BUFFER, (char*)dataBufferFilteredCast, &globalQ);
+        // for(i = 0; i < SAMPLES_IN_BUFFER/2; ++i)
+        // {
+        //     count++;
+        //     dataBufferFilteredDownSampled[i] = count;
+        // }
+        int size = sizeof(dataBufferFilteredDownSampled);
+        pendingMessagesPush(size, (char*)dataBufferFilteredDownSampled, &globalQ);
+        // for(i = 0; i < SAMPLES_IN_BUFFER; ++i)
+        // {
+        //     NRF_LOG_INFO("%d", dataBuffer[i]);
+        //     dataBufferFilteredCast[i] = (uint16_t) dataBufferFiltered[i];
+        // }
+        //pendingMessagesPush(sizeof(uint16_t)*SAMPLES_IN_BUFFER, (char*)dataBufferFilteredCast, &globalQ);
     }
 }
 

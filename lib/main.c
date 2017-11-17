@@ -232,10 +232,19 @@ static void taskSendBle (void * pvParameter)
     nrf_gpio_pin_clear(27);
     ret_code_t err_code;
 
+    // uint16_t countBuffer[17];
+    // int count = 0;
+
     while (true)
     {
         // Wait for Signal
         pendingMessagesWaitAndPop(reqData, &globalQ);
+        // int i;
+        // for (i = 0; i < ; ++i)
+        // {
+        //     ++count;
+        //     countBuffer[i] = count;
+        // }
 
         nrf_gpio_pin_write(27, 1);
 
@@ -244,8 +253,6 @@ static void taskSendBle (void * pvParameter)
         debugErrorMessage(err_code);
         
         nrf_gpio_pin_write(27, 0);
-
-        //vTaskDelay(1000);
     }
 }
 
