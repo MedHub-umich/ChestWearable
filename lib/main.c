@@ -270,7 +270,8 @@ static void taskSendBle (void * pvParameter)
 
         // call this function to SEND DATA OVER BLE
         err_code = sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData));
-        debugErrorMessage(err_code);
+        // debugErrorMessage(err_code);
+        UNUSED_VARIABLE(err_code);
         
         nrf_gpio_pin_write(27, 0);
 

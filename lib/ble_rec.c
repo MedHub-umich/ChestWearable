@@ -33,8 +33,8 @@ static void on_write(ble_rec_t* p_rec, ble_evt_t const * p_ble_evt) {
     ble_rec_evt_t evt;
     evt.p_rec = p_rec;
 
-    if ( (p_evt_write->handle == p_rec->rx_handles.cccd_handle)
-            && (p_evt_write->len == 2)) {
+    if ( (p_evt_write->handle == p_rec->rx_handles.value_handle)
+            && (p_rec->data_handler != NULL)) {
         evt.params.rx_data.p_data = p_evt_write->data;
         evt.params.rx_data.length = p_evt_write->len;
         evt.evt_type = BLE_REC_EVT_RX_DATA;
@@ -50,13 +50,17 @@ static uint32_t rx_char_add(ble_rec_t* p_rec, const ble_rec_init_t * p_rec_init)
     ble_gatts_attr_md_t attr_md;
     uint32_t err_code;
 
+    unsigned char * name = (unsigned char *)"TEST";
+
     // Define the character attributes for the rx
     memset(&char_md, 0, sizeof(char_md));
 
     char_md.char_props.write            = 1;
     char_md.char_props.write_wo_resp    = 1;
     // TODO Figure out the below
-    char_md.p_char_user_desc            = NULL; // TODO: Change this to be more descriptive
+    char_md.p_char_user_desc            = name; // TODO: Change this to be more descriptive
+    char_md.char_user_desc_size         = 4;
+    char_md.char_user_desc_max_size     = 10;
     char_md.p_char_pf                   = NULL; 
     char_md.p_cccd_md                   = NULL;
     char_md.p_sccd_md                   = NULL;
@@ -94,7 +98,7 @@ static uint32_t rx_char_add(ble_rec_t* p_rec, const ble_rec_init_t * p_rec_init)
 }
 
 // Handler for bluetooth events
-void ble_rec_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {
+void ble_rec_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context) {    
     if ((p_context == NULL) || (p_ble_evt == NULL)) {
         return;
     }
@@ -135,7 +139,7 @@ uint32_t ble_rec_init(ble_rec_t* p_rec, ble_rec_init_t const * p_rec_init) {
     NRF_LOG_INFO("STARTING CHECKS");
     // ble_uuid.type = p_rec->uuid_type;
     // ble_uuid.uuid = BLE_UUID_REC_SERVICE;
-
+    p_rec->uuid_type = ble_uuid.type;
     // Add (register) the new service
     err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY,
                                         &ble_uuid,
