@@ -164,6 +164,11 @@ static void clock_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void handle_rec0(rec_data_t* rec_data) {
+    NRF_LOG_INFO("I am here!");
+    UNUSED_PARAMETER(rec_data);
+}
+
 /**@brief Function for application main entry.
  */
 int main(void)
@@ -180,6 +185,8 @@ int main(void)
     initNotification();
     pendingMessagesCreate(&globalQ);
 
+    registerDataHook(0, handle_rec0);
+
     // Create a FreeRTOS task for the BLE stack.
     // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
@@ -193,9 +200,6 @@ int main(void)
     retVal = xTaskCreate(testTask2, "TestTask2", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTask2Handle);
     checkTaskCreate(retVal);
 
-
-    //UNUSED_VARIABLE(tempInit(tempObject_ptr));
-    //UNUSED_VARIABLE(blinkyInit());
 
     // Start FreeRTOS scheduler.
     NRF_LOG_INFO("Checkpoint: right before scheduler starts");

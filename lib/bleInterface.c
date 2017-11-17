@@ -164,7 +164,7 @@ static void rec_data_handler(ble_rec_evt_t* p_evt) {
     }
 
     // Call the hook with the appropriate data
-    // hooks[rec_data->rec_type](rec_data);
+    hooks[rec_data->rec_type](rec_data);
 }
 
 static void service_init_rec(ble_rec_t* m_rec) {
