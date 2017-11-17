@@ -75,6 +75,8 @@ static void testTask2(void* pvParameter);
 pendingMessages_t globalQ;
 struct tempObject_t * tempObject_ptr;
 
+static void checkTaskCreate(BaseType_t retVal);
+
 // END SAADC ****************************************************
 
 #define HEART_RATE_MEAS_INTERVAL            1000                                    /**< Heart rate measurement interval (ms). */
@@ -183,47 +185,13 @@ int main(void)
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
 
     BaseType_t retVal = xTaskCreate(taskSendBle, "LED0", configMINIMAL_STACK_SIZE+200, NULL, 3, &taskSendBleHandle);
-    if (retVal == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    }
+    checkTaskCreate(retVal);
 
-    BaseType_t retVal2 = xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle);
-    if (retVal2 == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal2 == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    }
+    retVal = xTaskCreate(testTask, "TestTask", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTaskHandle);
+    checkTaskCreate(retVal);
 
-    retVal2 = xTaskCreate(testTask2, "TestTask2", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTask2Handle);
-    if (retVal2 == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal2 == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-    }
-
+    retVal = xTaskCreate(testTask2, "TestTask2", configMINIMAL_STACK_SIZE+200, NULL, 3, &testTask2Handle);
+    checkTaskCreate(retVal);
 
 
     //UNUSED_VARIABLE(tempInit(tempObject_ptr));
@@ -241,6 +209,21 @@ int main(void)
     while (true)
     {
         APP_ERROR_HANDLER(NRF_ERROR_FORBIDDEN);
+    }
+}
+
+static void checkTaskCreate(BaseType_t retVal) {
+    if (retVal == pdPASS)
+    {
+        NRF_LOG_INFO("Checkpoint: created taskSendBle");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
 }
 
