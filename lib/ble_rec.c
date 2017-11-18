@@ -8,8 +8,13 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+/* TO WRITE TO ME!
+    1. Run primary to find the attribute handle (should be 0x0017) TODO: determine if this is always the case
+    2. Add two to the attr handle (which is for the rx characterisitc)
+    3. Write using char-write-req 0x<handle> <data>
+*/
 
-#define BLE_UUID_REC_RX_CHARACTERISTIC 0x0001                      /**< The UUID of the RX Characteristic. */
+#define BLE_UUID_REC_RX_CHARACTERISTIC 0x0002                      /**< The UUID of the RX Characteristic. */
 
 #define BLE_REC_MAX_RX_CHAR_LEN        BLE_NUS_MAX_DATA_LEN        /**< Maximum length of the RX Characteristic (in bytes). */
 
