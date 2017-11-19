@@ -241,20 +241,23 @@ static void taskSendBle (void * pvParameter)
     UNUSED_PARAMETER(pvParameter);
 
     char reqData[WAIT_MESSAGE_SIZE];
+    uint16_t * intPtr;
 
-    nrf_gpio_cfg_output(27);
-    nrf_gpio_pin_clear(27);
 
     while (true)
     {
         // Wait for Signal
         pendingMessagesWaitAndPop(reqData, &globalQ);
 
-        nrf_gpio_pin_write(27, 1);
+        // int i = 0;
+        // for(i = 0; i < 10; i++)
+        // {
+        //     intPtr = (uint16_t*)&reqData[i*2];
+        //     NRF_LOG_INFO("%d", *intPtr);
+        // }
+        
 
         debugErrorMessage(sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData)));
-        
-        nrf_gpio_pin_write(27, 0);
     }
 }
 

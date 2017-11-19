@@ -30,7 +30,7 @@ int pendingMessagesWaitAndPop(char* userBuff, pendingMessages_t* this) {
 
 	xSemaphoreTake(this->queueLock, portMAX_DELAY);
 
-	// NRF_LOG_INFO("ready to pop, %d bytes in queue", this->size);
+	// NRF_LOG_INFO("pop took mutex, %d bytes in queue", this->size);
 	// NRF_LOG_FLUSH();
 
 

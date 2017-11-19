@@ -25,27 +25,37 @@ static struct ecgObject_t * this = 0;
 static struct ecgObject_t ecgObject;
 
 // SAADC
+#define ECG_CHANNEL                     NRF_SAADC_INPUT_AIN5
+//#define ECG_CHANNEL_NUM                 6
+#define TEMPERATURE_CHANNEL             NRF_SAADC_INPUT_AIN1
+//#define TEMPERATURE_CHANNEL_NUM         1
 #define SAMPLE_PERIOD_MILLI             2
-#define SAMPLES_IN_BUFFER               34 // MUST BE DIVISIBLE BY DOWNSAMPLE FACTOR
-#define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600                                     /**< Reference voltage (in milli volts) used by ADC while doing conversion. */
-#define ADC_PRE_SCALING_COMPENSATION    6                                       /**< The ADC is configured to use VDD with 1/3 prescaling as input. And hence the result of conversion is to be multiplied by 3 to get the actual value of the battery voltage.*/
-#define ADC_RES_10BIT                   1024                                    /**< Maximum digital value for 10-bit ADC conversion. */
+#define SAMPLES_PER_CHANNEL             34 // MUST BE DIVISIBLE BY DOWNSAMPLE FACTOR
+#define NUM_CHANNELS                    2
+#define SAMPLES_TOTAL                   NUM_CHANNELS*SAMPLES_PER_CHANNEL
+#define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600
+#define ADC_PRE_SCALING_COMPENSATION    6
+#define ADC_RES_10BIT                   1024
 #define ADC_RESULT_IN_MILLI_VOLTS(ADC_VALUE)\
         ((((ADC_VALUE) * ADC_REF_VOLTAGE_IN_MILLIVOLTS) / ADC_RES_10BIT) * ADC_PRE_SCALING_COMPENSATION)
 static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
-static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
+static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_TOTAL];
 static nrf_ppi_channel_t     m_ppi_channel;
 static nrf_saadc_value_t dummy = 0xBEEF;
 
+// Temperature
+static uint16_t temperatureDataBuffer[SAMPLES_PER_CHANNEL];
+TaskHandle_t  taskTemperatureDataHandle;
+
 // Filter
 #define NUM_TAPS              27
-#define BLOCK_SIZE SAMPLES_IN_BUFFER
+#define BLOCK_SIZE SAMPLES_PER_CHANNEL
 TaskHandle_t  taskFIRHandle;
 static arm_fir_instance_f32 S;
 static float32_t firStateF32[BLOCK_SIZE + NUM_TAPS - 1];
 static const uint32_t blockSize = BLOCK_SIZE;
-static float32_t dataBuffer[SAMPLES_IN_BUFFER];
-static float32_t dataBufferFiltered[SAMPLES_IN_BUFFER];
+static float32_t ecgDataBuffer[SAMPLES_PER_CHANNEL];
+static float32_t ecgDataBufferFiltered[SAMPLES_PER_CHANNEL];
 
 static float32_t firCoeffs32[NUM_TAPS] = {
   -0.019008758166749587,
@@ -123,40 +133,72 @@ void saadc_sampling_event_enable(void)
 
 void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 {
+    nrf_gpio_pin_write(27, 1);
+
     if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
     {
-        APP_ERROR_CHECK(nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_IN_BUFFER));
+        APP_ERROR_CHECK(nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_TOTAL));
 
         int i;
-        for (i = 0; i < SAMPLES_IN_BUFFER; ++i)
+        for (i = 0; i < SAMPLES_TOTAL; ++i)
         {
-            dataBuffer[i] = (float32_t) ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
+            if(i%2 == 0) // even
+            {
+                temperatureDataBuffer[i/2] = (uint16_t) ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
+                //temperatureDataBuffer[i/2] = (uint16_t) p_event->data.done.p_buffer[i];
+            }
+            else // odd
+            {
+                ecgDataBuffer[i/2] = (float32_t) ADC_RESULT_IN_MILLI_VOLTS(p_event->data.done.p_buffer[i]);
+            }
         }
         //NRF_LOG_INFO("%d",p_event->data.done.p_buffer[0]);
 
         // Signal the data processing task
-        sendNotification(SAADC_BUFFER_NOTIFICATION);
+        sendNotification(TEMPERATURE_BUFFER_FULL_NOTIFICATION);
+        sendNotification(ECG_BUFFER_FULL_NOTIFICATION);
     }
+
+    nrf_gpio_pin_write(27, 0);
 }
 
 
 void saadc_init(void)
 {
     ret_code_t err_code;
-    nrf_saadc_channel_config_t channel_config =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1);
 
+    nrf_saadc_channel_config_t channel_config_temperature =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(TEMPERATURE_CHANNEL);
+
+    nrf_saadc_channel_config_t channel_config_ecg =
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(ECG_CHANNEL);
+
+    // Init SAADC
     err_code = nrf_drv_saadc_init(NULL, saadc_callback);
     APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_channel_init(0, &channel_config);
+
+    NRF_LOG_INFO("got here");
+    NRF_LOG_PROCESS();
+
+    // Init temperature channel
+    err_code = nrf_drv_saadc_channel_init(0, &channel_config_temperature);
     APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_IN_BUFFER);
+    // Init ecg channel
+    err_code = nrf_drv_saadc_channel_init(1, &channel_config_ecg);
     APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
+    NRF_LOG_INFO("got here");
+    NRF_LOG_PROCESS();
+
+    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_TOTAL);
     APP_ERROR_CHECK(err_code);
+
+    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_TOTAL);
+    APP_ERROR_CHECK(err_code);
+
+
 }
 
 
@@ -170,39 +212,74 @@ void timer_handler(nrf_timer_event_t event_type, void * p_context)
  * Blinks an LED
  *
  */
-void taskFIR (void * pvParameter)
+void taskTemperatureData (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
 
     NRF_LOG_INFO("Checkpoint: beginning of taskFIR");
 
-    uint16_t dataBufferFilteredDownSampled[SAMPLES_IN_BUFFER/2];
+    uint32_t temperatureSum = 0;
+    uint16_t temperatureAverage = 0;
 
     while (true)
     {
-        waitForNotification(SAADC_BUFFER_NOTIFICATION);
-
-        //bsp_board_led_on(1);
-        arm_fir_f32(&S, dataBuffer, dataBufferFiltered, blockSize);
-        //bsp_board_led_off(1);
+        waitForNotification(TEMPERATURE_BUFFER_FULL_NOTIFICATION);
 
         int i;
-        for(i = 0; i < SAMPLES_IN_BUFFER; ++i)
+        temperatureSum = 0;
+        for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
+        {
+            temperatureSum += temperatureDataBuffer[i];
+            //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
+        }
+        temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
+        pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
+    }
+}
+
+/**@taskToggleLed
+ *
+ * Blinks an LED
+ *
+ */
+void taskFIR (void * pvParameter)
+{
+    UNUSED_PARAMETER(pvParameter);
+
+    uint16_t ecgDataBufferFilteredDownSampled[SAMPLES_PER_CHANNEL/2];
+
+    while (true)
+    {
+        waitForNotification(ECG_BUFFER_FULL_NOTIFICATION);
+
+        int i;
+        // for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
+        // {
+        //     NRF_LOG_INFO("ECG %d", ecgDataBuffer[i]);
+        // }
+
+        //bsp_board_led_on(1);
+        arm_fir_f32(&S, ecgDataBuffer, ecgDataBufferFiltered, blockSize);
+        //bsp_board_led_off(1);
+
+        for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
         {
             if (i % 2 == 0)
             {
-                dataBufferFilteredDownSampled[i/2] = (uint16_t)dataBufferFiltered[i];
-                //NRF_LOG_INFO("%d", dataBufferFilteredDownSampled[i/2]);
+                ecgDataBufferFilteredDownSampled[i/2] = (uint16_t)ecgDataBufferFiltered[i];
+                //NRF_LOG_INFO("%d", ecgDataBufferFilteredDownSampled[i/2]);
             }
         }
-        int size = sizeof(dataBufferFilteredDownSampled);
-        pendingMessagesPush(size, (char*)dataBufferFilteredDownSampled, &globalQ);
+        int size = sizeof(ecgDataBufferFilteredDownSampled);
+        pendingMessagesPush(size, (char*)ecgDataBufferFilteredDownSampled, &globalQ);
     }
 }
 
 
 int ecgInit(struct ecgObject_t * inEcgObject_ptr)
 {
+    nrf_gpio_cfg_output(27);
+    nrf_gpio_pin_clear(27);
     // ********** DSP ************//
     arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], blockSize);
     // ************ END DSP ************ //
@@ -230,7 +307,19 @@ int ecgInit(struct ecgObject_t * inEcgObject_ptr)
         NRF_LOG_INFO("ecg SENSOR GPIO TOGGLE THREAD DID NOT PASS XXXXXXXXX");
     }
 
-    NRF_LOG_INFO("Checkpoint: end of ecgInit");
+    retVal = xTaskCreate(taskTemperatureData, "x", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskTemperatureDataHandle);
+    if (retVal == pdPASS)
+    {
+        NRF_LOG_INFO("temperature SENSOR THREAD CREATED");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("temperature SENSOR TASK NEED MORE HEAP!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("temperature SENSOR THREAD DID NOT PASS XXXXXXXXX");
+    }
 
     inEcgObject_ptr = this;
     return 0;

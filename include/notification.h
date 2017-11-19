@@ -8,9 +8,9 @@
 
 #define NUM_NOTIFICATIONS 3  //Change whenever you add a new semaphore
 
-#define TEMPERATURE_NOTIFICATION 0
-#define BLUETOOTH_NOTIFICATION 1
-#define SAADC_BUFFER_NOTIFICATION 2
+#define BLUETOOTH_NOTIFICATION                  0
+#define ECG_BUFFER_FULL_NOTIFICATION            1
+#define TEMPERATURE_BUFFER_FULL_NOTIFICATION    2
 
 
 SemaphoreHandle_t semphMap[NUM_NOTIFICATIONS]; 
