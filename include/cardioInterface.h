@@ -11,6 +11,6 @@
 #include "arm_const_structs.h"
 
 // Public
-int ecgInit();
+int cardioInit();
 
 #endif //ECGINTERFACE_H

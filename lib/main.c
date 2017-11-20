@@ -49,7 +49,8 @@
 #include "nrf_timer.h"
 
 // Interfaces
-#include "sensorInterface.h"
+#include "tempInterface.h"
+#include "cardioInterface.h"
 #include "bleInterface.h"
 #include "sdInterface.h"
 #include "notification.h"
@@ -204,7 +205,8 @@ int main(void)
 
     checkReturn(xTaskCreate(taskSendBle, "x", configMINIMAL_STACK_SIZE+200, NULL, 3, &bleHandle));
 
-    UNUSED_VARIABLE(ecgInit());
+    UNUSED_VARIABLE(cardioInit());
+    UNUSED_VARIABLE(tempInit());
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;

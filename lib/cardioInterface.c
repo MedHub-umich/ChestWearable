@@ -1,6 +1,6 @@
-// ecgInterface.c
+// cardioInterface.c
 
-#include "sensorInterface.h"
+#include "cardioInterface.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
@@ -20,9 +20,6 @@
 // FILTER
 #include "app_util_platform.h"
 #include "arm_const_structs.h"
-
-// Temperature
-TaskHandle_t  taskTemperatureDataHandle;
 
 // Filter
 #define NUM_TAPS              27
@@ -63,33 +60,6 @@ static float32_t firCoeffs32[NUM_TAPS] = {
   -0.019008758166749587
 };
 
-
-void taskTemperatureData (void * pvParameter)
-{
-    UNUSED_PARAMETER(pvParameter);
-
-    NRF_LOG_INFO("Checkpoint: beginning of taskFIR");
-
-    uint32_t temperatureSum = 0;
-    uint16_t temperatureAverage = 0;
-
-    while (true)
-    {
-        waitForNotification(TEMPERATURE_BUFFER_FULL_NOTIFICATION);
-
-        int i;
-        temperatureSum = 0;
-        for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
-        {
-            temperatureSum += temperatureDataBuffer[i];
-            //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
-        }
-        temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
-        pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
-    }
-}
-
-
 void taskFIR (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
@@ -120,7 +90,7 @@ void taskFIR (void * pvParameter)
 }
 
 
-void checkReturn(BaseType_t retVal)
+static void checkReturn(BaseType_t retVal)
 {
     if (retVal == pdPASS)
     {
@@ -137,7 +107,7 @@ void checkReturn(BaseType_t retVal)
 }
 
 
-int ecgInit()
+int cardioInit()
 {
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
@@ -148,8 +118,6 @@ int ecgInit()
 
     // create FreeRtos tasks
     checkReturn(xTaskCreate(taskFIR, "LED0", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskFIRHandle));
-
-    checkReturn(xTaskCreate(taskTemperatureData, "x", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskTemperatureDataHandle));
 
     return 0;
 }

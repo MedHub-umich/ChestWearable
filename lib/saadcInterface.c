@@ -3,9 +3,14 @@
 // Public
 void saadcInterfaceInit(void)
 {
-    saadc_init();
-    saadc_sampling_event_init();
-    saadc_sampling_event_enable();
+    static int is_initialized = 0;
+    if(is_initialized == 0)
+    {
+        is_initialized = 1;
+        saadc_init();
+        saadc_sampling_event_init();
+        saadc_sampling_event_enable();
+    }
 }
 
 // Private
@@ -88,31 +93,31 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 
 void saadc_init(void)
 {
-    ret_code_t err_code;
+        ret_code_t err_code;
 
-    nrf_saadc_channel_config_t channel_config_temperature =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(TEMPERATURE_CHANNEL);
+        nrf_saadc_channel_config_t channel_config_temperature =
+            NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(TEMPERATURE_CHANNEL);
 
-    nrf_saadc_channel_config_t channel_config_ecg =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(ECG_CHANNEL);
+        nrf_saadc_channel_config_t channel_config_ecg =
+            NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(ECG_CHANNEL);
 
-    // Init SAADC
-    err_code = nrf_drv_saadc_init(NULL, saadc_callback);
-    APP_ERROR_CHECK(err_code);
+        // Init SAADC
+        err_code = nrf_drv_saadc_init(NULL, saadc_callback);
+        APP_ERROR_CHECK(err_code);
 
-    // Init temperature channel
-    err_code = nrf_drv_saadc_channel_init(0, &channel_config_temperature);
-    APP_ERROR_CHECK(err_code);
+        // Init temperature channel
+        err_code = nrf_drv_saadc_channel_init(0, &channel_config_temperature);
+        APP_ERROR_CHECK(err_code);
 
-    // Init ecg channel
-    err_code = nrf_drv_saadc_channel_init(1, &channel_config_ecg);
-    APP_ERROR_CHECK(err_code);
+        // Init ecg channel
+        err_code = nrf_drv_saadc_channel_init(1, &channel_config_ecg);
+        APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_TOTAL);
-    APP_ERROR_CHECK(err_code);
+        err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_TOTAL);
+        APP_ERROR_CHECK(err_code);
 
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_TOTAL);
-    APP_ERROR_CHECK(err_code);
+        err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_TOTAL);
+        APP_ERROR_CHECK(err_code);
 }
 
 
