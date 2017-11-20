@@ -1,7 +1,7 @@
-// tempInterface.h
+// ecgInterface.h
 
-#ifndef TEMPINTERFACE_H
-#define TEMPINTERFACE_H
+#ifndef ECGINTERFACE_H
+#define ECGINTERFACE_H
 
 #include "nrf_drv_saadc.h"
 #include "FreeRTOS.h"
@@ -11,6 +11,6 @@
 #include "arm_const_structs.h"
 
 // Public
-int tempInit();
+int cardioInit();
 
-#endif //TEMPINTERFACE_H
+#endif //ECGINTERFACE_H

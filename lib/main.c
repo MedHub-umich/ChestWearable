@@ -49,15 +49,13 @@
 #include "nrf_timer.h"
 
 // Interfaces
-#include "ecgInterface.h"
-#include "blinkyInterface.h"
+#include "tempInterface.h"
+#include "cardioInterface.h"
 #include "bleInterface.h"
 #include "sdInterface.h"
 #include "notification.h"
 #include "pendingMessages.h"
 #include "ble_rec.h"
-
-struct ecgObject_t * ecgObject_ptr;
 
 TaskHandle_t  bleHandle;
 static void taskSendBle(void * pvParameter);
@@ -207,7 +205,8 @@ int main(void)
 
     checkReturn(xTaskCreate(taskSendBle, "x", configMINIMAL_STACK_SIZE+200, NULL, 3, &bleHandle));
 
-    UNUSED_VARIABLE(ecgInit(ecgObject_ptr));
+    UNUSED_VARIABLE(cardioInit());
+    UNUSED_VARIABLE(tempInit());
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -241,20 +240,21 @@ static void taskSendBle (void * pvParameter)
     UNUSED_PARAMETER(pvParameter);
 
     char reqData[WAIT_MESSAGE_SIZE];
-
-    nrf_gpio_cfg_output(27);
-    nrf_gpio_pin_clear(27);
+    uint16_t * intPtr;
 
     while (true)
     {
         // Wait for Signal
         pendingMessagesWaitAndPop(reqData, &globalQ);
 
-        nrf_gpio_pin_write(27, 1);
+        // int i = 0;
+        // for(i = 0; i < 10; i++)
+        // {
+        //     intPtr = (uint16_t*)&reqData[i*2];
+        //     NRF_LOG_INFO("%d", *intPtr);
+        // }
 
         debugErrorMessage(sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData)));
-        
-        nrf_gpio_pin_write(27, 0);
     }
 }
 
