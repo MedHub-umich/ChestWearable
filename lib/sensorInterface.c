@@ -21,10 +21,6 @@
 #include "app_util_platform.h"
 #include "arm_const_structs.h"
 
-// This
-static struct ecgObject_t * this = 0;
-static struct ecgObject_t ecgObject;
-
 // Temperature
 TaskHandle_t  taskTemperatureDataHandle;
 
@@ -141,7 +137,7 @@ void checkReturn(BaseType_t retVal)
 }
 
 
-int ecgInit(struct ecgObject_t * inEcgObject_ptr)
+int ecgInit()
 {
     nrf_gpio_cfg_output(27);
     nrf_gpio_pin_clear(27);
@@ -150,14 +146,11 @@ int ecgInit(struct ecgObject_t * inEcgObject_ptr)
 
     arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], blockSize);
 
-    this = &ecgObject;
-
     // create FreeRtos tasks
     checkReturn(xTaskCreate(taskFIR, "LED0", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskFIRHandle));
 
     checkReturn(xTaskCreate(taskTemperatureData, "x", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskTemperatureDataHandle));
 
-    inEcgObject_ptr = this;
     return 0;
 }
 

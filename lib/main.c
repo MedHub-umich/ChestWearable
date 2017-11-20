@@ -49,15 +49,12 @@
 #include "nrf_timer.h"
 
 // Interfaces
-#include "ecgInterface.h"
-#include "blinkyInterface.h"
+#include "sensorInterface.h"
 #include "bleInterface.h"
 #include "sdInterface.h"
 #include "notification.h"
 #include "pendingMessages.h"
 #include "ble_rec.h"
-
-struct ecgObject_t * ecgObject_ptr;
 
 TaskHandle_t  bleHandle;
 static void taskSendBle(void * pvParameter);
@@ -207,7 +204,7 @@ int main(void)
 
     checkReturn(xTaskCreate(taskSendBle, "x", configMINIMAL_STACK_SIZE+200, NULL, 3, &bleHandle));
 
-    UNUSED_VARIABLE(ecgInit(ecgObject_ptr));
+    UNUSED_VARIABLE(ecgInit());
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -243,7 +240,6 @@ static void taskSendBle (void * pvParameter)
     char reqData[WAIT_MESSAGE_SIZE];
     uint16_t * intPtr;
 
-
     while (true)
     {
         // Wait for Signal
@@ -255,7 +251,6 @@ static void taskSendBle (void * pvParameter)
         //     intPtr = (uint16_t*)&reqData[i*2];
         //     NRF_LOG_INFO("%d", *intPtr);
         // }
-        
 
         debugErrorMessage(sendData(&m_hrs, (uint8_t*)reqData, sizeof(reqData)));
     }

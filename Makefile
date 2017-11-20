@@ -13,7 +13,7 @@ SRC_FILES += \
   $(PROJ_DIR)/lib/main.c \
   $(PROJ_DIR)/lib/saadcInterface.c \
   $(PROJ_DIR)/lib/sdInterface.c \
-  $(PROJ_DIR)/lib/ecgInterface.c \
+  $(PROJ_DIR)/lib/sensorInterface.c \
   $(PROJ_DIR)/lib/blinkyInterface.c \
   $(PROJ_DIR)/lib/bleInterface.c \
   $(PROJ_DIR)/lib/notification.c \
