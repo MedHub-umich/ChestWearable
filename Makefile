@@ -10,6 +10,7 @@ $(OUTPUT_DIRECTORY)/nrf52832_xxaa.out: \
 
 # Source files common to all targets
 SRC_FILES += \
+  $(PROJ_DIR)/lib/heartRate.c \
   $(PROJ_DIR)/lib/main.c \
   $(PROJ_DIR)/lib/saadcInterface.c \
   $(PROJ_DIR)/lib/sdInterface.c \
