@@ -60,190 +60,35 @@ static float32_t firCoeffs32[NUM_TAPS] = {
 };
 
 static arm_fir_instance_f32 heartRateLowPassInstance;
-static const int heartRateLowPassBlockSize = BLOCK_SIZE;
-static const int numHeartRateLowPassTaps = 157;
-static float32_t heartRateLowPassState[heartRateLowPassBlockSize + numHeartRateLowPassTaps - 1];
-static float32_t heartRateLowPassData[heartRateLowPassBlockSize];
-static float32_t heartRateLowPassTaps[numHeartRateLowPassTaps] = {
-  0.005747275144764403,
-  0.0023468683116059,
-  0.002659789308478933,
-  0.002869614374419817,
-  0.0029496592187077553,
-  0.0028818374834934154,
-  0.0026532577263599154,
-  0.00226197957979133,
-  0.001724495774383823,
-  0.0010598609598767386,
-  0.0003086216865700871,
-  -0.00048591271941989076,
-  -0.0012709340868750955,
-  -0.0019901661155818273,
-  -0.0025883777896462128,
-  -0.0030154898708769848,
-  -0.00322926529617709,
-  -0.003203588916486325,
-  -0.002926506964294118,
-  -0.0024062771506167474,
-  -0.0016698625906981903,
-  -0.0007624748972384352,
-  0.00025396978433584995,
-  0.0013047062543759672,
-  0.002308084199564374,
-  0.003179671413138975,
-  0.0038411504071846434,
-  0.004225176106027155,
-  0.004282016584712055,
-  0.003984898149176956,
-  0.0033330387410852222,
-  0.002353788097670533,
-  0.0011030475075215437,
-  -0.0003383437954851411,
-  -0.0018679819470013596,
-  -0.0033693393156674317,
-  -0.004720052540245941,
-  -0.005800553078085297,
-  -0.0065044542979652,
-  -0.006747578918271766,
-  -0.006475770831752035,
-  -0.005672136416107766,
-  -0.00436021554214034,
-  -0.002605270032851261,
-  -0.0005128286910271003,
-  0.0017774834939584517,
-  0.004099077008248188,
-  0.006269488409354166,
-  0.008103400506924105,
-  0.009425867694491405,
-  0.010086872370188488,
-  0.009975021007762385,
-  0.009027804406053492,
-  0.007242091880153391,
-  0.0046779045681573815,
-  0.001460080625886543,
-  -0.002224900539969955,
-  -0.00613747557821139,
-  -0.009997075422535688,
-  -0.013496196083622368,
-  -0.01632110078613998,
-  -0.01816804973241476,
-  -0.018766063942260547,
-  -0.01789525257727796,
-  -0.015403761225477654,
-  -0.011222005307857406,
-  -0.005372760798296031,
-  0.002030163299932881,
-  0.010776394405298581,
-  0.020575699334018392,
-  0.031063278896639908,
-  0.041819240240292835,
-  0.052390908117101107,
-  0.06231832456731873,
-  0.07114682868005769,
-  0.07849309980326598,
-  0.08399354844130537,
-  0.08740531991102928,
-  0.08856330760179881,
-  0.08740531991102928,
-  0.08399354844130537,
-  0.07849309980326598,
-  0.07114682868005769,
-  0.06231832456731873,
-  0.052390908117101107,
-  0.041819240240292835,
-  0.031063278896639908,
-  0.020575699334018392,
-  0.010776394405298581,
-  0.002030163299932881,
-  -0.005372760798296031,
-  -0.011222005307857406,
-  -0.015403761225477654,
-  -0.01789525257727796,
-  -0.018766063942260547,
-  -0.01816804973241476,
-  -0.01632110078613998,
-  -0.013496196083622368,
-  -0.009997075422535688,
-  -0.00613747557821139,
-  -0.002224900539969955,
-  0.001460080625886543,
-  0.0046779045681573815,
-  0.007242091880153391,
-  0.009027804406053492,
-  0.009975021007762385,
-  0.010086872370188488,
-  0.009425867694491405,
-  0.008103400506924105,
-  0.006269488409354166,
-  0.004099077008248188,
-  0.0017774834939584517,
-  -0.0005128286910271003,
-  -0.002605270032851261,
-  -0.00436021554214034,
-  -0.005672136416107766,
-  -0.006475770831752035,
-  -0.006747578918271766,
-  -0.0065044542979652,
-  -0.005800553078085297,
-  -0.004720052540245941,
-  -0.0033693393156674317,
-  -0.0018679819470013596,
-  -0.0003383437954851411,
-  0.0011030475075215437,
-  0.002353788097670533,
-  0.0033330387410852222,
-  0.003984898149176956,
-  0.004282016584712055,
-  0.004225176106027155,
-  0.0038411504071846434,
-  0.003179671413138975,
-  0.002308084199564374,
-  0.0013047062543759672,
-  0.00025396978433584995,
-  -0.0007624748972384352,
-  -0.0016698625906981903,
-  -0.0024062771506167474,
-  -0.002926506964294118,
-  -0.003203588916486325,
-  -0.00322926529617709,
-  -0.0030154898708769848,
-  -0.0025883777896462128,
-  -0.0019901661155818273,
-  -0.0012709340868750955,
-  -0.00048591271941989076,
-  0.0003086216865700871,
-  0.0010598609598767386,
-  0.001724495774383823,
-  0.00226197957979133,
-  0.0026532577263599154,
-  0.0028818374834934154,
-  0.0029496592187077553,
-  0.002869614374419817,
-  0.002659789308478933,
-  0.0023468683116059,
-  0.005747275144764403
+#define HEART_RATE_LOW_PASS_BLOCK_SIZE BLOCK_SIZE
+#define HEART_RATE_LOW_PASS_NUM_TAPS 101
+static float32_t heartRateLowPassState[HEART_RATE_LOW_PASS_BLOCK_SIZE + HEART_RATE_LOW_PASS_NUM_TAPS - 1];
+static float32_t heartRateLowPassData[HEART_RATE_LOW_PASS_BLOCK_SIZE];
+static float32_t heartRateLowPassTaps[HEART_RATE_LOW_PASS_NUM_TAPS] = {
+0.00011276,-2.6888e-05,-0.00019975,-0.00022221,-1.9591e-05,0.00012975,1.3397e-05,-5.6568e-05,0.00034716,0.00086583,0.00049531,-0.00092667,-0.0019435,-0.0011019,0.00084958,0.0016241,0.00061903,1.3829e-05,0.0013603,0.0023409,-0.00048678,-0.0056509,-0.0067251,-0.00052808,0.0070909,0.007639,0.0014375,-0.0024605,0.00034771,0.0019882,-0.0059008,-0.016076,-0.011358,0.010608,0.02787,0.019104,-0.0067881,-0.019744,-0.0092368,-5.503e-05,-0.014531,-0.030718,-0.0042047,0.061894,0.09481,0.029389,-0.096252,-0.15581,-0.068213,0.097694,0.18101,0.097694,-0.068213,-0.15581,-0.096252,0.029389,0.09481,0.061894,-0.0042047,-0.030718,-0.014531,-5.503e-05,-0.0092368,-0.019744,-0.0067881,0.019104,0.02787,0.010608,-0.011358,-0.016076,-0.0059008,0.0019882,0.00034771,-0.0024605,0.0014375,0.007639,0.0070909,-0.00052808,-0.0067251,-0.0056509,-0.00048678,0.0023409,0.0013603,1.3829e-05,0.00061903,0.0016241,0.00084958,-0.0011019,-0.0019435,-0.00092667,0.00049531,0.00086583,0.00034716,-5.6568e-05,1.3397e-05,0.00012975,-1.9591e-05,-0.00022221,-0.00019975,-2.6888e-05,0.00011276
 };
 
 // ****************** Heart Rate ******************** //
 
-static float32_t calcAverageAmplitudeForThisBuffer(uint16_t * inBuffer, uint16_t inSize)
+static float32_t calcAverageAmplitudeForThisBuffer(float32_t * inBuffer, uint16_t inSize)
 {
-    uint32_t i, runningTotal = 0;
+    uint32_t i;
+    float32_t runningTotal = 0;
     for(i = 0; i < inSize; ++i)
     {
-      runningTotal += (uint32_t) inBuffer[i];
+      runningTotal += inBuffer[i];
     }
-    return (float32_t) (runningTotal / (uint32_t) inSize);
+    return (runningTotal / inSize);
 }
 
-static float32_t calcPeakAmplitudeThreshold(float32_t averageAmplitudeForThisBuffer, float32_t peakAmplitudeThreshold)
+static float32_t calcLongTermAverage(float32_t averageAmplitudeForThisBuffer, float32_t longTermAverage)
 {
     static const float32_t numAverageAmplitudes = 100.0;
 
-    peakAmplitudeThreshold += averageAmplitudeForThisBuffer / numAverageAmplitudes;
-    peakAmplitudeThreshold -= peakAmplitudeThreshold / numAverageAmplitudes;
+    longTermAverage -= (longTermAverage / numAverageAmplitudes);
+    longTermAverage += (averageAmplitudeForThisBuffer / numAverageAmplitudes);
 
-    return peakAmplitudeThreshold;
+    return longTermAverage;
 }
 
 
@@ -252,18 +97,21 @@ void taskFIR (void * pvParameter)
     UNUSED_PARAMETER(pvParameter);
 
     uint16_t ecgDataBufferFilteredDownSampled[SAMPLES_PER_CHANNEL/2];
-    uint16_t ecgDataBufferCopy[SAMPLES_PER_CHANNEL];
+    float32_t ecgDataBufferCopy[HEART_RATE_LOW_PASS_BLOCK_SIZE];
+    float32_t ecgheartRateLowPass[HEART_RATE_LOW_PASS_BLOCK_SIZE];
 
     // Heart Rate Amplitude Stuff
     float32_t averageAmplitudeForThisBuffer = 0;
-    float32_t peakAmplitudeThreshold = 4000;
+    float32_t longTermAverage = 250;
+    float32_t peakAmplitudeThreshold = 0;
+    float32_t factor = 25.0;
 
     // Heart Rate Time Stuff
-    static int samplesFromPreviousPeakToEnd;
-    static int samplesFromBeginningToThisPeak;
-    static int samplesFromPreviousPeakToThisPeak;
-    static const int peakTimeThreshold = 256; // 250 ms
-    static const int peakSampleThreshold = peakTimeThreshold / SAMPLE_PERIOD_MILLI;
+    int samplesSinceMax = 0;
+    int thresholdSamplesSinceMax = 75;
+    float32_t currMax = 0;
+    float32_t heartRate = 0;
+    int samplesSinceLastPeak = 0;
 
     while (true)
     {
@@ -273,7 +121,7 @@ void taskFIR (void * pvParameter)
         int i;
         for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
         {
-            ecgDataBufferCopy[i] = (uint16_t)ecgDataBuffer[i];
+            ecgDataBufferCopy[i] = ecgDataBuffer[i];
         }
 
         // Low Pass Filter
@@ -293,11 +141,53 @@ void taskFIR (void * pvParameter)
         int size = sizeof(ecgDataBufferFilteredDownSampled);
         pendingMessagesPush(size, (char*)ecgDataBufferFilteredDownSampled, &globalQ);
 
+        // Heart Rate Band Pass
+        arm_fir_f32(&heartRateLowPassInstance, ecgDataBufferCopy, ecgheartRateLowPass, HEART_RATE_LOW_PASS_BLOCK_SIZE);
+
+        // Heart Rate Signal Energy
+        for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
+        {
+           ecgheartRateLowPass[i] = ecgheartRateLowPass[i] * ecgheartRateLowPass[i];
+        }
+
+        for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
+        {
+           //NRF_LOG_INFO("%d", (int16_t)ecgheartRateLowPass[i]);
+           //NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(ecgheartRateLowPass[i]));
+        }
+
+       
+
+
         // Heart Rate
-        averageAmplitudeForThisBuffer = calcAverageAmplitudeForThisBuffer(ecgDataBufferCopy, SAMPLES_PER_CHANNEL);
-        peakAmplitudeThreshold = calcPeakAmplitudeThreshold(averageAmplitudeForThisBuffer, peakAmplitudeThreshold);
-        NRF_LOG_INFO("averageAmplitudeForThisBuffer %d", (uint32_t) averageAmplitudeForThisBuffer);
+        averageAmplitudeForThisBuffer = calcAverageAmplitudeForThisBuffer(ecgheartRateLowPass, HEART_RATE_LOW_PASS_BLOCK_SIZE);
+        longTermAverage = calcLongTermAverage(averageAmplitudeForThisBuffer, longTermAverage);
+        peakAmplitudeThreshold = factor * longTermAverage * 0.25 + 5000 * 0.75; // Adding in a 5000 term to mitigate problems from noise
+
+        for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
+        {
+           if (ecgheartRateLowPass[i] > peakAmplitudeThreshold && ecgheartRateLowPass[i] > currMax) {
+              currMax = ecgheartRateLowPass[i];
+              samplesSinceMax = 0;
+           } else {
+              ++samplesSinceMax;
+              if (samplesSinceMax >= thresholdSamplesSinceMax && currMax > peakAmplitudeThreshold) {
+                heartRate = 60 / (samplesSinceLastPeak * (SAMPLE_PERIOD_MILLI / 1000.0));
+                NRF_LOG_INFO("HeartRate: %d", (uint16_t) heartRate);
+                NRF_LOG_INFO("The max: %d", (uint16_t) currMax);
+                //NRF_LOG_INFO("Samples since last peak: %d", samplesSinceLastPeak);
+                //add to list of breathing rate peaks, if greather than a thershold wake up breathing rate algo
+                samplesSinceLastPeak = 0;
+                currMax = 0;
+                samplesSinceMax = 0;
+              }
+           }
+           ++samplesSinceLastPeak;
+        }
+
+        //NRF_LOG_INFO("longTermAverage %d", (uint32_t) longTermAverage);
         NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
+
         nrf_gpio_pin_write(27,0);
     }
 
@@ -329,10 +219,10 @@ int cardioInit()
     saadcInterfaceInit();
 
     arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], blockSize);
-    arm_fir_init_f32(&heartRateLowPassInstance, numHeartRateLowPassTaps, (float32_t *)&heartRateLowPassTaps[0], &heartRateLowPassState[0], heartRateLowPassBlockSize);
+    arm_fir_init_f32(&heartRateLowPassInstance, HEART_RATE_LOW_PASS_NUM_TAPS, (float32_t *)&heartRateLowPassTaps[0], &heartRateLowPassState[0], HEART_RATE_LOW_PASS_BLOCK_SIZE);
 
     // create FreeRtos tasks
-    checkReturn(xTaskCreate(taskFIR, "LED0", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskFIRHandle));
+    checkReturn(xTaskCreate(taskFIR, "LED0", configMINIMAL_STACK_SIZE + 800, NULL, 2, &taskFIRHandle));
 
     return 0;
 }

@@ -3,7 +3,6 @@
 // C stdlib
 #include <stdint.h>
 #include <string.h>
-#include <stdint.h>
 #include "nordic_common.h"
 #include "nrf.h"
 #include "app_error.h"
