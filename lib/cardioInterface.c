@@ -156,9 +156,6 @@ void taskFIR (void * pvParameter)
            //NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(ecgheartRateLowPass[i]));
         }
 
-       
-
-
         // Heart Rate
         averageAmplitudeForThisBuffer = calcAverageAmplitudeForThisBuffer(ecgheartRateLowPass, HEART_RATE_LOW_PASS_BLOCK_SIZE);
         longTermAverage = calcLongTermAverage(averageAmplitudeForThisBuffer, longTermAverage);
