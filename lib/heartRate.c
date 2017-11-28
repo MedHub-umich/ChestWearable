@@ -5,7 +5,6 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
-
 static arm_fir_instance_f32 heartRateLowPassInstance;
 #define HEART_RATE_LOW_PASS_BLOCK_SIZE 34
 #define HEART_RATE_LOW_PASS_NUM_TAPS 101
@@ -81,15 +80,20 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
 
     for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
     {
-       if (ecgheartRateLowPass[i] > peakAmplitudeThreshold && ecgheartRateLowPass[i] > currMax) {
+       if (ecgheartRateLowPass[i] > peakAmplitudeThreshold && ecgheartRateLowPass[i] > currMax)
+       {
           currMax = ecgheartRateLowPass[i];
           samplesSinceMax = 0;
-       } else {
+       }
+       else
+       {
           ++samplesSinceMax;
-          if (samplesSinceMax >= thresholdSamplesSinceMax && currMax > peakAmplitudeThreshold) {
+          if (samplesSinceMax >= thresholdSamplesSinceMax && currMax > peakAmplitudeThreshold)
+          {
             heartRate = 60 / (samplesSinceLastPeak * (samplePeriodMilli / 1000.0));
             NRF_LOG_INFO("HeartRate: %d", (uint16_t) heartRate);
             NRF_LOG_INFO("The max: %d", (uint16_t) currMax);
+            respirationRateAddPair(currMax, samplesSinceLastPeak, &respiration);
             //NRF_LOG_INFO("Samples since last peak: %d", samplesSinceLastPeak);
             //add to list of breathing rate peaks, if greather than a thershold wake up breathing rate algo
             samplesSinceLastPeak = 0;
@@ -106,6 +110,7 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
 
 void heartRateInit()
 {
+    respirationRateInit(&respiration);
     arm_fir_init_f32(&heartRateLowPassInstance, HEART_RATE_LOW_PASS_NUM_TAPS, (float32_t *)&heartRateLowPassTaps[0], &heartRateLowPassState[0], HEART_RATE_LOW_PASS_BLOCK_SIZE);
 }
 

@@ -5,7 +5,9 @@
 
 #include "app_util_platform.h"
 #include "arm_const_structs.h"
+#include "respirationRate.h"
 
+static respirationRate_t respiration;
 
 void heartRateInit();
 void heartRateExtract(float32_t * inHeartRateBuffer, int inSize);

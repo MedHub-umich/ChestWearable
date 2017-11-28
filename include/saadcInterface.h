@@ -26,7 +26,7 @@ void saadcInterfaceInit(void);
 
 #define NUM_CHANNELS                    2
 #define SAMPLES_TOTAL                   NUM_CHANNELS*SAMPLES_PER_CHANNEL
-#define ECG_CHANNEL                     NRF_SAADC_INPUT_AIN6
+#define ECG_CHANNEL                     NRF_SAADC_INPUT_AIN5
 #define TEMPERATURE_CHANNEL             NRF_SAADC_INPUT_AIN1
 #define ADC_REF_VOLTAGE_IN_MILLIVOLTS   600
 #define ADC_PRE_SCALING_COMPENSATION    6
