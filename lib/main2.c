@@ -57,10 +57,10 @@
 // USE PINS FAR FROM RADIO PINS - NOTE
 #define GPIO_ECG    16
 #define GPIO_TEMP   27
-#define GPIO_LED1    7
-#define GPIO_LED2   11
-#define GPIO_SPKR   15
-
+#define GPIO_LED1 19
+#define GPIO_LED2   17
+//#define GPIO_SPKR
+#define BUTTON 11
 // configures all gpio pins in this application
 void main_config_gpio(void);
 
@@ -69,32 +69,40 @@ void main_config_gpio(void);
  */
 int main(void)
 {
-
+    uint32_t button_val =0;
     /* Configure LEDs. */
     main_config_gpio();
-
+    
     /* Toggle LEDs. */
     while (true)
     {
+        
         //nrf_gpio_pin_toggle(GPIO_ECG);
-        nrf_gpio_pin_toggle(GPIO_TEMP);
+       // nrf_gpio_pin_toggle(GPIO_TEMP);
         nrf_gpio_pin_toggle(GPIO_LED1);
-        nrf_gpio_pin_toggle(GPIO_LED2);
         //nrf_gpio_pin_toggle(GPIO_SPKR);
-        for (int i = 0; i < LEDS_NUMBER; i++)
+       /* for (int i = 0; i < LEDS_NUMBER; i++)
         {
              bsp_board_led_invert(i);
-        }
+        }*/
 
-        nrf_delay_ms(500);
+        button_val = nrf_gpio_pin_read(BUTTON);
+        if (button_val >0 ){
+            nrf_gpio_pin_set(GPIO_LED1);
+        }
+        else{
+             nrf_gpio_pin_clear(GPIO_LED1);
+        }
+        nrf_delay_ms(50);
     }
 }
 
 void main_config_gpio(void)
 {
-    //nrf_gpio_cfg_output(GPIO_ECG);
+    nrf_gpio_cfg_sense_input(BUTTON, NRF_GPIO_PIN_PULLUP, NRF_GPIO_PIN_SENSE_LOW);
+    //nrf_gpio_cfg_output(GPIO_LED1);
     //nrf_gpio_pin_clear(GPIO_ECG);
-    nrf_gpio_cfg(
+   /* nrf_gpio_cfg(
         GPIO_ECG,
         GPIO_PIN_CNF_DIR_Output,
         NRF_GPIO_PIN_INPUT_DISCONNECT,
@@ -104,17 +112,17 @@ void main_config_gpio(void)
     );
     nrf_gpio_pin_clear(GPIO_ECG);
     nrf_gpio_cfg_output(GPIO_TEMP);
-    nrf_gpio_pin_clear(GPIO_TEMP);
+    nrf_gpio_pin_clear(GPIO_TEMP);*/
     nrf_gpio_cfg(
         GPIO_LED1,
         GPIO_PIN_CNF_DIR_Output,
         NRF_GPIO_PIN_INPUT_DISCONNECT,
         NRF_GPIO_PIN_NOPULL,
-        GPIO_PIN_CNF_DRIVE_S0H1,
+        GPIO_PIN_CNF_DRIVE_H0H1,
         NRF_GPIO_PIN_NOSENSE
     );
     nrf_gpio_pin_clear(GPIO_LED1);
-    nrf_gpio_cfg(
+    /*nrf_gpio_cfg(
         GPIO_LED2,
         GPIO_PIN_CNF_DIR_Output,
         NRF_GPIO_PIN_INPUT_DISCONNECT,
@@ -122,7 +130,7 @@ void main_config_gpio(void)
         GPIO_PIN_CNF_DRIVE_S0H1,
         NRF_GPIO_PIN_NOSENSE
     );
-    nrf_gpio_pin_clear(GPIO_LED2);
+    nrf_gpio_pin_clear(GPIO_LED2);*/
     //nrf_gpio_cfg_output(GPIO_SPKR);
     //nrf_gpio_pin_clear(GPIO_SPKR);
 
