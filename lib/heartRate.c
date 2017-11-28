@@ -20,9 +20,11 @@ float32_t ecgheartRateLowPass[HEART_RATE_LOW_PASS_BLOCK_SIZE];
 
 // Heart Rate Amplitude Stuff
 float32_t averageAmplitudeForThisBuffer = 0;
-float32_t longTermAverage = 250;
+float32_t factor = 10.0;
+//float32_t offset = 100.0;
+float32_t longTermAverage = 15;
 float32_t peakAmplitudeThreshold = 0;
-float32_t factor = 25.0;
+
 
 // Heart Rate Time Stuff
 int samplesSinceMax = 0;
@@ -76,7 +78,7 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
     // Heart Rate
     averageAmplitudeForThisBuffer = calcAverageAmplitudeForThisBuffer(ecgheartRateLowPass, HEART_RATE_LOW_PASS_BLOCK_SIZE);
     longTermAverage = calcLongTermAverage(averageAmplitudeForThisBuffer, longTermAverage);
-    peakAmplitudeThreshold = factor * longTermAverage * 0.25 + 5000 * 0.75; // Adding in a 5000 term to mitigate problems from noise
+    peakAmplitudeThreshold = factor * longTermAverage;// + offset; // Adding in a 5000 term to mitigate problems from noise
 
     for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
     {

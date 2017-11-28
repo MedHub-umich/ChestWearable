@@ -6,7 +6,7 @@
 #include "app_util_platform.h"
 #include "arm_const_structs.h"
 
-#define PEAKS_SIZE 60
+#define PEAKS_SIZE 30
 
 typedef struct peakPair
 {

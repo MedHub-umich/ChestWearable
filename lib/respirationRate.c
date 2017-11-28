@@ -51,7 +51,7 @@ void respirationRateProcess(respirationRate_t * this)
         isAbove = 0;
     }
 
-    for(i = 0; i < PEAKS_SIZE; ++i)
+    for(i = 1; i < PEAKS_SIZE; ++i)
     {
         if (this->peaks[i].magnitude > average && isAbove == 0)
         {
