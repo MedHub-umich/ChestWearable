@@ -5,11 +5,11 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
-// #include "FreeRTOS.h"
-// #include "task.h"
-// #include "semphr.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
 
-// #include "pendingMessages.h"
+#include "pendingMessages.h"
 
 // TaskHandle_t  taskSendHandle;
 // SemaphoreHandle_t respirationRateSemaphore;
@@ -32,62 +32,18 @@ void respirationRateAddPair(float32_t inMagnitude, float32_t inTime, respiration
     }
 }
 
+
 void respirationRateProcess(respirationRate_t * this)
 {
-    int sum = 0, average = 0;
-    int i;
-    for(i = 0; i < PEAKS_SIZE; ++i)
-    {
-        sum += this->peaks[i].magnitude;
-    }
-    average = sum / PEAKS_SIZE;
-    //NRF_LOG_INFO("average: %d", average);
+    float32_t numCrossings = calcNumCrossingsInData(this);
+    
+    float32_t totalTimeInSeconds = calcTotalTimeElapsedDuringData(this);
 
-    int isAbove, crossings = 0;
+    float32_t currentRespirationRate = numCrossings / CROSSINGS_PER_BREATH * SECONDS_PER_MINUTE / totalTimeInSeconds;
 
-    if(this->peaks[0].magnitude > average)
-    {
-        isAbove = 1;
-    }
-    else
-    {
-        isAbove = 0;
-    }
+    uint8_t currentRespirationRateGlobal = currentRespirationRate;
 
-    for(i = 1; i < PEAKS_SIZE; ++i)
-    {
-        if (this->peaks[i].magnitude > average && isAbove == 0)
-        {
-            isAbove = 1;
-            crossings++;
-        }
-        else if (this->peaks[i].magnitude > average && isAbove == 1)
-        {
-            // Nothing
-        }
-        else if (this->peaks[i].magnitude < average && isAbove == 1)
-        {
-            isAbove = 0;
-            crossings++;
-        }
-        else // (this->peaks[i] < average && isAbove = 0)
-        {
-            // Nothing
-        }
-    }
-
-    float32_t totalTime = 0;
-    for(i = 0; i < PEAKS_SIZE; ++i)
-    {
-        totalTime += (this->peaks[i].time)/500.0;
-    }
-
-
-
-    //NRF_LOG_INFO("crossings: %d", crossings);
-    //NRF_LOG_INFO("breaths: %d", crossings/2);
-    //NRF_LOG_INFO("totalTime: %d", totalTime);
-    NRF_LOG_INFO("BREATHS PER MINUTE %d", (int)(crossings/2*60/totalTime));
+    NRF_LOG_INFO("BREATHS_PER_MINUTE: %d", currentRespirationRateGlobal);
 
     this->numPeaks = 0;
 }
@@ -106,12 +62,12 @@ void respirationRateProcess(respirationRate_t * this)
 
 //     while (true)
 //     {
-//         xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
-//         // grab the respiration rate
-//         currentRespirationRate = ;
-//         xSemaporeGive( respirationRateSemaphore, portMAX_DELAY );
+//         // xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
+//         // // grab the respiration rate
+//         // currentRespirationRate = ;
+//         // xSemaporeGive( respirationRateSemaphore, portMAX_DELAY );
 
-//         NRF_LOG_INFO("Processed respiration rate: %d", currentRespirationRate);
+//         //NRF_LOG_INFO("Processed respiration rate: %d", currentRespirationRate);
 
 //         vTaskDelayUntil( &xLastWakeTime, xFrequency );
 //     }
@@ -143,4 +99,71 @@ void respirationRateInit(respirationRate_t * this)
 
     // // create FreeRtos tasks
     // checkReturn(xTaskCreate(taskSend, "T", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
+}
+
+float32_t calcTotalTimeElapsedDuringData(respirationRate_t * this)
+{
+    float32_t totalTimeOutput;
+    int i;
+    for(i = 0; i < PEAKS_SIZE; ++i)
+    {
+        totalTimeOutput += (this->peaks[i].time)/500.0;
+    }
+    return totalTimeOutput;
+}
+
+float32_t calcAverageValueOfData(respirationRate_t * this)
+{
+    float32_t sum = 0;
+
+    int i;
+    for(i = 0; i < PEAKS_SIZE; ++i)
+    {
+        sum += this->peaks[i].magnitude;
+    }
+
+    float32_t average = sum / PEAKS_SIZE;
+
+    return average;
+}
+
+float32_t calcNumCrossingsInData(respirationRate_t * this)
+{
+    float32_t average = calcAverageValueOfData(this);
+
+    int isAbove, crossings = 0;
+
+    if(this->peaks[0].magnitude > average)
+    {
+        isAbove = 1;
+    }
+    else
+    {
+        isAbove = 0;
+    }
+
+    int i;
+    for(i = 1; i < PEAKS_SIZE; ++i)
+    {
+        if (this->peaks[i].magnitude > average && isAbove == 0)
+        {
+            isAbove = 1;
+            crossings++;
+        }
+        else if (this->peaks[i].magnitude > average && isAbove == 1)
+        {
+            // Nothing
+        }
+        else if (this->peaks[i].magnitude < average && isAbove == 1)
+        {
+            isAbove = 0;
+            crossings++;
+        }
+        else // (this->peaks[i] < average && isAbove = 0)
+        {
+            // Nothing
+        }
+    }
+
+    return (float32_t) crossings;
 }
