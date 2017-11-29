@@ -103,7 +103,7 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
           {
             heartRate = 60 / (samplesSinceLastPeak * (samplePeriodMilli / 1000.0));
             //NRF_LOG_INFO("HeartRate: %d", (uint16_t) heartRate);
-            NRF_LOG_INFO("%d", (uint16_t) currMax);
+            //NRF_LOG_INFO("%d", (uint16_t) currMax);
             //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
             respirationRateAddPair(currMax, samplesSinceLastPeak, &respiration);
             //NRF_LOG_INFO("Samples since last peak: %d", samplesSinceLastPeak);
@@ -120,7 +120,7 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
     averageHeartRateGlobal = (uint8_t) heartRate;
     xSemaphoreGive( heartRateSemaphore );
 
-    NRF_LOG_INFO("HEART RATE FROM FUNCTION: %d", (uint8_t) heartRate);
+    //NRF_LOG_INFO("HEART RATE FROM FUNCTION: %d", (uint8_t) heartRate);
     //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
 }
 

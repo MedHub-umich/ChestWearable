@@ -58,10 +58,11 @@ void respirationRateProcess(respirationRate_t * this)
 
     averageRespirationRate = calcLongTermAverage(currentRespirationRate, averageRespirationRate);
 
-    NRF_LOG_INFO("AVERAGE FROM FUNCTION: %d", (int) averageRespirationRate);
+    NRF_LOG_INFO("AVERAGE RESPIRATION RATE FROM FUNCTION: %d", (int) averageRespirationRate);
 
     xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
-    uint8_t averageRespirationRateGlobal = (uint8_t) averageRespirationRate;
+    averageRespirationRateGlobal = (uint8_t) averageRespirationRate;
+    //NRF_LOG_INFO("UINT8_T AVERAGE RESPIRATION RATE FROM FUNCTION: %d", averageRespirationRateGlobal);
     xSemaphoreGive( respirationRateSemaphore );
 
     this->numPeaks = 0;
@@ -86,6 +87,7 @@ void taskSend(void * pvParameter)
         xSemaphoreGive( respirationRateSemaphore );
 
         NRF_LOG_INFO("SENDING RESPIRATION RATE (NOT REALLY): %d", sendingRespirationRate);
+        //NRF_LOG_INFO("SENDING GLOBAL RESPIRATION RATE (NOT REALLY): %d", averageRespirationRateGlobal);
     }
 }
 
