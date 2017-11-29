@@ -5,6 +5,16 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+
+TaskHandle_t  taskSendHeartHandle;
+SemaphoreHandle_t heartRateSemaphore;
+
+static uint8_t averageHeartRateGlobal = 0;
+static const TickType_t sendPeriodMilli = 5000; // one minute is 30000 for some reason
+
 static arm_fir_instance_f32 heartRateLowPassInstance;
 #define HEART_RATE_LOW_PASS_BLOCK_SIZE 34
 #define HEART_RATE_LOW_PASS_NUM_TAPS 101
@@ -106,13 +116,59 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
        ++samplesSinceLastPeak;
     }
 
-    //NRF_LOG_INFO("longTermAverage %d", (uint32_t) longTermAverage);
+    xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
+    averageHeartRateGlobal = (uint8_t) heartRate;
+    xSemaphoreGive( heartRateSemaphore );
+
+    NRF_LOG_INFO("HEART RATE FROM FUNCTION: %d", (uint8_t) heartRate);
     //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
+}
+
+static void checkReturn(BaseType_t retVal)
+{
+    if (retVal == pdPASS)
+    {
+        NRF_LOG_INFO("HEART SEND THREAD CREATED");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("SENSOR THREAD NEED MORE HEAP!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("SENSOR THREAD DID NOT PASS XXXXXXXXX");
+    }
+}
+
+void taskSendHeart(void * pvParameter)
+{
+    UNUSED_PARAMETER(pvParameter);
+
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount ();
+
+    uint8_t sendingHeartRate = 0;
+
+    while (true)
+    {
+        vTaskDelayUntil( &xLastWakeTime, sendPeriodMilli );
+
+        xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
+        sendingHeartRate = averageHeartRateGlobal;
+        xSemaphoreGive( heartRateSemaphore );
+
+        NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
+    }
 }
 
 void heartRateInit()
 {
     respirationRateInit(&respiration);
     arm_fir_init_f32(&heartRateLowPassInstance, HEART_RATE_LOW_PASS_NUM_TAPS, (float32_t *)&heartRateLowPassTaps[0], &heartRateLowPassState[0], HEART_RATE_LOW_PASS_BLOCK_SIZE);
+
+    heartRateSemaphore = xSemaphoreCreateMutex();
+
+    // create FreeRtos tasks
+    checkReturn(xTaskCreate(taskSendHeart, "T", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHeartHandle));
 }
 

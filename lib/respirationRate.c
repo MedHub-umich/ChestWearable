@@ -11,8 +11,11 @@
 
 #include "pendingMessages.h"
 
-// TaskHandle_t  taskSendHandle;
-// SemaphoreHandle_t respirationRateSemaphore;
+TaskHandle_t  taskSendHandle;
+SemaphoreHandle_t respirationRateSemaphore;
+
+static uint8_t averageRespirationRateGlobal = 0;
+static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
 
 void respirationRateAddPair(float32_t inMagnitude, float32_t inTime, respirationRate_t * this)
 {
@@ -32,73 +35,86 @@ void respirationRateAddPair(float32_t inMagnitude, float32_t inTime, respiration
     }
 }
 
+static float32_t calcLongTermAverage(float32_t new, float32_t average)
+{
+    static const float32_t num = 3.0;
+
+    average -= (average / num);
+    average += (new / num);
+
+    return average;
+}
 
 void respirationRateProcess(respirationRate_t * this)
 {
+
+    static float32_t averageRespirationRate = 15.0;
+
     float32_t numCrossings = calcNumCrossingsInData(this);
     
     float32_t totalTimeInSeconds = calcTotalTimeElapsedDuringData(this);
 
     float32_t currentRespirationRate = numCrossings / CROSSINGS_PER_BREATH * SECONDS_PER_MINUTE / totalTimeInSeconds;
 
-    uint8_t currentRespirationRateGlobal = currentRespirationRate;
+    averageRespirationRate = calcLongTermAverage(currentRespirationRate, averageRespirationRate);
 
-    NRF_LOG_INFO("BREATHS_PER_MINUTE: %d", currentRespirationRateGlobal);
+    NRF_LOG_INFO("AVERAGE FROM FUNCTION: %d", (int) averageRespirationRate);
+
+    xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
+    uint8_t averageRespirationRateGlobal = (uint8_t) averageRespirationRate;
+    xSemaphoreGive( respirationRateSemaphore );
 
     this->numPeaks = 0;
 }
 
 
-// void taskSend(void * pvParameter)
-// {
-//     UNUSED_PARAMETER(pvParameter);
+void taskSend(void * pvParameter)
+{
+    UNUSED_PARAMETER(pvParameter);
 
-//     const TickType_t xFrequency = 10;
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount ();
 
-//     TickType_t xLastWakeTime;
-//     xLastWakeTime = xTaskGetTickCount ();
+    uint8_t sendingRespirationRate = 0;
 
-//     uint8_t currentRespirationRate = 0;
+    while (true)
+    {
+        vTaskDelayUntil( &xLastWakeTime, sendPeriodMilli );
 
-//     while (true)
-//     {
-//         // xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
-//         // // grab the respiration rate
-//         // currentRespirationRate = ;
-//         // xSemaporeGive( respirationRateSemaphore, portMAX_DELAY );
+        xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
+        sendingRespirationRate = averageRespirationRateGlobal;
+        xSemaphoreGive( respirationRateSemaphore );
 
-//         //NRF_LOG_INFO("Processed respiration rate: %d", currentRespirationRate);
-
-//         vTaskDelayUntil( &xLastWakeTime, xFrequency );
-//     }
-// }
+        NRF_LOG_INFO("SENDING RESPIRATION RATE (NOT REALLY): %d", sendingRespirationRate);
+    }
+}
 
 
-// static void checkReturn(BaseType_t retVal)
-// {
-//     if (retVal == pdPASS)
-//     {
-//         NRF_LOG_INFO("SENSOR THREAD CREATED");
-//     }
-//     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-//     {
-//         NRF_LOG_INFO("SENSOR THREAD NEED MORE HEAP!!!!!!!!");
-//     }
-//     else
-//     {
-//         NRF_LOG_INFO("SENSOR THREAD DID NOT PASS XXXXXXXXX");
-//     }
-// }
+static void checkReturn(BaseType_t retVal)
+{
+    if (retVal == pdPASS)
+    {
+        NRF_LOG_INFO("BREATHING SEND THREAD CREATED");
+    }
+    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+    {
+        NRF_LOG_INFO("SENSOR THREAD NEED MORE HEAP!!!!!!!!");
+    }
+    else
+    {
+        NRF_LOG_INFO("SENSOR THREAD DID NOT PASS XXXXXXXXX");
+    }
+}
 
 
 void respirationRateInit(respirationRate_t * this)
 {
     this->numPeaks = 0;
 
-    // respirationRateSemaphore = xSemaphoreCreateMutex();
+    respirationRateSemaphore = xSemaphoreCreateMutex();
 
-    // // create FreeRtos tasks
-    // checkReturn(xTaskCreate(taskSend, "T", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
+    // create FreeRtos tasks
+    checkReturn(xTaskCreate(taskSend, "T", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
 }
 
 float32_t calcTotalTimeElapsedDuringData(respirationRate_t * this)
