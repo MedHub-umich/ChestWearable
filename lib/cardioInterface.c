@@ -22,6 +22,8 @@
 #include "arm_const_structs.h"
 #include "heartRate.h"
 
+
+ecg ecgDevice;
 // Filter
 #define NUM_TAPS              27
 #define BLOCK_SIZE SAMPLES_PER_CHANNEL
@@ -94,9 +96,10 @@ void taskCardioProcessing (void * pvParameter)
             }
         }
 
-        // BLE
-        int size = sizeof(ecgDataBufferFilteredDownSampled);
-        pendingMessagesPush(size, (char*)ecgDataBufferFilteredDownSampled, &globalQ);
+        // Package up the cardio data
+        //int size = sizeof(ecgDataBufferFilteredDownSampled);
+        //pendingMessagesPush(size, (char*)ecgDataBufferFilteredDownSampled, &globalQ);
+        addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
 
         // Heart Rate
         heartRateExtract(ecgDataBufferCopy , SAMPLES_PER_CHANNEL);
@@ -133,8 +136,12 @@ int cardioInit()
 
     arm_fir_init_f32(&S, NUM_TAPS, (float32_t *)&firCoeffs32[0], &firStateF32[0], blockSize);
 
+    packagerInit(ECG_DATA_TYPE, ECG_DATA_PACKET_SIZE, &ecgDevice.ecgPackager);
+
     // create FreeRtos tasks
-    checkReturn(xTaskCreate(taskCardioProcessing, "LED0", configMINIMAL_STACK_SIZE + 800, NULL, 2, &taskCardioProcessingHandle));
+    //checkReturn(xTaskCreate(taskCardioProcessing, "LED0", configMINIMAL_STACK_SIZE + 800, NULL, 2, &taskCardioProcessingHandle));
+
+
 
     return 0;
 }

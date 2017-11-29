@@ -11,6 +11,7 @@
 
 #include "pendingMessages.h"
 
+
 TaskHandle_t  taskSendHandle;
 SemaphoreHandle_t respirationRateSemaphore;
 
@@ -71,7 +72,7 @@ void respirationRateProcess(respirationRate_t * this)
 
 void taskSend(void * pvParameter)
 {
-    UNUSED_PARAMETER(pvParameter);
+    respirationRate_t* breathingRateSensor = (respirationRate_t*) pvParameter;
 
     TickType_t xLastWakeTime;
     xLastWakeTime = xTaskGetTickCount ();
@@ -87,6 +88,7 @@ void taskSend(void * pvParameter)
         xSemaphoreGive( respirationRateSemaphore );
 
         NRF_LOG_INFO("SENDING RESPIRATION RATE (NOT REALLY): %d", sendingRespirationRate);
+        //addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &breathingRateSensor->breathingRatePackager);
         //NRF_LOG_INFO("SENDING GLOBAL RESPIRATION RATE (NOT REALLY): %d", averageRespirationRateGlobal);
     }
 }
@@ -114,9 +116,10 @@ void respirationRateInit(respirationRate_t * this)
     this->numPeaks = 0;
 
     respirationRateSemaphore = xSemaphoreCreateMutex();
+    packagerInit(BREATHING_RATE_DATA_TYPE, BR_DATA_PACKET_SIZE, &this->breathingRatePackager);
 
     // create FreeRtos tasks
-    checkReturn(xTaskCreate(taskSend, "T", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
+    checkReturn(xTaskCreate(taskSend, (void*) this, configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
 }
 
 float32_t calcTotalTimeElapsedDuringData(respirationRate_t * this)

@@ -18,6 +18,8 @@
 
 TaskHandle_t  taskTemperatureDataHandle;
 
+Temp tempDevice;
+
 void taskTemperatureData (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
@@ -39,7 +41,8 @@ void taskTemperatureData (void * pvParameter)
             //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
         }
         temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
-        pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
+        //pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
+        addToPackage((char*) &temperatureAverage, sizeof(temperatureAverage), &tempDevice.tempPackager);
     }
 }
 
@@ -62,6 +65,7 @@ static void checkReturn(BaseType_t retVal)
 int tempInit()
 {
     saadcInterfaceInit();
+    packagerInit(TEMPERATURE_DATA_TYPE, TEMPERATURE_DATA_PACKET_SIZE, &tempDevice.tempPackager);
 
     checkReturn(xTaskCreate(taskTemperatureData, "x", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskTemperatureDataHandle));
 

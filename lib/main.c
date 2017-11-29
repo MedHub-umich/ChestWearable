@@ -64,7 +64,6 @@ BLE_REC_DEF(m_rec);
 
 static void checkTaskCreate(BaseType_t retVal);
 
-
 #if NRF_LOG_ENABLED
 /**@brief Thread for handling the logger.
  *
@@ -205,7 +204,7 @@ int main(void)
     checkReturn(xTaskCreate(taskSendBle, "x", configMINIMAL_STACK_SIZE+200, NULL, 3, &bleHandle));
 
     UNUSED_VARIABLE(cardioInit());
-    UNUSED_VARIABLE(tempInit());
+    //UNUSED_VARIABLE(tempInit());
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;

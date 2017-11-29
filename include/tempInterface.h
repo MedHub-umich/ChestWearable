@@ -9,8 +9,14 @@
 #include "semphr.h"
 #include "nrf_timer.h"
 #include "arm_const_structs.h"
+#include "packager.h"
 
+#define TEMPERATURE_DATA_PACKET_SIZE 1
 // Public
+typedef struct Temp {
+	Packager tempPackager;
+} Temp;
+
 int tempInit();
 
 #endif //TEMPINTERFACE_H

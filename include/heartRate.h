@@ -6,8 +6,20 @@
 #include "app_util_platform.h"
 #include "arm_const_structs.h"
 #include "respirationRate.h"
+#include "packager.h"
 
+#define HEARTRATE_DATA_PACKET_SIZE 1
 static respirationRate_t respiration;
+
+typedef struct heartRate 
+{
+	Packager heartRatePackager;
+	
+} heartRate_t;
+
+heartRate_t heartRateDevice;
+
+
 
 void heartRateInit();
 void heartRateExtract(float32_t * inHeartRateBuffer, int inSize);

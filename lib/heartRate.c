@@ -158,6 +158,7 @@ void taskSendHeart(void * pvParameter)
         xSemaphoreGive( heartRateSemaphore );
 
         NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
+        //addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
     }
 }
 
@@ -165,6 +166,7 @@ void heartRateInit()
 {
     respirationRateInit(&respiration);
     arm_fir_init_f32(&heartRateLowPassInstance, HEART_RATE_LOW_PASS_NUM_TAPS, (float32_t *)&heartRateLowPassTaps[0], &heartRateLowPassState[0], HEART_RATE_LOW_PASS_BLOCK_SIZE);
+    packagerInit(HEART_RATE_DATA_TYPE, HEARTRATE_DATA_PACKET_SIZE, &heartRateDevice.heartRatePackager);
 
     heartRateSemaphore = xSemaphoreCreateMutex();
 
