@@ -20,8 +20,7 @@ float32_t ecgheartRateLowPass[HEART_RATE_LOW_PASS_BLOCK_SIZE];
 
 // Heart Rate Amplitude Stuff
 float32_t averageAmplitudeForThisBuffer = 0;
-float32_t factor = 10.0;
-//float32_t offset = 100.0;
+float32_t factor = 15.0;
 float32_t longTermAverage = 15;
 float32_t peakAmplitudeThreshold = 0;
 
@@ -93,8 +92,9 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
           if (samplesSinceMax >= thresholdSamplesSinceMax && currMax > peakAmplitudeThreshold)
           {
             heartRate = 60 / (samplesSinceLastPeak * (samplePeriodMilli / 1000.0));
-            NRF_LOG_INFO("HeartRate: %d", (uint16_t) heartRate);
-            NRF_LOG_INFO("The max: %d", (uint16_t) currMax);
+            //NRF_LOG_INFO("HeartRate: %d", (uint16_t) heartRate);
+            NRF_LOG_INFO("%d", (uint16_t) currMax);
+            //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
             respirationRateAddPair(currMax, samplesSinceLastPeak, &respiration);
             //NRF_LOG_INFO("Samples since last peak: %d", samplesSinceLastPeak);
             //add to list of breathing rate peaks, if greather than a thershold wake up breathing rate algo
@@ -107,7 +107,7 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
     }
 
     //NRF_LOG_INFO("longTermAverage %d", (uint32_t) longTermAverage);
-    NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
+    //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
 }
 
 void heartRateInit()

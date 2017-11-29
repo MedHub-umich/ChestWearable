@@ -5,11 +5,14 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+// #include "FreeRTOS.h"
+// #include "task.h"
+// #include "semphr.h"
 
-void respirationRateInit(respirationRate_t * this)
-{
-    this->numPeaks = 0;
-}
+// #include "pendingMessages.h"
+
+// TaskHandle_t  taskSendHandle;
+// SemaphoreHandle_t respirationRateSemaphore;
 
 void respirationRateAddPair(float32_t inMagnitude, float32_t inTime, respirationRate_t * this)
 {
@@ -38,7 +41,7 @@ void respirationRateProcess(respirationRate_t * this)
         sum += this->peaks[i].magnitude;
     }
     average = sum / PEAKS_SIZE;
-    NRF_LOG_INFO("average: %d", average);
+    //NRF_LOG_INFO("average: %d", average);
 
     int isAbove, crossings = 0;
 
@@ -73,8 +76,71 @@ void respirationRateProcess(respirationRate_t * this)
         }
     }
 
-    NRF_LOG_INFO("crossings: %d", crossings);
-    NRF_LOG_INFO("breaths: %d", crossings/2);
+    float32_t totalTime = 0;
+    for(i = 0; i < PEAKS_SIZE; ++i)
+    {
+        totalTime += (this->peaks[i].time)/500.0;
+    }
+
+
+
+    //NRF_LOG_INFO("crossings: %d", crossings);
+    //NRF_LOG_INFO("breaths: %d", crossings/2);
+    //NRF_LOG_INFO("totalTime: %d", totalTime);
+    NRF_LOG_INFO("BREATHS PER MINUTE %d", (int)(crossings/2*60/totalTime));
 
     this->numPeaks = 0;
+}
+
+
+// void taskSend(void * pvParameter)
+// {
+//     UNUSED_PARAMETER(pvParameter);
+
+//     const TickType_t xFrequency = 10;
+
+//     TickType_t xLastWakeTime;
+//     xLastWakeTime = xTaskGetTickCount ();
+
+//     uint8_t currentRespirationRate = 0;
+
+//     while (true)
+//     {
+//         xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
+//         // grab the respiration rate
+//         currentRespirationRate = ;
+//         xSemaporeGive( respirationRateSemaphore, portMAX_DELAY );
+
+//         NRF_LOG_INFO("Processed respiration rate: %d", currentRespirationRate);
+
+//         vTaskDelayUntil( &xLastWakeTime, xFrequency );
+//     }
+// }
+
+
+// static void checkReturn(BaseType_t retVal)
+// {
+//     if (retVal == pdPASS)
+//     {
+//         NRF_LOG_INFO("SENSOR THREAD CREATED");
+//     }
+//     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
+//     {
+//         NRF_LOG_INFO("SENSOR THREAD NEED MORE HEAP!!!!!!!!");
+//     }
+//     else
+//     {
+//         NRF_LOG_INFO("SENSOR THREAD DID NOT PASS XXXXXXXXX");
+//     }
+// }
+
+
+void respirationRateInit(respirationRate_t * this)
+{
+    this->numPeaks = 0;
+
+    // respirationRateSemaphore = xSemaphoreCreateMutex();
+
+    // // create FreeRtos tasks
+    // checkReturn(xTaskCreate(taskSend, "T", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
 }

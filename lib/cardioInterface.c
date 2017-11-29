@@ -72,7 +72,7 @@ void taskCardioProcessing (void * pvParameter)
     {
         waitForNotification(ECG_BUFFER_FULL_NOTIFICATION);
 
-        nrf_gpio_pin_write(27, 1);
+        //nrf_gpio_pin_write(7, 1);
 
         // Make a copy, probably not necessary
         int i;
@@ -101,7 +101,7 @@ void taskCardioProcessing (void * pvParameter)
         // Heart Rate
         heartRateExtract(ecgDataBufferCopy , SAMPLES_PER_CHANNEL);
 
-        nrf_gpio_pin_write(27,0);
+        //nrf_gpio_pin_write(7,0);
     }
 }
 
@@ -125,8 +125,8 @@ static void checkReturn(BaseType_t retVal)
 
 int cardioInit()
 {
-    nrf_gpio_cfg_output(27);
-    nrf_gpio_pin_clear(27);
+    //nrf_gpio_cfg_output(7);
+    //nrf_gpio_pin_clear(7);
 
     saadcInterfaceInit();
     heartRateInit();
