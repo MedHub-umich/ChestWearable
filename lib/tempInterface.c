@@ -37,12 +37,14 @@ static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average
     return average;
 }
 
-static float32_t convert(float32_t milliVolts)
+static float32_t milliVoltsToCelsius(float32_t milliVolts)
 {
     const float32_t m = -116.0;
     const float32_t b = 60.9;
     const float32_t milliVoltsToVolts = 0.001;
-    return m * (milliVoltsToVolts * milliVolts) + b;
+    const float32_t offset = -12.0;
+
+    return m * (milliVoltsToVolts * milliVolts) + b + offset;
 }
 
 void taskTemperatureData (void * pvParameter)
@@ -63,7 +65,7 @@ void taskTemperatureData (void * pvParameter)
         temperatureSum = 0;
         for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
         {
-            temperatureSum += convert( (float32_t) temperatureDataBuffer[i]);
+            temperatureSum += milliVoltsToCelsius( (float32_t) temperatureDataBuffer[i]);
             //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
         }
         temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
@@ -96,7 +98,6 @@ void temperatureTaskSend(void * pvParameter)
 
         addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
         NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
-
     }
 }
 
