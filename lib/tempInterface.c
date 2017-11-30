@@ -37,15 +37,23 @@ static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average
     return average;
 }
 
+static float32_t convert(float32_t milliVolts)
+{
+    const float32_t m = -116.0;
+    const float32_t b = 60.9;
+    const float32_t milliVoltsToVolts = 0.001;
+    return m * (milliVoltsToVolts * milliVolts) + b;
+}
+
 void taskTemperatureData (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
 
     NRF_LOG_INFO("Checkpoint: beginning of taskFIR");
 
-    uint32_t temperatureSum = 0;
-    uint16_t temperatureAverage = 0;
-    static float32_t runningAverage = 15.0;
+    float32_t temperatureSum = 0.0;
+    float32_t temperatureAverage = 0.0;
+    static float32_t runningAverage = 35.0;
 
     while (true)
     {
@@ -55,14 +63,17 @@ void taskTemperatureData (void * pvParameter)
         temperatureSum = 0;
         for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
         {
-            temperatureSum += temperatureDataBuffer[i];
+            temperatureSum += convert( (float32_t) temperatureDataBuffer[i]);
             //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
         }
         temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
-        runningAverage = calcLongTermAverage((float32_t) temperatureAverage, runningAverage);
+
+        runningAverage = calcLongTermAverage(temperatureAverage, runningAverage);
+
         xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
         globalTemperatureAverage = (uint16_t) runningAverage;
         xSemaphoreGive( temperatureSendSemaphore );
+
         //pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
     }
 }
@@ -82,6 +93,7 @@ void temperatureTaskSend(void * pvParameter)
         xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
         sendingTemperature = globalTemperatureAverage;
         xSemaphoreGive( temperatureSendSemaphore );
+
         addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
         NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
 
