@@ -245,8 +245,8 @@ static void taskSendBle (void * pvParameter)
         // Wait for Signal
         pendingMessagesWaitAndPop(reqData, &globalQ);
 
-        //NRF_LOG_INFO("We bout to send this:");
-        //NRF_LOG_HEXDUMP_INFO(reqData, sizeof(reqData));
+        // NRF_LOG_INFO("We bout to send this:");
+        // NRF_LOG_HEXDUMP_INFO(reqData, sizeof(reqData));
 
         // int i = 0;
         // for(i = 0; i < 10; i++)

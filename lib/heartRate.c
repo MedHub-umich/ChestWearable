@@ -11,6 +11,7 @@
 
 TaskHandle_t  taskSendHeartHandle;
 SemaphoreHandle_t heartRateSemaphore;
+respirationRate_t respiration;
 
 static uint8_t averageHeartRateGlobal = 0;
 static const TickType_t sendPeriodMilli = 5000; // one minute is 30000 for some reason
@@ -158,7 +159,7 @@ void taskSendHeart(void * pvParameter)
         xSemaphoreGive( heartRateSemaphore );
 
         NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
-        //addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
+        addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
     }
 }
 

@@ -82,7 +82,7 @@ void temperatureTaskSend(void * pvParameter)
         xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
         sendingTemperature = globalTemperatureAverage;
         xSemaphoreGive( temperatureSendSemaphore );
-        //addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
+        addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
         NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
 
     }

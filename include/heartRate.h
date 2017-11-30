@@ -9,7 +9,6 @@
 #include "packager.h"
 
 #define HEARTRATE_DATA_PACKET_SIZE 1
-static respirationRate_t respiration;
 
 typedef struct heartRate 
 {

@@ -27,6 +27,7 @@ int addToPackage(char* dataIn, size_t length, Packager* currPackager) {
 	currPackager->currAmount += length;
 
 	if (currPackager->currAmount == currPackager->dataLength) {
+		//NRF_LOG_INFO("Created Full packet");
 		createPackage(currPackager);
 	}
 	if (remainingLength) {

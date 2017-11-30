@@ -73,6 +73,7 @@ void respirationRateProcess(respirationRate_t * this)
 void taskSend(void * pvParameter)
 {
     respirationRate_t* breathingRateSensor = (respirationRate_t*) pvParameter;
+    
 
     TickType_t xLastWakeTime;
     xLastWakeTime = xTaskGetTickCount ();
@@ -116,10 +117,13 @@ void respirationRateInit(respirationRate_t * this)
     this->numPeaks = 0;
 
     respirationRateSemaphore = xSemaphoreCreateMutex();
+    uint8_t sendingRespirationRate = 10;
     packagerInit(BREATHING_RATE_DATA_TYPE, BR_DATA_PACKET_SIZE, &this->breathingRatePackager);
+    addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &this->breathingRatePackager);
+    NRF_LOG_INFO("Sent Brathing");
 
     // create FreeRtos tasks
-    checkReturn(xTaskCreate(taskSend, (void*) this, configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskSendHandle));
+    checkReturn(xTaskCreate(taskSend, "x", configMINIMAL_STACK_SIZE + 60, (void*) this, 2, &taskSendHandle));
 }
 
 float32_t calcTotalTimeElapsedDuringData(respirationRate_t * this)
