@@ -11,7 +11,8 @@
 #include "arm_const_structs.h"
 #include "packager.h"
 
-#define ECG_DATA_PACKET_SIZE SAMPLES_PER_CHANNEL
+#define ECG_DATA_PACKET_SIZE 34
+
 // Public
 typedef struct ecg {
 	Packager ecgPackager;

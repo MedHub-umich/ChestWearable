@@ -17,8 +17,25 @@
 #include "notification.h"
 
 TaskHandle_t  taskTemperatureDataHandle;
+TaskHandle_t sendingTemperatureDataHandle;
+
 
 Temp tempDevice;
+
+SemaphoreHandle_t temperatureSendSemaphore;
+static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
+
+uint16_t globalTemperatureAverage = 0;
+
+static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average)
+{
+    static const float32_t num = 3.0;
+
+    average -= (average / num);
+    average += (currMeasurment / num);
+
+    return average;
+}
 
 void taskTemperatureData (void * pvParameter)
 {
@@ -28,6 +45,7 @@ void taskTemperatureData (void * pvParameter)
 
     uint32_t temperatureSum = 0;
     uint16_t temperatureAverage = 0;
+    static float32_t runningAverage = 15.0;
 
     while (true)
     {
@@ -41,8 +59,32 @@ void taskTemperatureData (void * pvParameter)
             //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
         }
         temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
+        runningAverage = calcLongTermAverage((float32_t) temperatureAverage, runningAverage);
+        xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
+        globalTemperatureAverage = (uint16_t) runningAverage;
+        xSemaphoreGive( temperatureSendSemaphore );
         //pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
-        addToPackage((char*) &temperatureAverage, sizeof(temperatureAverage), &tempDevice.tempPackager);
+    }
+}
+
+
+void temperatureTaskSend(void * pvParameter)
+{
+    TickType_t xLastWakeTime;
+    xLastWakeTime = xTaskGetTickCount ();
+
+    uint16_t sendingTemperature = 0;
+
+    while (true)
+    {
+        vTaskDelayUntil( &xLastWakeTime, sendPeriodMilli ); //run once a minute
+
+        xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
+        sendingTemperature = globalTemperatureAverage;
+        xSemaphoreGive( temperatureSendSemaphore );
+        //addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
+        NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
+
     }
 }
 
@@ -66,8 +108,9 @@ int tempInit()
 {
     saadcInterfaceInit();
     packagerInit(TEMPERATURE_DATA_TYPE, TEMPERATURE_DATA_PACKET_SIZE, &tempDevice.tempPackager);
-
+    temperatureSendSemaphore = xSemaphoreCreateMutex();
     checkReturn(xTaskCreate(taskTemperatureData, "x", configMINIMAL_STACK_SIZE + 60, NULL, 2, &taskTemperatureDataHandle));
+    checkReturn(xTaskCreate(temperatureTaskSend, "x", configMINIMAL_STACK_SIZE + 60, NULL, 2, &sendingTemperatureDataHandle));
 
     return 0;
 }

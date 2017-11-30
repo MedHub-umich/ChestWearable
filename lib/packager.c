@@ -19,7 +19,8 @@ int addToPackage(char* dataIn, size_t length, Packager* currPackager) {
 	size_t remainingLength = 0;
 	if (length + currPackager->currAmount > currPackager->dataLength) {
 		remainingLength = length + currPackager->currAmount - currPackager->dataLength;
-		NRF_LOG_INFO("Given Length %d Current Amount %d Requested Amount %d", length, currPackager->currAmount, currPackager->type);
+		//NRF_LOG_INFO("Given Length %d Current Amount %d Requested Type %d", length, currPackager->currAmount, currPackager->type);
+		//NRF_LOG_INFO("HERE");
 		length = currPackager->dataLength - currPackager->currAmount; //write only enough to fill up the buffer
 	}
 	memcpy(&currPackager->data[currPackager->currAmount], dataIn, length);
@@ -30,7 +31,7 @@ int addToPackage(char* dataIn, size_t length, Packager* currPackager) {
 	}
 	if (remainingLength) {
 		addToPackage(&dataIn[length], remainingLength, currPackager);
-		NRF_LOG_INFO("I would have added to package with remainingLength %d", remainingLength);
+		//NRF_LOG_INFO("I would have added to package with remainingLength %d", remainingLength);
 	}
 
 	return 1;
@@ -59,15 +60,19 @@ int createPackage(Packager* currPackager) {
 
 	uint16_t crc = crc16(&packagedData[SEQ_LOC],  totalSize);
 
-	NRF_LOG_INFO("The crc is 0x%04X", crc);
+	//NRF_LOG_HEX("The crc is 0x%04X", crc);
 
 	memcpy(&packagedData[currPackager->dataLength + 6], &crc, sizeof(crc)); //extra bytes 7 and 8 are the crc
 
 	currPackager->currAmount = 0;
 
+	//NRF_LOG_INFO("FULL PACKET");
+	//NRF_LOG_HEXDUMP_INFO(packagedData, sizeof(packagedData));
+
+
 	pendingMessagesPush(sizeof(packagedData), (char*)packagedData, &globalQ);
 
-	NRF_LOG_INFO("Completed Full Packet");
+	//NRF_LOG_INFO("Completed Full Packet");
 
 
 	return 1; //currently we always return success

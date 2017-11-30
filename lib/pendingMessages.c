@@ -42,10 +42,11 @@ int pendingMessagesWaitAndPop(char* userBuff, pendingMessages_t* this) {
 		}
 	}
 
-	xSemaphoreGive(this->queueLock);
 
 	//copy data back to user
 	memcpy(userBuff, this->tempBuff, sizeof(this->tempBuff));
+
+	xSemaphoreGive(this->queueLock);
 
 	// NRF_LOG_INFO("end of pop");
 	// NRF_LOG_FLUSH();
@@ -77,6 +78,9 @@ int pendingMessagesPush(int dataSize, char* userBuff, pendingMessages_t* this) {
 		}
 	}
 	this->size += dataSize;
+	if (this->size >= QUEUE_SIZE) {
+		NRF_LOG_INFO("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+	}
 	numNotifications = this->size/WAIT_MESSAGE_SIZE;
 	//Check to see if we need to notify the bluetooth task
 

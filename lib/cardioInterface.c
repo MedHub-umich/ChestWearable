@@ -113,7 +113,7 @@ static void checkReturn(BaseType_t retVal)
 {
     if (retVal == pdPASS)
     {
-        NRF_LOG_INFO("SENSOR THREAD CREATED");
+        NRF_LOG_INFO("ECG THREAD CREATED");
     }
     else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
     {
@@ -139,7 +139,7 @@ int cardioInit()
     packagerInit(ECG_DATA_TYPE, ECG_DATA_PACKET_SIZE, &ecgDevice.ecgPackager);
 
     // create FreeRtos tasks
-    //checkReturn(xTaskCreate(taskCardioProcessing, "LED0", configMINIMAL_STACK_SIZE + 800, NULL, 2, &taskCardioProcessingHandle));
+    checkReturn(xTaskCreate(taskCardioProcessing, "LED0", configMINIMAL_STACK_SIZE + 800, NULL, 2, &taskCardioProcessingHandle));
 
 
 
