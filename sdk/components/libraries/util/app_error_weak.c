@@ -49,7 +49,7 @@
  */
 __WEAK void app_error_fault_handler(uint32_t id, uint32_t pc, uint32_t info)
 {
-    NRF_LOG_ERROR("Fatal");
+    NRF_LOG_ERROR("Fatal ID, %d PC, %d, Info, %d", id, pc, info);
     NRF_LOG_FINAL_FLUSH();
     NRF_BREAKPOINT_COND;
     // On assert, the system can only recover with a reset.

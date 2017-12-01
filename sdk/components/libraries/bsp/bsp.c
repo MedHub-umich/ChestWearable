@@ -316,7 +316,7 @@ static uint32_t bsp_led_indication(bsp_indication_t indicate)
             break;
 
         case BSP_INDICATE_CONNECTED:
-            bsp_board_led_on(BSP_LED_INDICATE_CONNECTED);
+            bsp_board_led_off(BSP_LED_INDICATE_CONNECTED);
             m_stable_state = indicate;
             break;
 
