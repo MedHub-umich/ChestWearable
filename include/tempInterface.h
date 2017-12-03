@@ -11,7 +11,7 @@
 #include "arm_const_structs.h"
 #include "packager.h"
 
-#define TEMPERATURE_DATA_PACKET_SIZE 2
+#define TEMPERATURE_DATA_PACKET_SIZE 1
 // Public
 typedef struct Temp {
 	Packager tempPackager;

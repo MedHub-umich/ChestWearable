@@ -88,9 +88,8 @@ void taskSend(void * pvParameter)
         sendingRespirationRate = averageRespirationRateGlobal;
         xSemaphoreGive( respirationRateSemaphore );
 
-        NRF_LOG_INFO("SENDING RESPIRATION RATE: %d", sendingRespirationRate);
-        addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &breathingRateSensor->breathingRatePackager);
-        //NRF_LOG_INFO("SENDING GLOBAL RESPIRATION RATE (NOT REALLY): %d", averageRespirationRateGlobal);
+        //NRF_LOG_INFO("SENDING RESPIRATION RATE: %d", sendingRespirationRate);
+        //addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &breathingRateSensor->breathingRatePackager);
     }
 }
 

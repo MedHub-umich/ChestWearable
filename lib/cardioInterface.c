@@ -97,9 +97,7 @@ void taskCardioProcessing (void * pvParameter)
         }
 
         // Package up the cardio data
-        //int size = sizeof(ecgDataBufferFilteredDownSampled);
-        //pendingMessagesPush(size, (char*)ecgDataBufferFilteredDownSampled, &globalQ);
-        addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
+        //addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
 
         // Heart Rate
         heartRateExtract(ecgDataBufferCopy , SAMPLES_PER_CHANNEL);
