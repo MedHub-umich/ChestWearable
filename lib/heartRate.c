@@ -13,8 +13,8 @@ TaskHandle_t  taskSendHeartHandle;
 SemaphoreHandle_t heartRateSemaphore;
 respirationRate_t respiration;
 
-static uint8_t averageHeartRateGlobal = 0;
-static const TickType_t sendPeriodMilli = 5000; // one minute is 30000 for some reason
+static uint8_t averageHeartRateGlobal = 60;
+static const TickType_t sendPeriodMilliHeartRate = 5000; // 5000 = 10000 ms
 
 static arm_fir_instance_f32 heartRateLowPassInstance;
 #define HEART_RATE_LOW_PASS_BLOCK_SIZE 34
@@ -40,7 +40,7 @@ float32_t peakAmplitudeThreshold = 0;
 int samplesSinceMax = 0;
 int thresholdSamplesSinceMax = 75;
 float32_t currMax = 0;
-float32_t heartRate = 0;
+float32_t heartRate = 60.0;
 int samplesSinceLastPeak = 0;
 const int samplePeriodMilli = 2;
 
@@ -67,6 +67,16 @@ static float32_t calcLongTermAverage(float32_t averageAmplitudeForThisBuffer, fl
     return longTermAverage;
 }
 
+static float32_t calcAverageHeartRate(float32_t new, float32_t average)
+{
+    static const float32_t numAverageHeartRates = 6.0;
+
+    average -= (average / numAverageHeartRates);
+    average += (new / numAverageHeartRates);
+
+    return average;
+}
+
 void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
 {
     // Heart Rate Band Pass
@@ -85,13 +95,15 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
        //NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(ecgheartRateLowPass[i]));
     }
 
-    // Heart Rate
+    // calculate a threshold for R peak detection
     averageAmplitudeForThisBuffer = calcAverageAmplitudeForThisBuffer(ecgheartRateLowPass, HEART_RATE_LOW_PASS_BLOCK_SIZE);
     longTermAverage = calcLongTermAverage(averageAmplitudeForThisBuffer, longTermAverage);
     peakAmplitudeThreshold = factor * longTermAverage;// + offset; // Adding in a 5000 term to mitigate problems from noise
 
+    // loop through new adc buffer
     for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
     {
+       // note any values above R peak threshold
        if (ecgheartRateLowPass[i] > peakAmplitudeThreshold && ecgheartRateLowPass[i] > currMax)
        {
           currMax = ecgheartRateLowPass[i];
@@ -100,15 +112,25 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
        else
        {
           ++samplesSinceMax;
+
+          // found a real R peak
           if (samplesSinceMax >= thresholdSamplesSinceMax && currMax > peakAmplitudeThreshold)
           {
+            // calculate instantaneous heart rate
             heartRate = 60 / (samplesSinceLastPeak * (samplePeriodMilli / 1000.0));
-            //NRF_LOG_INFO("HeartRate: %d", (uint16_t) heartRate);
-            //NRF_LOG_INFO("%d", (uint16_t) currMax);
-            //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
+
+            // add this peak for respiration processing
             respirationRateAddPair(currMax, samplesSinceLastPeak, &respiration);
-            //NRF_LOG_INFO("Samples since last peak: %d", samplesSinceLastPeak);
-            //add to list of breathing rate peaks, if greather than a thershold wake up breathing rate algo
+
+            // take a running average of about 10 seconds of data
+            float32_t averageHeartRate = calcAverageHeartRate(heartRate, averageHeartRate);
+
+            // write to global variable for sending
+            xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
+            averageHeartRateGlobal = (uint8_t) averageHeartRate;
+            xSemaphoreGive( heartRateSemaphore );
+
+            // reset some stuff
             samplesSinceLastPeak = 0;
             currMax = 0;
             samplesSinceMax = 0;
@@ -116,10 +138,6 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
        }
        ++samplesSinceLastPeak;
     }
-
-    xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
-    averageHeartRateGlobal = (uint8_t) heartRate;
-    xSemaphoreGive( heartRateSemaphore );
 
     //NRF_LOG_INFO("HEART RATE FROM FUNCTION: %d", (uint8_t) heartRate);
     //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
@@ -152,7 +170,7 @@ void taskSendHeart(void * pvParameter)
 
     while (true)
     {
-        vTaskDelayUntil( &xLastWakeTime, sendPeriodMilli );
+        vTaskDelayUntil( &xLastWakeTime, sendPeriodMilliHeartRate );
 
         xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
         sendingHeartRate = averageHeartRateGlobal;
