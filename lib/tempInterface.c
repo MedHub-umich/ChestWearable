@@ -26,7 +26,7 @@ static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some
 
 
 uint16_t globalTemperatureAverage = 0;
-const uint8_t unhealthyTemperatureThreshold = 35;
+static const uint8_t unhealthyTemperatureThreshold = 36;
 
 static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average)
 {
@@ -99,6 +99,12 @@ void temperatureTaskSend(void * pvParameter)
 
         addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
         NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
+
+        if ((uint8_t)sendingTemperature >= unhealthyTemperatureThreshold)
+        {
+            // signal the LED task
+            // send to Pi
+        }
     }
 }
 

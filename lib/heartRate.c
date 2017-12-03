@@ -16,6 +16,8 @@ respirationRate_t respiration;
 static uint8_t averageHeartRateGlobal = 60;
 static const TickType_t sendPeriodMilliHeartRate = 5000; // 5000 = 10000 ms
 
+static const uint8_t unhealthyHeartRateThreshold = 201;
+
 static arm_fir_instance_f32 heartRateLowPassInstance;
 #define HEART_RATE_LOW_PASS_BLOCK_SIZE 34
 #define HEART_RATE_LOW_PASS_NUM_TAPS 101
@@ -178,6 +180,12 @@ void taskSendHeart(void * pvParameter)
 
         NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
         addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
+
+        if (sendingHeartRate >= unhealthyHeartRateThreshold)
+        {
+            // signal the LED task
+            // send to Pi
+        }
     }
 }
 

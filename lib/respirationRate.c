@@ -18,6 +18,8 @@ SemaphoreHandle_t respirationRateSemaphore;
 static uint8_t averageRespirationRateGlobal = 0;
 static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
 
+static const uint8_t unhealthyRespirationRateThreshold = 7;
+
 void respirationRateAddPair(float32_t inMagnitude, float32_t inTime, respirationRate_t * this)
 {
     peakPair_t newPeak;
@@ -91,6 +93,12 @@ void taskSend(void * pvParameter)
         NRF_LOG_INFO("SENDING RESPIRATION RATE: %d", sendingRespirationRate);
         addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &breathingRateSensor->breathingRatePackager);
         //NRF_LOG_INFO("SENDING GLOBAL RESPIRATION RATE (NOT REALLY): %d", averageRespirationRateGlobal);
+
+        if ((uint8_t)sendingRespirationRate <= unhealthyRespirationRateThreshold)
+        {
+            // signal the LED task
+            // send to Pi
+        }
     }
 }
 
