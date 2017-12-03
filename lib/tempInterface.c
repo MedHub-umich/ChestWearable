@@ -19,13 +19,14 @@
 TaskHandle_t  taskTemperatureDataHandle;
 TaskHandle_t sendingTemperatureDataHandle;
 
-
 Temp tempDevice;
 
 SemaphoreHandle_t temperatureSendSemaphore;
 static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
 
+
 uint16_t globalTemperatureAverage = 0;
+const uint8_t unhealthyTemperatureThreshold = 35;
 
 static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average)
 {
