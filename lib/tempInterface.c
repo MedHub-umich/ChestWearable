@@ -23,9 +23,9 @@ TaskHandle_t sendingTemperatureDataHandle;
 Temp tempDevice;
 
 SemaphoreHandle_t temperatureSendSemaphore;
-static const TickType_t sendPeriodMilli = 3000;//30000; // one minute is 30000 for some reason
+static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
 
-uint16_t globalTemperatureAverage = 0;
+uint8_t globalTemperatureAverage = 0;
 
 static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average)
 {
@@ -73,7 +73,7 @@ void taskTemperatureData (void * pvParameter)
         runningAverage = calcLongTermAverage(temperatureAverage, runningAverage);
 
         xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
-        globalTemperatureAverage = (uint16_t) runningAverage;
+        globalTemperatureAverage = (uint8_t) runningAverage;
         xSemaphoreGive( temperatureSendSemaphore );
 
         //pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
@@ -86,7 +86,7 @@ void temperatureTaskSend(void * pvParameter)
     TickType_t xLastWakeTime;
     xLastWakeTime = xTaskGetTickCount ();
 
-    uint16_t sendingTemperature = 0;
+    uint8_t sendingTemperature = 0;
 
     while (true)
     {
@@ -96,8 +96,8 @@ void temperatureTaskSend(void * pvParameter)
         sendingTemperature = globalTemperatureAverage;
         xSemaphoreGive( temperatureSendSemaphore );
 
-        addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
-        NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
+        //addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
+        //NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
     }
 }
 

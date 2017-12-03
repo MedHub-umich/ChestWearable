@@ -92,12 +92,14 @@ void taskCardioProcessing (void * pvParameter)
             if (i % 2 == 0)
             {
                 ecgDataBufferFilteredDownSampled[i/2] = (uint16_t)ecgDataBufferFiltered[i];
-                //NRF_LOG_INFO("%d", ecgDataBufferFilteredDownSampled[i/2]);
+                NRF_LOG_INFO("%d", ecgDataBufferFilteredDownSampled[i/2]);
             }
         }
 
         // Package up the cardio data
-        //addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
+        addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
+
+        //vTaskDelay(  5000);
 
         // Heart Rate
         heartRateExtract(ecgDataBufferCopy , SAMPLES_PER_CHANNEL);
