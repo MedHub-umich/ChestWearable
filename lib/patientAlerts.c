@@ -13,11 +13,7 @@
 #define BEEP_DURATION         200
 TaskHandle_t  taskLEDHandle;
 
-/**@taskBlinky
- *
- * Blinks an LED
- *
- */
+
 void taskLED (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
