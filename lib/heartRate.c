@@ -8,6 +8,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+#include "notification.h"
 
 TaskHandle_t  taskSendHeartHandle;
 SemaphoreHandle_t heartRateSemaphore;
@@ -181,11 +182,14 @@ void taskSendHeart(void * pvParameter)
         NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
         addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
 
-        if (sendingHeartRate >= unhealthyHeartRateThreshold)
-        {
-            // signal the LED task
-            // send to Pi
-        }
+        // if (sendingHeartRate >= unhealthyHeartRateThreshold)
+        // {
+        //     // signal the LED task
+        //     // send to Pi
+        // }
+
+        sendNotification(LED_ALERT_NOTIFICATION);
+        sendNotification(SPEAKER_ALERT_NOTIFICATION);
     }
 }
 

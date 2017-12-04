@@ -94,11 +94,11 @@ void taskSend(void * pvParameter)
         addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &breathingRateSensor->breathingRatePackager);
         //NRF_LOG_INFO("SENDING GLOBAL RESPIRATION RATE (NOT REALLY): %d", averageRespirationRateGlobal);
 
-        if ((uint8_t)sendingRespirationRate <= unhealthyRespirationRateThreshold)
-        {
-            // signal the LED task
-            // send to Pi
-        }
+        // if ((uint8_t)sendingRespirationRate <= unhealthyRespirationRateThreshold)
+        // {
+        //     // signal the LED task
+        //     // send to Pi
+        // }
     }
 }
 

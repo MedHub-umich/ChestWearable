@@ -63,7 +63,7 @@ static void taskSendBle(void * pvParameter);
 BLE_HRS_DEF(m_hrs);
 BLE_REC_DEF(m_rec);
 
-PatientAlerts patientAlerts;
+//PatientAlerts patientAlerts;
 
 #if NRF_LOG_ENABLED
 /**@brief Thread for handling the logger.
@@ -209,7 +209,7 @@ int main(void)
     // Intitialize interfaces
     UNUSED_VARIABLE(cardioInit());
     UNUSED_VARIABLE(tempInit());
-    patientAlertsInit(&patientAlerts);
+    UNUSED_VARIABLE(patientAlertsInit(/*&patientAlerts*/));
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;

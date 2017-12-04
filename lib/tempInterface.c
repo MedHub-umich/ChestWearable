@@ -100,11 +100,11 @@ void temperatureTaskSend(void * pvParameter)
         addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
         NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
 
-        if ((uint8_t)sendingTemperature >= unhealthyTemperatureThreshold)
-        {
-            // signal the LED task
-            // send to Pi
-        }
+        // if ((uint8_t)sendingTemperature >= unhealthyTemperatureThreshold)
+        // {
+        //     // signal the LED task
+        //     // send to Pi
+        // }
     }
 }
 

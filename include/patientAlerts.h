@@ -3,15 +3,18 @@
 #ifndef PATIENTALERTS_H
 #define PATIENTALERTS_H
 
-#define ALERT_LED_PIN       7
-#define ALERT_SPEAKER_PIN   0
+#define LED_ALERT_PIN       7
+#define SPEAKER_ALERT_PIN   0
 
-typedef struct PatientAlerts {
+#define BLINK_DURATION        100
+#define BEEP_DURATION         100
+
+/*typedef struct PatientAlerts {
     // members
-} PatientAlerts;
+} PatientAlerts;*/
 
 // Public
-void patientAlertsInit(PatientAlerts * this);
+int patientAlertsInit(/*PatientAlerts * this*/);
 
 // Private
 
