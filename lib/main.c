@@ -55,6 +55,7 @@
 #include "notification.h"
 #include "pendingMessages.h"
 #include "ble_rec.h"
+#include "patientAlerts.h"
 
 TaskHandle_t  bleHandle;
 static void taskSendBle(void * pvParameter);
@@ -62,7 +63,7 @@ static void taskSendBle(void * pvParameter);
 BLE_HRS_DEF(m_hrs);
 BLE_REC_DEF(m_rec);
 
-static void checkTaskCreate(BaseType_t retVal);
+PatientAlerts patientAlerts;
 
 #if NRF_LOG_ENABLED
 /**@brief Thread for handling the logger.
@@ -182,6 +183,7 @@ static void handle_rec1(rec_data_t* rec_data) {
  */
 int main(void)
 {
+    // Start logger
     log_init();
     NRF_LOG_INFO("********** STARTING MAIN *****************");
     NRF_LOG_FLUSH();
@@ -194,41 +196,30 @@ int main(void)
     initNotification();
     pendingMessagesCreate(&globalQ);
 
+    // hooks for incoming data
     registerDataHook(0, handle_rec0);
     registerDataHook(1, handle_rec1);
 
     // Create a FreeRTOS task for the BLE stack.
-    // The task will run advertising_start() before entering its loop.
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
 
+    // Create a task to receive data from queue and send to BLE stack
     checkReturn(xTaskCreate(taskSendBle, "x", configMINIMAL_STACK_SIZE+200, NULL, 3, &bleHandle));
 
+    // Intitialize interfaces
     UNUSED_VARIABLE(cardioInit());
     UNUSED_VARIABLE(tempInit());
+    patientAlertsInit(&patientAlerts);
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
+    // Start FreeRTOS
     vTaskStartScheduler();
 
     while (true)
     {
         APP_ERROR_HANDLER(NRF_ERROR_FORBIDDEN);
-    }
-}
-
-static void checkTaskCreate(BaseType_t retVal) {
-    if (retVal == pdPASS)
-    {
-        NRF_LOG_INFO("Checkpoint: created taskSendBle");
-    }
-    else if (retVal == errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY)
-    {
-        NRF_LOG_INFO("NEED MORE HEAP !!!!!!!!!!!!!!!!!!!!!!!!!");
-    }
-    else
-    {
-        NRF_LOG_INFO("DID NOT PASS XXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
 }
 
