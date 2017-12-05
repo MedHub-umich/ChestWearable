@@ -8,6 +8,7 @@
 #include "nrf_log_default_backends.h"
 #include "bsp.h"
 #include "nrf_drv_pwm.h"
+#include "nrf_drv_gpiote.h"
 
 #include "patientAlerts.h"
 #include "notification.h"
@@ -16,7 +17,40 @@
 TaskHandle_t  taskAlertLEDHandle;
 TaskHandle_t  taskAlertSpeakerHandle;
 
+static bool buttonHandled = false;
+
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
+
+
+void buttonHandler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
+{
+    // if (buttonHandled == false) {
+    //     buttonHandled = true;
+        BaseType_t * Woken;
+        sendNotificationFromISR(LED_ALERT_NOTIFICATION, Woken);
+    // }
+    // else
+    // {
+    //     buttonHandled = false;
+    // }
+}
+
+
+static void initButton(void)
+{
+    ret_code_t err_code;
+
+    //int retVal;
+
+    nrf_drv_gpiote_in_config_t in_config = GPIOTE_CONFIG_IN_SENSE_HITOLO(true);
+    err_code = nrf_drv_gpiote_in_init(BUTTON_INPUT_PIN, &in_config, buttonHandler);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_gpiote_in_event_enable(BUTTON_INPUT_PIN, true);
+
+    NRF_LOG_INFO("Initialized Button");
+}
+
 
 static void initBlink()
 {
@@ -84,13 +118,17 @@ void taskAlertLED (void * pvParameter)
     {
         waitForNotification(LED_ALERT_NOTIFICATION);
 
-        //LED on
-        nrf_gpio_pin_write(LED_ALERT_PIN, 1);
+        NRF_LOG_INFO("BLINK");
 
-        vTaskDelay(BLINK_DURATION);
+        // buttonHandled = false;
+
+        //LED on
+        //nrf_gpio_pin_write(LED_ALERT_PIN, 1);
+
+        //vTaskDelay(BLINK_DURATION);
 
         // LED off
-        nrf_gpio_pin_write(LED_ALERT_PIN, 0);
+        //nrf_gpio_pin_write(LED_ALERT_PIN, 0);
     }
 }
 
@@ -136,6 +174,8 @@ int patientAlertsInit(PatientAlerts * this)
     initBeep();
 
     initBlink();
+
+    initButton();
 
     // Create alert tasks
     checkReturn(xTaskCreate(taskAlertLED, "LED", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertLEDHandle));

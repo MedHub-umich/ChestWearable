@@ -188,7 +188,7 @@ void taskSendHeart(void * pvParameter)
         //     // send to Pi
         // }
 
-        sendNotification(LED_ALERT_NOTIFICATION);
+        //sendNotification(LED_ALERT_NOTIFICATION);
         sendNotification(SPEAKER_ALERT_NOTIFICATION);
     }
 }

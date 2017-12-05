@@ -5,6 +5,7 @@
 
 #define LED_ALERT_PIN       7
 #define SPEAKER_ALERT_PIN   27
+#define BUTTON_INPUT_PIN    11
 
 #define BLINK_DURATION        100
 #define BEEP_DURATION         50
