@@ -40,8 +40,6 @@ static void initBeep()
 
 static void startBeep(void)
 {
-    NRF_LOG_INFO("Demo 5");
-
     static nrf_pwm_values_individual_t /*const*/ seq_values[] =
     {
         {BEEP_DUTY_CYCLE_TICKS}
@@ -83,6 +81,7 @@ void taskAlertLED (void * pvParameter)
     }
 }
 
+
 void taskAlertSpeaker (void * pvParameter)
 {
     UNUSED_PARAMETER(pvParameter);
@@ -101,6 +100,7 @@ void taskAlertSpeaker (void * pvParameter)
     }
 }
 
+
 static void checkReturn(BaseType_t retVal)
 {
     if (retVal == pdPASS)
@@ -118,7 +118,7 @@ static void checkReturn(BaseType_t retVal)
 }
 
 
-int patientAlertsInit(/*PatientAlerts * this*/)
+int patientAlertsInit(PatientAlerts * this)
 {
     uint32_t err_code;
 

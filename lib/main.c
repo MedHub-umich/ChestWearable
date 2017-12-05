@@ -63,15 +63,10 @@ static void taskSendBle(void * pvParameter);
 BLE_HRS_DEF(m_hrs);
 BLE_REC_DEF(m_rec);
 
-//PatientAlerts patientAlerts;
+PatientAlerts patientAlerts;
 
 #if NRF_LOG_ENABLED
-/**@brief Thread for handling the logger.
- *
- * @details This thread is responsible for processing log entries if logs are deferred.
- *          Thread flushes all log entries and suspends. It is resumed by idle task hook.
- */
-static TaskHandle_t m_logger_thread;                 /**< Definition of Logger thread. */
+static TaskHandle_t m_logger_thread;
 static void logger_thread(void * arg)
 {
     UNUSED_PARAMETER(arg);
@@ -84,23 +79,23 @@ static void logger_thread(void * arg)
 }
 #endif //NRF_LOG_ENABLED
 
-/**@brief Function for initializing the nrf log module.
- */
+
 static void log_init(void)
 {
+    #if NRF_LOG_ENABLED
     ret_code_t err_code = NRF_LOG_INIT(NULL);
     APP_ERROR_CHECK(err_code);
 
-    #if NRF_LOG_ENABLED
     // Start execution.
     if (pdPASS != xTaskCreate(logger_thread, "LOGGER", 256, NULL, 1, &m_logger_thread))
     {
         APP_ERROR_HANDLER(NRF_ERROR_NO_MEM);
     }
-    #endif
 
     NRF_LOG_DEFAULT_BACKENDS_INIT();
+    #endif
 }
+
 
 static void checkReturn(BaseType_t retVal)
 {
@@ -148,13 +143,12 @@ void vApplicationIdleHook( void )
 }
 
 
-/**@brief Function for initializing the clock.
- */
 static void clock_init(void)
 {
     ret_code_t err_code = nrf_drv_clock_init();
     APP_ERROR_CHECK(err_code);
 }
+
 
 static void handle_rec0(rec_data_t* rec_data) {
     NRF_LOG_INFO("I am here!");
@@ -209,7 +203,7 @@ int main(void)
     // Intitialize interfaces
     UNUSED_VARIABLE(cardioInit());
     UNUSED_VARIABLE(tempInit());
-    UNUSED_VARIABLE(patientAlertsInit(/*&patientAlerts*/));
+    UNUSED_VARIABLE(patientAlertsInit(&patientAlerts));
 
     // Activate deep sleep mode.
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;

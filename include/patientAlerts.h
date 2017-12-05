@@ -14,14 +14,13 @@
 #define BEEP_PERIOD_TICKS       PWM_TIMER_FREQUENCY / BEEP_FREQUENCY
 #define BEEP_DUTY_CYCLE_TICKS   BEEP_PERIOD_TICKS / 2
 
-/*typedef struct PatientAlerts {
+typedef struct PatientAlerts {
     // members
-} PatientAlerts;*/
+} PatientAlerts;
+
 
 // Public
-int patientAlertsInit(/*PatientAlerts * this*/);
-
-// Private
+int patientAlertsInit(PatientAlerts * this);
 
 
 #endif //PATIENTALERTS_H
