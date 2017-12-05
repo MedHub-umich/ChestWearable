@@ -18,6 +18,19 @@ TaskHandle_t  taskAlertSpeakerHandle;
 
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
 
+static void initBlink()
+{
+    //Initialize LED for alerts
+    nrf_gpio_cfg(
+        LED_ALERT_PIN,
+        GPIO_PIN_CNF_DIR_Output,
+        NRF_GPIO_PIN_INPUT_DISCONNECT,
+        NRF_GPIO_PIN_NOPULL,
+        GPIO_PIN_CNF_DRIVE_S0H1,
+        NRF_GPIO_PIN_NOSENSE
+    );
+    nrf_gpio_pin_clear(LED_ALERT_PIN);
+}
 
 static void initBeep()
 {
@@ -120,22 +133,9 @@ static void checkReturn(BaseType_t retVal)
 
 int patientAlertsInit(PatientAlerts * this)
 {
-    uint32_t err_code;
-
     initBeep();
 
-    //Initialize LED for alerts
-    nrf_gpio_cfg(
-        LED_ALERT_PIN,
-        GPIO_PIN_CNF_DIR_Output,
-        NRF_GPIO_PIN_INPUT_DISCONNECT,
-        NRF_GPIO_PIN_NOPULL,
-        GPIO_PIN_CNF_DRIVE_S0H1,
-        NRF_GPIO_PIN_NOSENSE
-    );
-    nrf_gpio_pin_clear(LED_ALERT_PIN);
-
-    // Initialize PWM
+    initBlink();
 
     // Create alert tasks
     checkReturn(xTaskCreate(taskAlertLED, "LED", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertLEDHandle));
