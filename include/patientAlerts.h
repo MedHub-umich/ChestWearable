@@ -4,10 +4,10 @@
 #define PATIENTALERTS_H
 
 #define LED_ALERT_PIN       7
-#define SPEAKER_ALERT_PIN   0
+#define SPEAKER_BIT_MASK    1 << 27
 
-#define BLINK_DURATION        100
-#define BEEP_DURATION         100
+#define BLINK_DURATION        300
+#define BEEP_DURATION         600
 
 /*typedef struct PatientAlerts {
     // members

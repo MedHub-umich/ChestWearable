@@ -6,12 +6,22 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
+#include "bsp.h"
+#include "app_timer.h"
+#include "low_power_pwm.h"
 
 #include "patientAlerts.h"
 #include "notification.h"
 
+
 TaskHandle_t  taskAlertLEDHandle;
 TaskHandle_t  taskAlertSpeakerHandle;
+
+/*Ticks before change duty cycle of each LED*/
+#define TICKS_BEFORE_CHANGE_0   500
+#define TICKS_BEFORE_CHANGE_1   400
+
+static low_power_pwm_t low_power_pwm_0;
 
 void taskAlertLED (void * pvParameter)
 {
@@ -24,7 +34,7 @@ void taskAlertLED (void * pvParameter)
         //LED on
         nrf_gpio_pin_write(LED_ALERT_PIN, 1);
 
-        vTaskDelay(100);
+        vTaskDelay(BLINK_DURATION);
 
         // LED off
         nrf_gpio_pin_write(LED_ALERT_PIN, 0);
@@ -39,9 +49,14 @@ void taskAlertSpeaker (void * pvParameter)
     {
         waitForNotification(SPEAKER_ALERT_NOTIFICATION);
 
+        low_power_pwm_start((&low_power_pwm_0), low_power_pwm_0.bit_mask);
+        //APP_ERROR_CHECK(err_code);
+
         NRF_LOG_INFO("Alert.");
 
-        vTaskDelay(100);
+        vTaskDelay(BEEP_DURATION);
+
+        low_power_pwm_stop(&low_power_pwm_0);
     }
 }
 
@@ -61,8 +76,48 @@ static void checkReturn(BaseType_t retVal)
     }
 }
 
+
+
+
+static void pwm_handler(void * p_context)
+{
+}
+/**
+ * @brief Function to initalize low_power_pwm instances.
+ *
+ */
+
+static void pwm_init(void)
+{
+    uint32_t err_code;
+    low_power_pwm_config_t low_power_pwm_config;
+
+    APP_TIMER_DEF(lpp_timer_0);
+    low_power_pwm_config.active_high    = false;
+    low_power_pwm_config.period         = APP_TIMER_TICKS(4);
+    low_power_pwm_config.bit_mask       = SPEAKER_BIT_MASK; 
+    low_power_pwm_config.p_timer_id     = &lpp_timer_0;
+    low_power_pwm_config.p_port         = NRF_GPIO;
+
+    err_code = low_power_pwm_init((&low_power_pwm_0), &low_power_pwm_config, pwm_handler);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = low_power_pwm_duty_set(&low_power_pwm_0, APP_TIMER_TICKS(2));
+    APP_ERROR_CHECK(err_code);
+}
+
 int patientAlertsInit(/*PatientAlerts * this*/)
 {
+    uint8_t new_duty_cycle;
+    uint32_t err_code;
+
+    // Start APP_TIMER to generate timeouts.
+    err_code = app_timer_init();
+    APP_ERROR_CHECK(err_code);
+
+    /*Initialize low power PWM for all 3  channels of RGB or 3 channels of leds on pca10028*/
+    pwm_init();
+
     //Initialize LED for alerts
     nrf_gpio_cfg(
         LED_ALERT_PIN,
