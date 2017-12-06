@@ -16,6 +16,7 @@
 
 TaskHandle_t  taskAlertLEDHandle;
 TaskHandle_t  taskAlertSpeakerHandle;
+TaskHandle_t  taskPanicButtonHandle;
 
 static bool buttonHandled = false;
 
@@ -24,15 +25,7 @@ static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
 
 void buttonHandler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {
-    // if (buttonHandled == false) {
-    //     buttonHandled = true;
-        BaseType_t * Woken;
-        sendNotificationFromISR(LED_ALERT_NOTIFICATION, Woken);
-    // }
-    // else
-    // {
-    //     buttonHandled = false;
-    // }
+    sendNotification(PANIC_BUTTON_NOTIFICATION);
 }
 
 
@@ -118,17 +111,13 @@ void taskAlertLED (void * pvParameter)
     {
         waitForNotification(LED_ALERT_NOTIFICATION);
 
-        NRF_LOG_INFO("BLINK");
+        // LED on
+        nrf_gpio_pin_write(LED_ALERT_PIN, 1);
 
-        // buttonHandled = false;
-
-        //LED on
-        //nrf_gpio_pin_write(LED_ALERT_PIN, 1);
-
-        //vTaskDelay(BLINK_DURATION);
+        vTaskDelay(BLINK_DURATION);
 
         // LED off
-        //nrf_gpio_pin_write(LED_ALERT_PIN, 0);
+        nrf_gpio_pin_write(LED_ALERT_PIN, 0);
     }
 }
 
@@ -148,6 +137,19 @@ void taskAlertSpeaker (void * pvParameter)
         vTaskDelay(BEEP_DURATION);
         
         stopBeep();
+    }
+}
+
+
+void taskPanicButton (void * pvParameter)
+{
+    UNUSED_PARAMETER(pvParameter);
+
+    while (true)
+    {
+        waitForNotification(PANIC_BUTTON_NOTIFICATION);
+
+        NRF_LOG_INFO("PANIC!");
     }
 }
 
@@ -180,6 +182,8 @@ int patientAlertsInit(PatientAlerts * this)
     // Create alert tasks
     checkReturn(xTaskCreate(taskAlertLED, "LED", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertLEDHandle));
     checkReturn(xTaskCreate(taskAlertSpeaker, "SP", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertSpeakerHandle));
+    checkReturn(xTaskCreate(taskPanicButton, "PA", configMINIMAL_STACK_SIZE + 50, NULL, 3, &taskPanicButtonHandle));
+
 
     return 0;
 }
