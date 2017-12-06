@@ -98,7 +98,7 @@ void temperatureTaskSend(void * pvParameter)
         xSemaphoreGive( temperatureSendSemaphore );
 
         addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
-        NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
+        //NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
 
         // if ((uint8_t)sendingTemperature >= unhealthyTemperatureThreshold)
         // {

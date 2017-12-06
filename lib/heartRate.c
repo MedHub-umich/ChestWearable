@@ -179,7 +179,7 @@ void taskSendHeart(void * pvParameter)
         sendingHeartRate = averageHeartRateGlobal;
         xSemaphoreGive( heartRateSemaphore );
 
-        NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
+        //NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
         addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
 
         // if (sendingHeartRate >= unhealthyHeartRateThreshold)

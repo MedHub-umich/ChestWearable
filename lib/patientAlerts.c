@@ -103,7 +103,7 @@ void taskAlertSpeaker (void * pvParameter)
     {
         waitForNotification(SPEAKER_ALERT_NOTIFICATION);
 
-        NRF_LOG_INFO("Alert.");
+        //NRF_LOG_INFO("Alert.");
 
         startBeep();
 

@@ -61,7 +61,7 @@ void respirationRateProcess(respirationRate_t * this)
 
     averageRespirationRate = calcLongTermAverage(currentRespirationRate, averageRespirationRate);
 
-    NRF_LOG_INFO("AVERAGE RESPIRATION RATE FROM FUNCTION: %d", (int) averageRespirationRate);
+    // NRF_LOG_INFO("AVERAGE RESPIRATION RATE FROM FUNCTION: %d", (int) averageRespirationRate);
 
     xSemaphoreTake( respirationRateSemaphore, portMAX_DELAY );
     averageRespirationRateGlobal = (uint8_t) averageRespirationRate;
