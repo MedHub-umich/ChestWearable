@@ -25,7 +25,7 @@ Temp tempDevice;
 SemaphoreHandle_t temperatureSendSemaphore;
 static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
 
-uint8_t globalTemperatureAverage = 0;
+uint8_t globalTemperatureAverage = 30;
 
 static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average)
 {
