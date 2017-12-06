@@ -12,6 +12,8 @@
 
 #include "patientAlerts.h"
 #include "notification.h"
+//#include "ble_rec.h"
+#include "bleInterface.h"
 
 
 TaskHandle_t  taskAlertLEDHandle;
@@ -21,6 +23,21 @@ TaskHandle_t  taskPanicButtonHandle;
 static bool buttonHandled = false;
 
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
+
+static void doctorAlertHandler(rec_data_t* rec_data) {
+    //NRF_LOG_INFO("Alert From Doctor");
+
+    // Blink, Beep...
+    if (rec_data->data[0] == ALERT_SERIOUS)
+    {
+        sendNotification(LED_ALERT_NOTIFICATION);
+        sendNotification(SPEAKER_ALERT_NOTIFICATION);
+    }
+    else if (rec_data->data[0] == ALERT_MILD)
+    {
+        sendNotification(LED_ALERT_NOTIFICATION);
+    }
+}
 
 
 void buttonHandler(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
@@ -41,7 +58,7 @@ static void initButton(void)
 
     nrf_drv_gpiote_in_event_enable(BUTTON_INPUT_PIN, true);
 
-    NRF_LOG_INFO("Initialized Button");
+    //NRF_LOG_INFO("Initialized Button");
 }
 
 
@@ -150,6 +167,8 @@ void taskPanicButton (void * pvParameter)
         waitForNotification(PANIC_BUTTON_NOTIFICATION);
 
         NRF_LOG_INFO("PANIC!");
+
+        // Send BLE
     }
 }
 
@@ -178,6 +197,8 @@ int patientAlertsInit(PatientAlerts * this)
     initBlink();
 
     initButton();
+
+    registerDataHook(0, doctorAlertHandler);
 
     // Create alert tasks
     checkReturn(xTaskCreate(taskAlertLED, "LED", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertLEDHandle));

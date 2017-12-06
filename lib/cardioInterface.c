@@ -97,9 +97,14 @@ void taskCardioProcessing (void * pvParameter)
         }
 
         // Package up the cardio data
-        //int size = sizeof(ecgDataBufferFilteredDownSampled);
-        //pendingMessagesPush(size, (char*)ecgDataBufferFilteredDownSampled, &globalQ);
-        addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
+        // if(diagnosticMode)
+        // {
+            addToPackage((char*) ecgDataBufferFilteredDownSampled, sizeof(ecgDataBufferFilteredDownSampled), &ecgDevice.ecgPackager);
+        // }
+        // else // Monitor Mode
+        // {
+        //     addToPackage((char*) ecgDataBufferCopy, sizeof(ecgDataBufferCopy), &ecgDevice.ecgPackager);
+        // }
 
         // Heart Rate
         heartRateExtract(ecgDataBufferCopy , SAMPLES_PER_CHANNEL);
@@ -140,8 +145,6 @@ int cardioInit()
 
     // create FreeRtos tasks
     checkReturn(xTaskCreate(taskCardioProcessing, "LED0", configMINIMAL_STACK_SIZE + 800, NULL, 2, &taskCardioProcessingHandle));
-
-
 
     return 0;
 }

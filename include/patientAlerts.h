@@ -7,8 +7,11 @@
 #define SPEAKER_ALERT_PIN   27
 #define BUTTON_INPUT_PIN    11
 
-#define BLINK_DURATION        100
-#define BEEP_DURATION         50
+#define BLINK_DURATION        1000
+#define BEEP_DURATION         300
+
+#define ALERT_SERIOUS       2
+#define ALERT_MILD          1
 
 #define PWM_TIMER_FREQUENCY     125000
 #define BEEP_FREQUENCY          2000
