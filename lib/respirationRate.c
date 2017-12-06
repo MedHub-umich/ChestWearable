@@ -92,7 +92,6 @@ void taskSend(void * pvParameter)
 
         NRF_LOG_INFO("SENDING RESPIRATION RATE: %d", sendingRespirationRate);
         addToPackage((char*) &sendingRespirationRate, sizeof(sendingRespirationRate), &breathingRateSensor->breathingRatePackager);
-        //NRF_LOG_INFO("SENDING GLOBAL RESPIRATION RATE (NOT REALLY): %d", averageRespirationRateGlobal);
 
         // if ((uint8_t)sendingRespirationRate <= unhealthyRespirationRateThreshold)
         // {
