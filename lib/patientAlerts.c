@@ -14,6 +14,7 @@
 #include "notification.h"
 //#include "ble_rec.h"
 #include "bleInterface.h"
+#include "packager.h"
 
 
 TaskHandle_t  taskAlertLEDHandle;
@@ -160,7 +161,7 @@ void taskAlertSpeaker (void * pvParameter)
 
 void taskPanicButton (void * pvParameter)
 {
-    UNUSED_PARAMETER(pvParameter);
+    PatientAlerts* alert = (PatientAlerts*) pvParameter;
 
     while (true)
     {
@@ -168,7 +169,9 @@ void taskPanicButton (void * pvParameter)
 
         NRF_LOG_INFO("PANIC!");
 
-        // Send BLE
+        uint8_t sendData = 1;
+
+        addToPackage((char*) &sendData, sizeof(sendData), &alert->alertPackager);
     }
 }
 
@@ -200,10 +203,12 @@ int patientAlertsInit(PatientAlerts * this)
 
     registerDataHook(0, doctorAlertHandler);
 
+    packagerInit(ALERT_DATA_TYPE, ALERT_PACKET_SIZE, &this->alertPackager);
+
     // Create alert tasks
     checkReturn(xTaskCreate(taskAlertLED, "LED", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertLEDHandle));
     checkReturn(xTaskCreate(taskAlertSpeaker, "SP", configMINIMAL_STACK_SIZE + 50, NULL, 2, &taskAlertSpeakerHandle));
-    checkReturn(xTaskCreate(taskPanicButton, "PA", configMINIMAL_STACK_SIZE + 50, NULL, 3, &taskPanicButtonHandle));
+    checkReturn(xTaskCreate(taskPanicButton, "PA", configMINIMAL_STACK_SIZE + 50, (void*) this, 3, &taskPanicButtonHandle));
 
 
     return 0;

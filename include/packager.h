@@ -21,6 +21,7 @@
 #define HEART_RATE_DATA_TYPE 3
 #define BREATHING_RATE_DATA_TYPE 4
 #define TEMPERATURE_DATA_TYPE 5
+#define ALERT_DATA_TYPE 6
 
 
 typedef struct Packager
