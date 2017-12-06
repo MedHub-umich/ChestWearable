@@ -92,7 +92,7 @@ void taskCardioProcessing (void * pvParameter)
             if (i % 2 == 0)
             {
                 ecgDataBufferFilteredDownSampled[i/2] = (uint16_t)ecgDataBufferFiltered[i];
-                NRF_LOG_INFO("%d", ecgDataBufferFilteredDownSampled[i/2]);
+                //NRF_LOG_INFO("%d", ecgDataBufferFilteredDownSampled[i/2]);
             }
         }
 

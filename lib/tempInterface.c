@@ -23,7 +23,7 @@ TaskHandle_t sendingTemperatureDataHandle;
 Temp tempDevice;
 
 SemaphoreHandle_t temperatureSendSemaphore;
-static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
+static const TickType_t sendPeriodMilli = 3000; // one minute is 30000 for some reason
 
 uint8_t globalTemperatureAverage = 0;
 
@@ -96,8 +96,8 @@ void temperatureTaskSend(void * pvParameter)
         sendingTemperature = globalTemperatureAverage;
         xSemaphoreGive( temperatureSendSemaphore );
 
-        //addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
-        //NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
+        addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
+        NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
     }
 }
 
