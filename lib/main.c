@@ -150,29 +150,6 @@ static void clock_init(void)
 }
 
 
-// static void handle_rec0(rec_data_t* rec_data) {
-//     NRF_LOG_INFO("I am here!");
-//     if (rec_data->data_length != 2) {
-//         return;
-//     }
-//     // NRF_LOG_INFO("%d", rec_data->data);
-//     if (rec_data->data[0]) {
-//         bsp_board_led_on(0);
-//     } else {
-//         bsp_board_led_off(0);
-//     }
-//     if (rec_data->data[1]) {
-//         bsp_board_led_on(1);
-//     } else {
-//         bsp_board_led_off(1);
-//     }
-// }
-
-// static void handle_rec1(rec_data_t* rec_data) {
-//     NRF_LOG_INFO("I am here!");
-//     UNUSED_PARAMETER(rec_data);
-// }
-
 /**@brief Function for application main entry.
  */
 int main(void)
@@ -189,10 +166,6 @@ int main(void)
     buttons_leds_init(&erase_bonds);
     initNotification();
     pendingMessagesCreate(&globalQ);
-
-    // hooks for incoming data
-    //registerDataHook(0, handle_rec0);
-    //registerDataHook(1, handle_rec1);
 
     // Create a FreeRTOS task for the BLE stack.
     nrf_sdh_freertos_init(bleBegin, &erase_bonds);
