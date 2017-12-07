@@ -125,8 +125,10 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
             // add this peak for respiration processing
             respirationRateAddPair(currMax, samplesSinceLastPeak, &respiration);
 
+            static float32_t averageHeartRate = 60;
+
             // take a running average of about 10 seconds of data
-            float32_t averageHeartRate = calcAverageHeartRate(heartRate, averageHeartRate);
+            averageHeartRate = calcAverageHeartRate(heartRate, averageHeartRate);
 
             // write to global variable for sending
             xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
