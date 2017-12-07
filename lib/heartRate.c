@@ -17,7 +17,7 @@ respirationRate_t respiration;
 static uint8_t averageHeartRateGlobal = 60;
 static const TickType_t sendPeriodMilliHeartRate = 5000; // 5000 = 10000 ms
 
-static const uint8_t unhealthyHeartRateThreshold = 95;
+static const uint8_t unhealthyHeartRateThreshold = 105;
 
 static arm_fir_instance_f32 heartRateLowPassInstance;
 #define HEART_RATE_LOW_PASS_BLOCK_SIZE 34
@@ -34,7 +34,7 @@ float32_t ecgheartRateLowPass[HEART_RATE_LOW_PASS_BLOCK_SIZE];
 
 // Heart Rate Amplitude Stuff
 float32_t averageAmplitudeForThisBuffer = 0;
-float32_t factor = 15.0;
+float32_t factor = 25.0;
 float32_t longTermAverage = 15;
 float32_t peakAmplitudeThreshold = 0;
 
@@ -130,6 +130,8 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
             // take a running average of about 10 seconds of data
             averageHeartRate = calcAverageHeartRate(heartRate, averageHeartRate);
 
+            NRF_LOG_INFO("AVG HEART RATE FROM FUNCTION: %d", (uint8_t) averageHeartRate);
+
             // write to global variable for sending
             xSemaphoreTake( heartRateSemaphore, portMAX_DELAY );
             averageHeartRateGlobal = (uint8_t) averageHeartRate;
@@ -144,7 +146,6 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
        ++samplesSinceLastPeak;
     }
 
-    //NRF_LOG_INFO("HEART RATE FROM FUNCTION: %d", (uint8_t) heartRate);
     //NRF_LOG_INFO("peakAmplitudeThreshold %d", (uint32_t) peakAmplitudeThreshold);
 }
 
