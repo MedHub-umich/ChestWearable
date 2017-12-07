@@ -17,7 +17,7 @@ respirationRate_t respiration;
 static uint8_t averageHeartRateGlobal = 60;
 static const TickType_t sendPeriodMilliHeartRate = 5000; // 5000 = 10000 ms
 
-static const uint8_t unhealthyHeartRateThreshold = 201;
+static const uint8_t unhealthyHeartRateThreshold = 95;
 
 static arm_fir_instance_f32 heartRateLowPassInstance;
 #define HEART_RATE_LOW_PASS_BLOCK_SIZE 34
@@ -92,11 +92,11 @@ void heartRateExtract(float32_t * inEcgDataBuffer, int inSize)
        ecgheartRateLowPass[i] = ecgheartRateLowPass[i] * ecgheartRateLowPass[i];
     }
 
-    for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
-    {
-       //NRF_LOG_INFO("%d", (int16_t)ecgheartRateLowPass[i]);
-       //NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(ecgheartRateLowPass[i]));
-    }
+    // for(i = 0; i < HEART_RATE_LOW_PASS_BLOCK_SIZE; ++i)
+    // {
+    //    //NRF_LOG_INFO("%d", (int16_t)ecgheartRateLowPass[i]);
+    //    //NRF_LOG_INFO("Output: " NRF_LOG_FLOAT_MARKER "\r", NRF_LOG_FLOAT(ecgheartRateLowPass[i]));
+    // }
 
     // calculate a threshold for R peak detection
     averageAmplitudeForThisBuffer = calcAverageAmplitudeForThisBuffer(ecgheartRateLowPass, HEART_RATE_LOW_PASS_BLOCK_SIZE);
@@ -184,12 +184,12 @@ void taskSendHeart(void * pvParameter)
         NRF_LOG_INFO("SENDING HEART RATE (NOT REALLY): %d", sendingHeartRate);
         addToPackage((char*) &sendingHeartRate, sizeof(sendingHeartRate), &heartRateDevice.heartRatePackager);
 
-        // if (sendingHeartRate >= unhealthyHeartRateThreshold)
-        // {
-        //     // signal the LED task
-        //     // send to Pi
-        // }
 
+        if ((uint8_t)sendingHeartRate >= unhealthyHeartRateThreshold)
+        {
+            // signal the LED task
+            sendNotification(SPEAKER_ALERT_NOTIFICATION);
+        }
         //sendNotification(LED_ALERT_NOTIFICATION);
         //sendNotification(SPEAKER_ALERT_NOTIFICATION);
     }
