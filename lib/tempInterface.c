@@ -19,14 +19,13 @@
 TaskHandle_t  taskTemperatureDataHandle;
 TaskHandle_t sendingTemperatureDataHandle;
 
+
 Temp tempDevice;
 
 SemaphoreHandle_t temperatureSendSemaphore;
 static const TickType_t sendPeriodMilli = 30000; // one minute is 30000 for some reason
 
-static const uint8_t unhealthyTemperatureThreshold = 36;
-uint8_t globalTemperatureAverage = 30;
-
+uint16_t globalTemperatureAverage = 0;
 
 static float32_t calcLongTermAverage(float32_t currMeasurment, float32_t average)
 {
@@ -43,7 +42,7 @@ static float32_t milliVoltsToCelsius(float32_t milliVolts)
     const float32_t m = -116.0;
     const float32_t b = 60.9;
     const float32_t milliVoltsToVolts = 0.001;
-    const float32_t offset = -12.0;
+    const float32_t offset = -2.0;
 
     return m * (milliVoltsToVolts * milliVolts) + b + offset;
 }
@@ -67,14 +66,15 @@ void taskTemperatureData (void * pvParameter)
         for(i = 0; i < SAMPLES_PER_CHANNEL; ++i)
         {
             temperatureSum += milliVoltsToCelsius( (float32_t) temperatureDataBuffer[i]);
-            //NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
+            // NRF_LOG_INFO("%d", temperatureDataBuffer[i]);
         }
+        
         temperatureAverage = temperatureSum / SAMPLES_PER_CHANNEL;
-
+        NRF_LOG_INFO("%d", temperatureAverage);
         runningAverage = calcLongTermAverage(temperatureAverage, runningAverage);
 
         xSemaphoreTake( temperatureSendSemaphore, portMAX_DELAY );
-        globalTemperatureAverage = (uint8_t) runningAverage;
+        globalTemperatureAverage = (uint16_t) runningAverage;
         xSemaphoreGive( temperatureSendSemaphore );
 
         //pendingMessagesPush(sizeof(temperatureAverage), (char*)&temperatureAverage, &globalQ);
@@ -99,12 +99,6 @@ void temperatureTaskSend(void * pvParameter)
 
         addToPackage((char*) &sendingTemperature, sizeof(sendingTemperature), &tempDevice.tempPackager);
         NRF_LOG_INFO("Packaging the following temperature: %d", sendingTemperature);
-
-        // if ((uint8_t)sendingTemperature >= unhealthyTemperatureThreshold)
-        // {
-        //     // signal the LED task
-        //     // send to Pi
-        // }
     }
 }
 
